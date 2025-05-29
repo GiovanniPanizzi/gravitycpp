@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"label": "Build with SDL2",
+		"type": "shell",
+		"command": "/bin/zsh",
+		"args": [
+		  "-c",
+		  "g++ main.cpp classes/EventListener.cpp classes/Draw.cpp -I./classes -I./headers -o main $(sdl2-config --cflags --libs)"
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		},
+		"problemMatcher": ["$gcc"]
+	  }
+	]
+  }
