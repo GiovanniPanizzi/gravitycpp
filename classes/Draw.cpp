@@ -55,32 +55,13 @@ void Draw::drawFilledCircle(int centerX, int centerY, int radius, Uint8 r, Uint8
     }
 }
 
-/*void Draw::drawPlatform(float centerX, float centerY, float innerR, float outerR, float startAngle, float endAngle, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
-
-    const float degToRad = M_PI / 180.0f;
-
-    float angleStep = 0.1f;
-    float radiusStep = 1.0f;
-
-    for (float angle = startAngle; angle <= endAngle; angle += angleStep) {
-        float theta = angle * degToRad;
-
-        for (float radius = innerR; radius <= outerR; radius += radiusStep) {
-            int x = static_cast<int>(centerX + radius * cos(theta));
-            int y = static_cast<int>(centerY + radius * sin(theta)); 
-            SDL_RenderDrawPoint(renderer, x, y);
-        }
-    }
-}*/
-
 void Draw::drawPlatform(float centerX, float centerY, float innerR, float outerR, float startAngle, float endAngle, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
 
     const float degToRad = M_PI / 180.0f;
 
     // Step size for angles (adjust for performance vs. quality)
-    float angleStep = 0.5 / (outerR - innerR); // Adjust this value for smoother curves
+    float angleStep = 0.05f / (endAngle - startAngle);
 
     // Vectors to store points along the inner and outer radii
     std::vector<SDL_Point> innerPoints;
@@ -112,7 +93,6 @@ void Draw::drawPlatform(float centerX, float centerY, float innerR, float outerR
         SDL_RenderDrawLine(renderer, innerPoints[i].x, innerPoints[i].y, outerPoints[i].x, outerPoints[i].y);
     }
 }
-
 
 void Draw::drawRotatedSprite(const Sprite& sprite) {
     SDL_RendererFlip flip = sprite.facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;

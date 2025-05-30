@@ -6,15 +6,11 @@
 #include "headers/Phisics.h"
 #include "headers/EntityController.h"
 #include "headers/GalaxyEdit.h"
-#include "headers/TextureLoader.h"
-#include "headers/SpriteHandler.h"
 #include <iostream>
 
 Phisics phisics;
 EntityController entityController;
 GalaxyEdit galaxyEdit;
-TextureLoader textureLoader;
-SpriteHandler spriteHandler;
 
 int state = 1;
 
@@ -29,7 +25,6 @@ void normalPlayingFunction(Draw& draw, Galaxy& currentGalaxy, EventListener& eve
         entityController.jump(currentGalaxy, 0);
     }
     phisics.update(currentGalaxy);
-    spriteHandler.update(currentGalaxy);
     currentGalaxy.draw(draw);
     draw.present();
 }
@@ -43,37 +38,34 @@ void editingGalaxyFunction(Draw& draw, Galaxy& currentGalaxy, EventListener& eve
 
 int main(int argc, char *argv[]) {
     Galaxy galaxy;
+    //planets
+    //Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers
+    galaxy.addPlanet({-2100, 0}, {0, 0}, {0, 0}, {2000}, {20000}, {0.80f}, {0.0f}, {{1950}, {1750}, {1700}, {1500}, {1450}, {1250}, {1200}, {1000}, {950}, {750}, {700}, {500}, {450}, {250}, {200}, {100}});
+    //platforms
+    //Size size, size_t planetIndex, Angle angle, float angularSpeed
+    galaxy.addPlanetPlatform({10, 10}, 1, {0.0f}, 0.05f);
+    //walls
+    //size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle
+    galaxy.addPlanetWall(1, 14, 2, 5, {0.0f});
+    galaxy.addPlanetWall(1, 14, 5, 5, {30.0f});
+    galaxy.addPlanetWall(1, 1, 0, 5, {30.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {60.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {90.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {120.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {150.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {180.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {210.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {240.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {270.0f});
+    galaxy.addPlanetWall(1, 14, 0, 5, {300.0f});
+    galaxy.addPlanetWall(1, 14, 7, 5, {330.0f});
+    galaxy.addPlanetWall(1, 5, 4, 5, {330.0f});
 
-    //planet
-    Position pos = {-100.0f, -100.0f};
-    Velocity vel = {0.0f, 0.0f};
-    Acceleration acc = {0.0f, 0.0f};
-    Radius radius = {200.0f};
-    Mass mass = {700.0f};
-    Friction friction = {0.9f};
-    Elasticity elasticity = {0.0f};
-    galaxy.addPlanet(pos, vel, acc, radius, mass, friction, elasticity);
-
-    //platform
-    Size size = {100, 10};
-    Angle angle = {0.0f};
-    float angularSpeed = 1.0f;
-    galaxy.addPlanetPlatform(size, 1, angle, angularSpeed);
-
-    //hollowPlanet
-    pos = {0.0f, 1300.0f};
-    vel = {0.0f, 0.0f};
-    acc = {0.0f, 0.0f};
-    radius = {1000.0f};
-    mass = {10000.0f};
-    friction = {0.9f};
-    elasticity = {0.0f};
-    std::vector<Radius> hollowRadii = {{950.0f}, {750.0f}, {700.0f}, {550.0f}, {500.0f}, {400.0f}};
-    std::vector<layerEntry> layerEntries = {{0, {0}, 20.0f}, 
-    {2, {90}, 20.0f}, 
-    {4, {0}, 20.0f}};
-    std::vector<layerEntry> walls = {{1, {-30}, 40.0f}, {3, {-90}, 20,}};
-    galaxy.addHollowPlanet(pos, vel, acc, radius, mass, friction, elasticity, hollowRadii, layerEntries, walls);
+    //entries
+    //size_t planetIndex, int planetStartLayer, int width, Angle angle
+    galaxy.addPlanetEntry(1, 0, 10, {15.0f});
+    galaxy.addPlanetEntry(1, 2, 10, {-15.0f});
+    galaxy.addPlanetEntry(1, 4, 10, {-45.0f});
 
     Galaxy& currentGalaxy = galaxy;
 
@@ -94,14 +86,16 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
+    SDL_RendererInfo info;
+    SDL_GetRendererInfo(renderer, &info);
+    std::cout << "Renderer: " << info.name << std::endl;
+
     if (!renderer) {
         printf("Errore nella creazione del renderer: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         return -1;
     }
-
-    spriteHandler.createSprite("sprites/spriteSheet.png", renderer, 64, 128);
 
     //event listener
     EventListener eventListener;
@@ -131,7 +125,7 @@ int main(int argc, char *argv[]) {
             currentFPS = frameCount;
             frameCount = 0;
             time = 0.0f;
-            //std::cout << currentFPS << std::endl;
+            std::cout << currentFPS << std::endl;
         }
         eventListener.listenEvents();
 
@@ -150,7 +144,6 @@ int main(int argc, char *argv[]) {
             SDL_Delay(frameDelay - frameTime);
         }
     }
-
 
     //destroy 
     SDL_DestroyRenderer(renderer);

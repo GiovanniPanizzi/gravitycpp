@@ -33,37 +33,6 @@ bool Collider::pointInPlatform(float pointX, float pointY,
     float outerR = planetR + height;
 
     if (dist > outerR) return false;
-
-    float pointAngle = std::atan2(dy, dx) * 180.0f / M_PI;
-
-    auto normalize = [](float deg) {
-        while (deg < 0.0f) deg += 360.0f;
-        while (deg >= 360.0f) deg -= 360.0f;
-        return deg;
-    };
-
-    pointAngle = normalize(pointAngle);
-
-    float startAngle = normalize(angleDeg - width / 2.0f);
-    float endAngle = normalize(angleDeg + width / 2.0f);
-
-    if (startAngle < endAngle) {
-        return pointAngle >= startAngle && pointAngle <= endAngle;
-    } else {
-        return pointAngle >= startAngle || pointAngle <= endAngle;
-    }
-}
-
-bool Collider::pointInEntry(float pointX, float pointY,
-                               float circleX, float circleY,
-                               float outerR, float innerR,
-                               float width, float angleDeg) {
-    float dx = pointX - circleX;
-    float dy = pointY - circleY;
-
-    float dist = std::sqrt(dx * dx + dy * dy);
-
-    if (dist > outerR) return false;
     if (dist < innerR) return false;
 
     float pointAngle = std::atan2(dy, dx) * 180.0f / M_PI;
@@ -86,54 +55,108 @@ bool Collider::pointInEntry(float pointX, float pointY,
     }
 }
 
-bool Collider::pointInHollowPlanet(float pointX, float pointY, float circleX, float circleY, float planetRadius, std::vector<Radius>& hollowRadii, std::vector<layerEntry>& layerEntries, std::vector<layerEntry>& walls, bool& isInsideWall) {
-    // Check if the point is inside the main planet radius
-    bool inside = pointInCircle(pointX, pointY, circleX, circleY, planetRadius);
+bool Collider::pointInWall(float pointX, float pointY, float circleX, float circleY, float innerR, float outerR, float width, float angleDeg) {
+    float dx = pointX - circleX;
+    float dy = pointY - circleY;
 
-    // XOR with each hollow radius
-    for (const Radius& hollowRadius : hollowRadii) {
-        inside ^= pointInCircle(pointX, pointY, circleX, circleY, hollowRadius.value + 5);
+    float dist = std::sqrt(dx * dx + dy * dy);
+
+    if (dist > outerR) return false;
+    if (dist < innerR) return false;
+
+    std::cout << dist << std::endl;
+    std::cout << outerR << std::endl;
+
+    float pointAngle = std::atan2(dy, dx) * 180.0f / M_PI;
+
+    auto normalize = [](float deg) {
+        while (deg < 0.0f) deg += 360.0f;
+        while (deg >= 360.0f) deg -= 360.0f;
+        return deg;
+    };
+
+    pointAngle = normalize(pointAngle);
+
+    float startAngle = normalize(angleDeg - width / 2.0f);
+    float endAngle = normalize(angleDeg + width / 2.0f);
+
+    if (startAngle < endAngle) {
+        return pointAngle >= startAngle && pointAngle <= endAngle;
+    } else {
+        return pointAngle >= startAngle || pointAngle <= endAngle;
     }
-    // layerEntries
-    for (const layerEntry& entry : layerEntries) {
-        float innerR = hollowRadii[entry.depth].value;
+}
+
+bool Collider::pointInPlanet(size_t planet, size_t entity, Galaxy& currentGalaxy) {
+    bool inPlanet = false;
+    inPlanet = pointInCircle(
+        currentGalaxy.positions[entity].x,
+        currentGalaxy.positions[entity].y,
+        currentGalaxy.positions[planet].x,
+        currentGalaxy.positions[planet].y,
+        currentGalaxy.radii[planet].value + 5
+    );
+    //xor for layers
+    for(size_t i = 0; i < currentGalaxy.layers[planet].size(); i++) {
+        float layerValue = currentGalaxy.layers[planet][i].value;
+        inPlanet ^= pointInCircle(
+            currentGalaxy.positions[entity].x,
+            currentGalaxy.positions[entity].y,
+            currentGalaxy.positions[planet].x,
+            currentGalaxy.positions[planet].y,
+            layerValue
+        );
+    }
+    //is in entry
+    for(size_t i = 0; i < currentGalaxy.layerEntries[planet].size(); i++) {
+        size_t entryIndex = currentGalaxy.layerEntries[planet][i];
+        float innerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex]].value;
         float outerR;
-        if(entry.depth == 0){
-            outerR = planetRadius + 5;
+        if(currentGalaxy.endLayers[entryIndex] == 0){
+            outerR = currentGalaxy.radii[planet].value;
+        } else {
+            outerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex] - 1].value;
         }
-        else{
-            outerR = hollowRadii[entry.depth - 1].value + 5;
-        }
-        if (pointInEntry(pointX, pointY, circleX, circleY, outerR, innerR, entry.width, entry.angle.deg)) {
+        if( pointInWall(
+            currentGalaxy.positions[entity].x,
+            currentGalaxy.positions[entity].y,
+            currentGalaxy.positions[planet].x,
+            currentGalaxy.positions[planet].y,
+            innerR - 5, outerR + 5,
+            currentGalaxy.widths[entryIndex],
+            currentGalaxy.angles[entryIndex].deg
+        )) {
             return false;
         }
     }
-    // walls
-    for (const layerEntry& wall : walls) {
-        float innerR = hollowRadii[wall.depth].value;
-        float outerR;
-        if(wall.depth == 0){
-            outerR = planetRadius;
-        }
-        else{
-            outerR = hollowRadii[wall.depth - 1].value;
-        }
-        if (pointInEntry(pointX, pointY, circleX, circleY, outerR, innerR - 5, wall.width, wall.angle.deg)) {
-            isInsideWall = true;
-            return true;
+    //is in wall
+    for(size_t i = 0; i < currentGalaxy.layerWalls[planet].size(); i++) {
+        size_t wallIndex = currentGalaxy.layerWalls[planet][i];
+        if( pointInWall(
+            currentGalaxy.positions[entity].x,
+            currentGalaxy.positions[entity].y,
+            currentGalaxy.positions[planet].x,
+            currentGalaxy.positions[planet].y,
+            currentGalaxy.layers[planet][currentGalaxy.startLayers[wallIndex]].value - 5,
+            currentGalaxy.layers[planet][currentGalaxy.endLayers[wallIndex]].value + 5,
+            currentGalaxy.widths[wallIndex],
+            currentGalaxy.angles[wallIndex].deg
+        )) {
+            currentGalaxy.wallIndexes[entity] = wallIndex;
+            return false;
         }
     }
-    return inside;
+    return inPlanet;
 }
 
 void Collider::entitiesPlatforms(Galaxy& currentGalaxy) {
     for (size_t i = 0; i < currentGalaxy.entities.size(); i++) {
-        size_t entityIndex = currentGalaxy.entities[i].i;
+        size_t entityIndex = currentGalaxy.entities[i].index;
         float px = currentGalaxy.positions[entityIndex].x;
         float py = currentGalaxy.positions[entityIndex].y;
 
         for (size_t j = 0; j < currentGalaxy.platforms.size(); j++) {
-            size_t platformIndex = currentGalaxy.platforms[j].i;
+            size_t platformIndex = currentGalaxy.platforms[j].index;
 
             int planetId = currentGalaxy.planetIndexes[platformIndex];
             if (planetId < 0) continue;
@@ -158,38 +181,19 @@ void Collider::entitiesPlatforms(Galaxy& currentGalaxy) {
 
 void Collider::entitiesPlanets(Galaxy& currentGalaxy) {
     for (size_t i = 0; i < currentGalaxy.entities.size(); i++) {
-        size_t entityIndex = currentGalaxy.entities[i].i;
+        size_t entityIndex = currentGalaxy.entities[i].index;
         float px = currentGalaxy.positions[entityIndex].x;
         float py = currentGalaxy.positions[entityIndex].y;
 
         int currentPlanetId = currentGalaxy.planetIndexes[entityIndex];
 
         currentGalaxy.planetIndexes[entityIndex] = -1;
+        currentGalaxy.wallIndexes[entityIndex] = -1;
 
         for (size_t j = 0; j < currentGalaxy.planets.size(); j++) {
-            size_t planetIndex = currentGalaxy.planets[j].i;
-            float cx = currentGalaxy.positions[planetIndex].x;
-            float cy = currentGalaxy.positions[planetIndex].y;
-            float r = currentGalaxy.radii[planetIndex].value;
-
-            if (pointInCircle(px, py, cx, cy, r + 5)) {
+            size_t planetIndex = currentGalaxy.planets[j].index;
+            if(pointInPlanet(planetIndex, entityIndex, currentGalaxy)) {
                 currentGalaxy.planetIndexes[entityIndex] = planetIndex;
-                return;
-            }
-        }
-
-        currentGalaxy.hollowPlanetIndexes[entityIndex] = -1;
-        currentGalaxy.isInsideWall[entityIndex] = false;
-
-        for (size_t j = 0; j < currentGalaxy.hollowPlanets.size(); j++) {
-            size_t planetIndex = currentGalaxy.hollowPlanets[j].i;
-            float cx = currentGalaxy.positions[planetIndex].x;
-            float cy = currentGalaxy.positions[planetIndex].y;
-            float r = currentGalaxy.radii[planetIndex].value;
-
-            if (pointInHollowPlanet(px, py, cx, cy, r + 5, currentGalaxy.hollowPlanetsRadii[planetIndex], currentGalaxy.planetsLayerEntries[planetIndex], currentGalaxy.holloPlanetswalls[planetIndex], currentGalaxy.isInsideWall[entityIndex])) {
-                currentGalaxy.hollowPlanetIndexes[entityIndex] = planetIndex;
-                return;
             }
         }
     }

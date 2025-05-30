@@ -5,8 +5,8 @@ class Collider {
     public:
     bool pointInCircle(float pointX, float pointY, float circleX, float circleY, float r);
     bool pointInPlatform(float pointX, float pointY, float circleX, float circleY, float planetR, float height, float width, float angle);
-    bool pointInHollowPlanet(float pointX, float pointY, float circleX, float circleY, float planetRadius, std::vector<Radius>& hollowRadii, std::vector<layerEntry>& layerEntries, std::vector<layerEntry>& walls, bool& isInsideWall);
-    bool pointInEntry(float pointX, float pointY, float circleX, float circleY, float outerR, float innerR, float width, float angleDeg);
+    bool pointInWall(float pointX, float pointY, float circleX, float circleY, float innerR, float outerR, float width, float angleDeg);
+    bool pointInPlanet(size_t planet, size_t entity, Galaxy& currentGalaxy);
     void entitiesPlatforms(Galaxy& currentGalaxy);
     void entitiesPlanets(Galaxy& currentGalaxy);
     void updateCollisions(Galaxy& currentGalaxy);

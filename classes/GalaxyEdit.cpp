@@ -45,7 +45,7 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
     }
     if(selectedTool == 0){
         for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
-            size_t planetIndex = currentGalaxy.planets[i].i;
+            size_t planetIndex = currentGalaxy.planets[i].index;
             if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - currentGalaxy.positions[0].x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - currentGalaxy.positions[0].y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
                 dragged = planetIndex;
                 draggingPlanet = true;
@@ -54,7 +54,7 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
             }
         }
         for (size_t i = 0; i < currentGalaxy.platforms.size(); i++) {
-            size_t platformIndex = currentGalaxy.platforms[i].i;
+            size_t platformIndex = currentGalaxy.platforms[i].index;
             size_t planetId = currentGalaxy.planetIndexes[platformIndex];
 
             float planetX = currentGalaxy.positions[planetId].x;
@@ -81,14 +81,14 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
     }
     if(selectedTool == 2){
         for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
-            size_t planetIndex = currentGalaxy.planets[i].i;
+            size_t planetIndex = currentGalaxy.planets[i].index;
             if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - currentGalaxy.positions[0].x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - currentGalaxy.positions[0].y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
                 currentGalaxy.removePlanet(planetIndex);
                 return;
             }
         }
         for (size_t i = 0; i < currentGalaxy.platforms.size(); i++) {
-            size_t platformIndex = currentGalaxy.platforms[i].i;
+            size_t platformIndex = currentGalaxy.platforms[i].index;
             size_t planetId = currentGalaxy.planetIndexes[platformIndex];
 
             float planetX = currentGalaxy.positions[planetId].x;

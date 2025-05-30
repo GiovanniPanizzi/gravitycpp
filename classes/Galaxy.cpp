@@ -2,12 +2,8 @@
 #include <string>
 #include <iostream>
 
-std::unordered_map<std::string, Elasticity> elasticity;
-std::unordered_map<std::string, Friction> friction;
-std::unordered_map<std::string, float> density;
-
 Galaxy::Galaxy(){
-    Entity player = {0};  
+    Object player = {0};  
     entities.push_back(player);
     positions[0] = (Position{0.0f, 0.0f});
     velocities[0] = (Velocity{0.0f, 0.0f});
@@ -17,15 +13,13 @@ Galaxy::Galaxy(){
     angles[0] = (Angle{0.0f});
     planetIndexes[0] = (-1);
     platformIndexes[0] = (-1);
-    hollowPlanetIndexes[0] = (-1);
-    jumpStaminas[0] = {30, 30}; 
+    wallIndexes[0] = (-1);
+    jumpStaminas[0] = {50, 50}; 
     moveStamina[0] = {5, 5};
-    animatedSpriteMap[0] = {nullptr, 0, false};
-    isInsideWall[0] = false;
     index = 1;
 }
 
-void Galaxy::addPlanet(Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity) {
+void Galaxy::addPlanet(Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers) {
     planets.push_back({index});
     positions[index] = (position);
     velocities[index] = (velocity);
@@ -35,22 +29,11 @@ void Galaxy::addPlanet(Position position, Velocity velocity, Acceleration accele
     frictions[index] = (friction);
     elasticities[index] = (elasticity);
     angles[index] = {0.0f};
-    index++;
-}
+    layers[index] = planetLayers;
+    planetPlatforms[index] = {};
+    layerEntries[index] = {};
+    layerWalls[index] = {};
 
-void Galaxy::addHollowPlanet(Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> hollowRadii, std::vector<layerEntry> layerEntries, std::vector<layerEntry> walls) {
-    hollowPlanets.push_back({index});
-    positions[index] = (position);
-    velocities[index] = (velocity);
-    accelerations[index] = (acceleration);
-    radii[index] = (radius);
-    masses[index] = (mass);
-    frictions[index] = (friction);
-    elasticities[index] = (elasticity);
-    angles[index] = {0.0f};
-    hollowPlanetsRadii[index] = hollowRadii;
-    planetsLayerEntries[index] = layerEntries;
-    holloPlanetswalls[index] = walls;
     index++;
 }
 
@@ -64,11 +47,9 @@ void Galaxy::addEntity(Position position, Velocity velocity, Acceleration accele
     angles[index] = (angle);
     planetIndexes[index] = (-1);
     platformIndexes[index] = (-1);
-    hollowPlanetIndexes[index] = (-1);
+    wallIndexes[index] = (-1);
     jumpStaminas[index] = {30, 30};
     moveStamina[index] = {5, 5};
-    animatedSpriteMap[index] = {nullptr, 0, false};
-    isInsideWall[index] = false;
     index++;
 }
 
@@ -78,12 +59,40 @@ void Galaxy::addPlanetPlatform(Size size, size_t planetIndex, Angle angle, float
     angles[index] = (angle);
     planetIndexes[index] = (planetIndex);
     angularSpeeds[index] = (angularSpeed);
+    if (planetIndex >= 0) {
+        planetPlatforms[planetIndex].push_back(index);
+    }
+    index++;
+}
+
+void Galaxy::addPlanetWall(size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle) {
+    walls.push_back({index});
+    startLayers[index] = planetStartLayer;
+    endLayers[index] = planetEndLayer;
+    widths[index] = width;
+    angles[index] = (angle);
+    planetIndexes[index] = (planetIndex);
+    if (planetIndex >= 0) {
+        layerWalls[planetIndex].push_back(index);
+    }
+    index++;
+}
+
+void Galaxy::addPlanetEntry(size_t planetIndex, int planetStartLayer, int width, Angle angle) {
+    entries.push_back({index});
+    startLayers[index] = planetStartLayer;
+    widths[index] = width;
+    angles[index] = (angle);
+    planetIndexes[index] = (planetIndex);
+    if (planetIndex >= 0) {
+        layerEntries[planetIndex].push_back(index);
+    }
     index++;
 }
 
 void Galaxy::removePlanetPlatform(size_t indexDelete){
     for (auto it = platforms.begin(); it != platforms.end(); ++it) {
-        if (it->i == indexDelete) {
+        if (it->index == indexDelete) {
             platforms.erase(it);
             break;
         }
@@ -96,7 +105,7 @@ void Galaxy::removePlanetPlatform(size_t indexDelete){
 
 void Galaxy::removePlanet(size_t indexDelete) {
     for (auto it = planets.begin(); it != planets.end(); ++it) {
-        if (it->i == indexDelete) {
+        if (it->index == indexDelete) {
             planets.erase(it);
             break;
         }
@@ -108,11 +117,16 @@ void Galaxy::removePlanet(size_t indexDelete) {
     masses.erase(indexDelete);
     frictions.erase(indexDelete);
     elasticities.erase(indexDelete);
+    angles.erase(indexDelete);
+    layers.erase(indexDelete);
+    layerEntries.erase(indexDelete);
+    layerWalls.erase(indexDelete);
+    planetPlatforms.erase(indexDelete);
 }
 
 void Galaxy::removeEntity(size_t indexDelete) {
     for (auto it = entities.begin(); it != entities.end(); ++it) {
-        if (it->i == indexDelete) {
+        if (it->index == indexDelete) {
             entities.erase(it);
             break;
         }
@@ -127,7 +141,6 @@ void Galaxy::removeEntity(size_t indexDelete) {
     platformIndexes.erase(indexDelete);
     jumpStaminas.erase(indexDelete);
     moveStamina.erase(indexDelete);
-    animatedSpriteMap.erase(indexDelete);
 }
 
 void rotatePointAroundOrigin(int& x, int& y, float angleDeg, float pivotX, float pivotY) {
@@ -148,6 +161,11 @@ void rotatePointAroundOrigin(int& x, int& y, float angleDeg, float pivotX, float
     y = static_cast<int>(ry + pivotY);
 }
 
+bool isCircleVisible(int drawX, int drawY, float radius) {
+    return !(drawX + radius < 0 || drawX - radius > screenWidth ||
+             drawY + radius < 0 || drawY - radius > screenHeight);
+}
+
 void Galaxy::draw(Draw& draw){
 
     Position playerPosition = positions[0];
@@ -155,19 +173,92 @@ void Galaxy::draw(Draw& draw){
     draw.clearScreen(0, 0, 255, 0);
 
     for (size_t i = 0; i < planets.size(); i++) {
-        size_t index = planets[i].i;
+        size_t index = planets[i].index;
         Radius planetRadius = radii[index];
         Position planetPosition = positions[index];
 
-        int drawX = positions[index].x - playerPosition.x + screenWidth / 2; 
-        int drawY = positions[index].y - playerPosition.y + screenHeight / 2;
+        int drawX = (positions[index].x - playerPosition.x) * scale + screenWidth / 2; 
+        int drawY = (positions[index].y - playerPosition.y) * scale + screenHeight / 2;
 
         //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
-        draw.drawFilledCircle(drawX, drawY, planetRadius.value, 150, 100, 5, 255);
+        if(!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
+        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 150, 100, 5, 255);
+        for(int i = 0; i < layers[index].size(); i++){
+            float layerRadius = layers[index][i].value;
+            if(!isCircleVisible(drawX, drawY, layerRadius * scale)) continue;
+            if(i % 2 == 0){
+                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 0, 0, 255, 255);
+            }
+            else{
+                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 150, 100, 5, 255);
+            }
+        }
+    }
+
+    for(size_t i = 0; i < walls.size(); i++) {
+        size_t index = walls[i].index;
+        int planetIndex = planetIndexes[index];
+        if (planetIndex < 0) continue;
+
+        float angleDeg = angles[index].deg;
+        int startLayer = startLayers[index];
+        int endLayer = endLayers[index];
+        int width = widths[index];
+
+        float planetX = positions[planetIndex].x;
+        float planetY = positions[planetIndex].y;
+
+        float radius = radii[planetIndex].value; 
+
+        float innerRadius = layers[planetIndex][startLayer].value;
+        float outerRadius = layers[planetIndex][endLayer].value;
+
+        float startAngle = angleDeg - width / 2.0f;
+        float endAngle = angleDeg + width / 2.0f;
+
+        int drawX = (planetX - playerPosition.x) * scale + screenWidth / 2.0f;
+        int drawY = (planetY - playerPosition.y) * scale + screenHeight / 2.0f;
+
+        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
+
+        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 150, 100, 5, 255);
+    }
+
+    for (size_t i = 0; i < entries.size(); i++) {
+        size_t index = entries[i].index;
+        int planetIndex = planetIndexes[index];
+        if (planetIndex < 0) continue;
+
+        float angleDeg = angles[index].deg;
+        int startLayer = startLayers[index];
+        int width = widths[index];
+
+        float planetX = positions[planetIndex].x;
+        float planetY = positions[planetIndex].y;
+
+        float radius = radii[planetIndex].value; 
+
+        float innerRadius = layers[planetIndex][startLayer].value;
+        float outerRadius;
+        if(startLayer == 0){
+            outerRadius = radius;
+        }else{
+            outerRadius = layers[planetIndex][startLayer - 1].value;
+        }
+
+        float startAngle = angleDeg - width / 2.0f;
+        float endAngle = angleDeg + width / 2.0f;
+
+        int drawX = (planetX - playerPosition.x) * scale + screenWidth / 2.0f;
+        int drawY = (planetY - playerPosition.y) * scale + screenHeight / 2.0f;
+
+        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
+
+        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 0, 0, 255, 255);
     }
 
     for (size_t i = 0; i < platforms.size(); i++) {
-        size_t index = platforms[i].i;
+        size_t index = platforms[i].index;
 
         float angleDeg = angles[index].deg;
         float widthDeg = sizes[index].width;
@@ -187,74 +278,24 @@ void Galaxy::draw(Draw& draw){
         float startAngle = angleDeg - widthDeg / 2.0f;
         float endAngle = angleDeg + widthDeg / 2.0f;
 
-        int drawX = planetX - playerPosition.x + screenWidth / 2.0f;
-        int drawY = planetY - playerPosition.y + screenHeight / 2.0f;
+        int drawX = (planetX - playerPosition.x) * scale + screenWidth / 2.0f;
+        int drawY = (planetY - playerPosition.y) * scale + screenHeight / 2.0f;
+
+        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
 
         //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2, screenHeight / 2);
 
-        draw.drawPlatform(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 255, 255, 0, 255);
-    }
-
-    for (size_t i = 0; i < hollowPlanets.size(); i++) {
-        size_t index = hollowPlanets[i].i;
-        Radius planetRadius = radii[index];
-        Position planetPosition = positions[index];
-        std::vector<Radius>& hollowRadiiForPlanet = hollowPlanetsRadii[index];
-        std::vector<layerEntry>& layerEntriesForPlanet = planetsLayerEntries[index];
-        int drawX = positions[index].x - playerPosition.x + screenWidth / 2; 
-        int drawY = positions[index].y - playerPosition.y + screenHeight / 2;
-        draw.drawFilledCircle(drawX, drawY, planetRadius.value, 150, 100, 5, 255);
-
-        for (size_t j = 0; j < hollowRadiiForPlanet.size(); j++) {
-            float radius = hollowRadiiForPlanet[j].value;
-            if(j % 2 == 0){
-                draw.drawFilledCircle(drawX, drawY, radius, 0, 0, 255, 255);
-            } else {
-                draw.drawFilledCircle(drawX, drawY, radius, 150, 100, 5, 255);
-            }
-        }
-
-        for (size_t j = 0; j < layerEntriesForPlanet.size(); j++) {
-            layerEntry& layer = layerEntriesForPlanet[j];
-            Radius radius2;
-            if(layer.depth > 0){
-                radius2 = hollowRadiiForPlanet[layer.depth - 1];
-            }
-            else{
-                radius2 = planetRadius;
-            }
-
-            float startAngle = layer.angle.deg - layer.width / 2.0f;
-            float endAngle = layer.angle.deg + layer.width / 2.0f;
-
-            draw.drawPlatform(drawX, drawY, hollowRadiiForPlanet[layer.depth].value, radius2.value, startAngle, endAngle, 0, 0, 255, 255);
-        }
-        for (size_t j = 0; j < holloPlanetswalls[index].size(); j++) {
-            layerEntry& wall = holloPlanetswalls[index][j];
-            Radius radius2;
-            if(wall.depth > 0){
-                radius2 = hollowRadiiForPlanet[wall.depth - 1];
-            }
-            else{
-                radius2 = planetRadius;
-            }
-
-            float startAngle = wall.angle.deg - wall.width / 2.0f;
-            float endAngle = wall.angle.deg + wall.width / 2.0f;
-
-            draw.drawPlatform(drawX, drawY, hollowRadiiForPlanet[wall.depth].value, radius2.value, startAngle, endAngle, 150, 100, 5, 255);
-        }
+        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 255, 255, 0, 255);
     }
 
     for (size_t i = 0; i < entities.size(); i++) {
-        size_t index = entities[i].i;
+        size_t index = entities[i].index;
         Size entitySize = sizes[index];
-        int pivotX = entitySize.width / 2;  
-        int pivotY = entitySize.height; 
-        int drawX = positions[index].x - entitySize.width / 2 - playerPosition.x + screenWidth / 2; 
-        int drawY = positions[index].y - entitySize.height - playerPosition.y + screenHeight / 2;
-        float angleDeg = angles[index].deg; 
-        //draw.drawRotatedSprite(*animatedSpriteMap[index].sprite);
-        draw.drawFilledRotatedRect(drawX, drawY, entitySize.width, entitySize.height, angleDeg, pivotX, pivotY, 255, 0, 0, 255);
+        int pivotX = entitySize.width * scale / 2;  
+        int pivotY = entitySize.height * scale; 
+        int drawX = (positions[index].x - playerPosition.x) * scale - entitySize.width * scale / 2 + screenWidth / 2; 
+        int drawY = (positions[index].y - playerPosition.y) * scale -entitySize.height * scale + screenHeight / 2;
+        float angleDeg = angles[index].deg;
+        draw.drawFilledRotatedRect(drawX, drawY, entitySize.width * scale, entitySize.height * scale, angleDeg, pivotX, pivotY, 255, 0, 0, 255);
     }
 }
