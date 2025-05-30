@@ -118,7 +118,7 @@ bool Collider::pointInHollowPlanet(float pointX, float pointY, float circleX, fl
         else{
             outerR = hollowRadii[wall.depth - 1].value;
         }
-        if (pointInEntry(pointX, pointY, circleX, circleY, outerR, innerR - 5, wall.width + 5, wall.angle.deg)) {
+        if (pointInEntry(pointX, pointY, circleX, circleY, outerR, innerR - 5, wall.width, wall.angle.deg)) {
             isInsideWall = true;
             return true;
         }

@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     std::vector<layerEntry> layerEntries = {{0, {0}, 20.0f}, 
     {2, {90}, 20.0f}, 
     {4, {0}, 20.0f}};
-    std::vector<layerEntry> walls = {{1, {-30}, 40.0f}};
+    std::vector<layerEntry> walls = {{1, {-30}, 40.0f}, {3, {-90}, 20,}};
     galaxy.addHollowPlanet(pos, vel, acc, radius, mass, friction, elasticity, hollowRadii, layerEntries, walls);
 
     Galaxy& currentGalaxy = galaxy;
