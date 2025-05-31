@@ -41,9 +41,18 @@ int main(int argc, char *argv[]) {
     //planets
     //Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers
     galaxy.addPlanet({-2100, 0}, {0, 0}, {0, 0}, {2000}, {20000}, {0.80f}, {0.0f}, {{1950}, {1750}, {1700}, {1500}, {1450}, {1250}, {1200}, {1000}, {950}, {750}, {700}, {500}, {450}, {250}, {200}, {100}});
+
+
+    galaxy.addPlanet({800, 0}, {0, 0}, {0, 0}, {300}, {800}, {0.80f}, {0.0f}, {{}});
+    galaxy.addPlanet({700, 1100}, {0, 0}, {0, 0}, {300}, {800}, {0.80f}, {0.0f}, {{}});
+    galaxy.addPlanet({2000, 700}, {0, 0}, {0, 0}, {300}, {800}, {0.80f}, {0.0f}, {{}});
+    galaxy.addPlanet({1900, -600}, {0, 0}, {0, 0}, {300}, {800}, {0.80f}, {0.0f}, {{}});
+    galaxy.addPlanet({1000, -2600}, {0, 0}, {0, 0}, {700}, {2500}, {0.80f}, {0.0f}, {{}});
+    galaxy.addPlanet({-1300, -5000}, {0, 0}, {0, 0}, {1200}, {5000}, {0.80f}, {0.0f}, {{}});
     //platforms
     //Size size, size_t planetIndex, Angle angle, float angularSpeed
-    galaxy.addPlanetPlatform({10, 10}, 1, {0.0f}, 0.05f);
+    galaxy.addPlanetPlatform({10, 10}, 7, {0.0f}, 0.3f);
+    galaxy.addPlanetPlatform({10, 10}, 1, {30.0f}, 0.3f);
     //walls
     //size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle
     galaxy.addPlanetWall(1, 14, 2, 5, {0.0f});
@@ -125,7 +134,6 @@ int main(int argc, char *argv[]) {
             currentFPS = frameCount;
             frameCount = 0;
             time = 0.0f;
-            std::cout << currentFPS << std::endl;
         }
         eventListener.listenEvents();
 

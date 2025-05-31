@@ -1,8 +1,8 @@
 #include "../headers/EntityController.h"
 #include <iostream>
 
-float velocity = 2.0f;
-float jumpJump = 5.0f;
+float velocity = 6.0f;
+float jumpJump = 10.0f;
 
 void EntityController::moveLeft(Galaxy& currentGalaxy, size_t entityIndex){
     if(currentGalaxy.moveStamina[entityIndex].value >= currentGalaxy.moveStamina[entityIndex].maxValue){

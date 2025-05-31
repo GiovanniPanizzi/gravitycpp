@@ -61,7 +61,7 @@ void Draw::drawPlatform(float centerX, float centerY, float innerR, float outerR
     const float degToRad = M_PI / 180.0f;
 
     // Step size for angles (adjust for performance vs. quality)
-    float angleStep = 0.05f / (endAngle - startAngle);
+    float angleStep = 0.1f / (endAngle - startAngle);
 
     // Vectors to store points along the inner and outer radii
     std::vector<SDL_Point> innerPoints;

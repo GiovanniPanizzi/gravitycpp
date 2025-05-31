@@ -5,7 +5,7 @@
 
 Collider collider;
 
-const int G = 6;
+const int G = 40;
 
 /*functions*/
 
@@ -136,14 +136,19 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
         int hollowPlanetId = currentGalaxy.planetIndexes[wallIndex];
 
         // Calculate the distance and angle from the planet center
-        float dx = currentGalaxy.positions[entityId].x - currentGalaxy.positions[hollowPlanetId].x;
-        float dy = currentGalaxy.positions[entityId].y - currentGalaxy.positions[hollowPlanetId].y;
+        float dx = currentGalaxy.positions[entityId].x - currentGalaxy.positions[hollowPlanetId].x + currentGalaxy.velocities[entityId].x;
+        float dy = currentGalaxy.positions[entityId].y - currentGalaxy.positions[hollowPlanetId].y + currentGalaxy.velocities[entityId].y;
         float dist = std::sqrt(dx * dx + dy * dy);
         float angleRad = std::atan2(dy, dx);
-        float PUSH_DISTANCE = -5.0f;
-        if(currentGalaxy.angles[wallIndex].deg <= angleRad * 180.0f / M_PI) {
-            PUSH_DISTANCE = 5.0f;
+        if(angleRad < 0){
+            angleRad += 2 * M_PI; // Normalize angle to [0, 2π]
         }
+        std::cout << "entity: " << angleRad * 180.0f / M_PI << " wall: " << currentGalaxy.angles[wallIndex].deg << std::endl;
+        float PUSH_DISTANCE = -1.0f;
+        if(currentGalaxy.angles[wallIndex].deg <= angleRad * 180.0f / M_PI) {
+            PUSH_DISTANCE *= -1.0f;
+        }
+
 
         // Calculate the tangential direction (perpendicular to the radial direction)
         float tangentX = -dy / dist; // Perpendicular to radial direction
@@ -154,8 +159,8 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
         currentGalaxy.positions[entityId].y += tangentY * PUSH_DISTANCE;
 
         // Stop further movement into the wall
-        currentGalaxy.velocities[entityId].x = -tangentX * currentGalaxy.velocities[entityId].x * 0.1f;
-        currentGalaxy.velocities[entityId].y = -tangentY * currentGalaxy.velocities[entityId].y * 0.1f;
+        currentGalaxy.velocities[entityId].x = 0;
+        currentGalaxy.velocities[entityId].y = 0;
 
         return;
     }

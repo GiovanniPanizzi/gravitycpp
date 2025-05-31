@@ -64,9 +64,6 @@ bool Collider::pointInWall(float pointX, float pointY, float circleX, float circ
     if (dist > outerR) return false;
     if (dist < innerR) return false;
 
-    std::cout << dist << std::endl;
-    std::cout << outerR << std::endl;
-
     float pointAngle = std::atan2(dy, dx) * 180.0f / M_PI;
 
     auto normalize = [](float deg) {
@@ -81,8 +78,10 @@ bool Collider::pointInWall(float pointX, float pointY, float circleX, float circ
     float endAngle = normalize(angleDeg + width / 2.0f);
 
     if (startAngle < endAngle) {
+        if(pointAngle >= startAngle && pointAngle <= endAngle)
         return pointAngle >= startAngle && pointAngle <= endAngle;
     } else {
+        if(pointAngle >= startAngle || pointAngle <= endAngle)
         return pointAngle >= startAngle || pointAngle <= endAngle;
     }
 }
@@ -112,7 +111,7 @@ bool Collider::pointInPlanet(size_t planet, size_t entity, Galaxy& currentGalaxy
         size_t entryIndex = currentGalaxy.layerEntries[planet][i];
         float innerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex]].value;
         float outerR;
-        if(currentGalaxy.endLayers[entryIndex] == 0){
+        if(currentGalaxy.startLayers[entryIndex] == 0){
             outerR = currentGalaxy.radii[planet].value;
         } else {
             outerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex] - 1].value;

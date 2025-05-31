@@ -170,7 +170,7 @@ void Galaxy::draw(Draw& draw){
 
     Position playerPosition = positions[0];
 
-    draw.clearScreen(0, 0, 255, 0);
+    draw.clearScreen(30, 5, 100, 255); 
 
     for (size_t i = 0; i < planets.size(); i++) {
         size_t index = planets[i].index;
@@ -182,15 +182,15 @@ void Galaxy::draw(Draw& draw){
 
         //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
         if(!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
-        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 150, 100, 5, 255);
+        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 120, 80, 4, 255);
         for(int i = 0; i < layers[index].size(); i++){
             float layerRadius = layers[index][i].value;
             if(!isCircleVisible(drawX, drawY, layerRadius * scale)) continue;
             if(i % 2 == 0){
-                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 0, 0, 255, 255);
+                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 0, 0, 200, 255);
             }
             else{
-                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 150, 100, 5, 255);
+                draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 90, 60, 3, 255);
             }
         }
     }
@@ -221,7 +221,7 @@ void Galaxy::draw(Draw& draw){
 
         if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
 
-        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 150, 100, 5, 255);
+        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 90, 60, 3, 255);
     }
 
     for (size_t i = 0; i < entries.size(); i++) {
@@ -254,7 +254,7 @@ void Galaxy::draw(Draw& draw){
 
         if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
 
-        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 0, 0, 255, 255);
+        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 0, 0, 200, 255);
     }
 
     for (size_t i = 0; i < platforms.size(); i++) {
