@@ -5,39 +5,8 @@
 
 Collider collider;
 
-const int G = 40;
+const int G = 35;
 
-/*functions*/
-
-Velocity makeVelocity(const Position& from, const Position& to) {
-    return {to.x - from.x, to.y - from.y};
-}
-
-float dot(const Velocity& a, const Velocity& b) {
-    return a.x * b.x + a.y * b.y;
-}
-
-float normSquared(const Velocity& v) {
-    return v.x * v.x + v.y * v.y;
-}
-
-Velocity scaleVector(const Velocity& v, float scalar) {
-    return {v.x * scalar, v.y * scalar};
-}
-
-Velocity subtract(const Velocity& a, const Velocity& b) {
-    return {a.x - b.x, a.y - b.y};
-}
-
-void decomposeVelocity(const Velocity& v, const Position& p1, const Position& p2,Velocity& vParallela, Velocity& vPerpendicolare, bool& vaVersoDestinazione) {
-    Velocity dir = makeVelocity(p1, p2); 
-    double alpha = dot(v, dir) / normSquared(dir);
-    vParallela = scaleVector(dir, alpha);
-    vPerpendicolare = subtract(v, vParallela);
-
-    double verso = dot(vParallela, dir);
-    vaVersoDestinazione = verso > 0;
-}
 /*methods*/
 //kinetics for platforms
 void Phisics::updatePlatformsRotation(Galaxy& currentGalaxy) {
@@ -48,7 +17,7 @@ void Phisics::updatePlatformsRotation(Galaxy& currentGalaxy) {
 }
 
 //update entity kinetics
-void updateEntityGravitalForce(Galaxy& currentGalaxy, size_t entityId) {
+void Phisics::updateEntityGravitalForce(Galaxy& currentGalaxy, size_t entityId) {
     if(currentGalaxy.planetIndexes[entityId] != -1) return;
     for(size_t j = 0; j < currentGalaxy.planets.size(); j++){
         size_t planetId = currentGalaxy.planets[j].index;
@@ -62,7 +31,7 @@ void updateEntityGravitalForce(Galaxy& currentGalaxy, size_t entityId) {
     }
 }
 
-void updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
+void Phisics::updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
     int planetId = currentGalaxy.planetIndexes[entityId];
     if(planetId == -1){
         currentGalaxy.angles[entityId].deg = atan2(currentGalaxy.accelerations[entityId].y,
@@ -75,14 +44,14 @@ void updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
     }
 }
 
-void updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
+void Phisics::updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
     int platformId = currentGalaxy.platformIndexes[entityId];
 
     if(platformId != -1){
         float omega = currentGalaxy.angularSpeeds[platformId] * M_PI / 180.0f;
         int planetId = currentGalaxy.planetIndexes[platformId];
-        Position& planetPos = currentGalaxy.positions[planetId];
-        Position& entityPos = currentGalaxy.positions[entityId];
+        Vec2& planetPos = currentGalaxy.positions[planetId];
+        Vec2& entityPos = currentGalaxy.positions[entityId];
 
         float dx = entityPos.x - planetPos.x;
         float dy = entityPos.y - planetPos.y;
@@ -106,32 +75,31 @@ void updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
 
     currentGalaxy.velocities[entityId].x += currentGalaxy.accelerations[entityId].x;
     currentGalaxy.velocities[entityId].y += currentGalaxy.accelerations[entityId].y;
-
-    float totalVx = currentGalaxy.velocities[entityId].x + currentGalaxy.relativeVelocities[entityId].x;
-    float totalVy = currentGalaxy.velocities[entityId].y + currentGalaxy.relativeVelocities[entityId].y;
-
-    currentGalaxy.positions[entityId].x += totalVx;
-    currentGalaxy.positions[entityId].y += totalVy;
 }
 
-void updateEntityAcceleration(Galaxy& currentGalaxy, size_t entityId) {
+void Phisics::updateEntityAcceleration(Galaxy& currentGalaxy, size_t entityId) {
     currentGalaxy.accelerations[entityId].x = 0.0f;
     currentGalaxy.accelerations[entityId].y = 0.0f;
     updateEntityGravitalForce(currentGalaxy, entityId);
 }
 
-void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
+void Phisics::updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
     int planetId = currentGalaxy.planetIndexes[entityId];
     int platformId = currentGalaxy.platformIndexes[entityId];
 
-    Position& entityPos = currentGalaxy.positions[entityId];
-    Position& planetPos = currentGalaxy.positions[planetId];
+    Vec2& entityPos = currentGalaxy.positions[entityId];
+    Vec2& planetPos = currentGalaxy.positions[planetId];
     float dx = entityPos.x - planetPos.x;
     float dy = entityPos.y - planetPos.y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
     // Handle entity inside a wall
     if (currentGalaxy.wallIndexes[entityId] != -1) {
+
+        // Stop further movement into the wall
+        currentGalaxy.velocities[entityId].x = 0;
+        currentGalaxy.velocities[entityId].y = 0;
+
         size_t wallIndex = currentGalaxy.wallIndexes[entityId];
         int hollowPlanetId = currentGalaxy.planetIndexes[wallIndex];
 
@@ -139,15 +107,20 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
         float dx = currentGalaxy.positions[entityId].x - currentGalaxy.positions[hollowPlanetId].x + currentGalaxy.velocities[entityId].x;
         float dy = currentGalaxy.positions[entityId].y - currentGalaxy.positions[hollowPlanetId].y + currentGalaxy.velocities[entityId].y;
         float dist = std::sqrt(dx * dx + dy * dy);
+        // Calculate the angle in radians
         float angleRad = std::atan2(dy, dx);
-        if(angleRad < 0){
-            angleRad += 2 * M_PI; // Normalize angle to [0, 2π]
-        }
-        std::cout << "entity: " << angleRad * 180.0f / M_PI << " wall: " << currentGalaxy.angles[wallIndex].deg << std::endl;
-        float PUSH_DISTANCE = -1.0f;
-        if(currentGalaxy.angles[wallIndex].deg <= angleRad * 180.0f / M_PI) {
-            PUSH_DISTANCE *= -1.0f;
-        }
+        float entityAngleDeg = angleRad * 180.0f / M_PI;
+        float wallAngleDeg = currentGalaxy.angles[wallIndex].deg;
+
+        float deltaAngle = entityAngleDeg - wallAngleDeg;
+
+        // Normalizza a [-180, 180]
+        while (deltaAngle < -180.0f) deltaAngle += 360.0f;
+        while (deltaAngle > 180.0f) deltaAngle -= 360.0f;
+
+        // Se deltaAngle > 0 → entità a destra del muro, spingi in senso orario
+        // Se deltaAngle < 0 → entità a sinistra, spingi in senso antiorario
+        float PUSH_DISTANCE = (deltaAngle > 0) ? 2.0f : -2.0f;
 
 
         // Calculate the tangential direction (perpendicular to the radial direction)
@@ -157,10 +130,6 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
         // Push the entity tangentially
         currentGalaxy.positions[entityId].x += tangentX * PUSH_DISTANCE;
         currentGalaxy.positions[entityId].y += tangentY * PUSH_DISTANCE;
-
-        // Stop further movement into the wall
-        currentGalaxy.velocities[entityId].x = 0;
-        currentGalaxy.velocities[entityId].y = 0;
 
         return;
     }
@@ -176,10 +145,10 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
         if(platformId != -1){
             radius.value += currentGalaxy.sizes[platformId].height;
         }
-        Velocity parallelVelocity;
-        Velocity perpendicularVelocity;
-        bool direction;
-        decomposeVelocity(currentGalaxy.velocities[entityId], currentGalaxy.positions[entityId], currentGalaxy.positions[planetId], parallelVelocity, perpendicularVelocity, direction);
+        Vec2 parallelVelocity;
+        Vec2 perpendicularVelocity;
+        parallelVelocity = velocityTowardsPoint(planetPos, entityPos, currentGalaxy.velocities[entityId]);
+        bool direction = (dot(parallelVelocity, subtract(planetPos, entityPos)) > 0); 
 
         if(dist != radius.value){
             entityPos.x = planetPos.x - std::cos(currentGalaxy.angles[entityId].deg * M_PI / 180.0f + M_PI / 2) * radius.value;
@@ -191,11 +160,8 @@ void updateEntityOverlap(Galaxy& currentGalaxy, size_t entityId) {
     }
 }
 
-void entitiesUpdate(Galaxy& currentGalaxy){
+void Phisics::entitiesUpdate(Galaxy& currentGalaxy){
     for(size_t i = 0; i < currentGalaxy.entities.size(); i++){
-        collider.updateCollisions(currentGalaxy);
-        updateEntityAcceleration(currentGalaxy, currentGalaxy.entities[i].index);
-        updateEntityMotion(currentGalaxy, currentGalaxy.entities[i].index);
         updateEntityRotation(currentGalaxy, currentGalaxy.entities[i].index);
         if(currentGalaxy.jumpStaminas[currentGalaxy.entities[i].index].value > 5){
             updateEntityOverlap(currentGalaxy, currentGalaxy.entities[i].index);
@@ -207,10 +173,144 @@ void entitiesUpdate(Galaxy& currentGalaxy){
             currentGalaxy.moveStamina[currentGalaxy.entities[i].index].value++;
         }
     }
+    collider.updateCollisions(currentGalaxy);
+    for(size_t i = 0; i < currentGalaxy.entities.size(); i++){
+        size_t entityId = currentGalaxy.entities[i].index;
+        float totalVx = currentGalaxy.velocities[entityId].x + currentGalaxy.relativeVelocities[entityId].x;
+        float totalVy = currentGalaxy.velocities[entityId].y + currentGalaxy.relativeVelocities[entityId].y;
+
+        currentGalaxy.positions[entityId].x += totalVx;
+        currentGalaxy.positions[entityId].y += totalVy;
+
+        updateEntityMotion(currentGalaxy, currentGalaxy.entities[i].index);
+        updateEntityAcceleration(currentGalaxy, currentGalaxy.entities[i].index);
+
+        //update hitbox
+        float radAngle = currentGalaxy.angles[entityId].deg * M_PI / 180.0f;
+        float offSetX = cos(radAngle) * 30 * currentGalaxy.directions[entityId].value;
+        float offSetY = sin(radAngle) * 30 * currentGalaxy.directions[entityId].value;
+        Vec2 offSet = {offSetX, offSetY};
+        currentGalaxy.hitBoxes[entityId].position = sum(currentGalaxy.positions[entityId], offSet);
+    }
+}
+
+void Phisics::updateWormPositions(Galaxy& currentGalaxy, size_t wormId) {
+    std::vector<Vec2>& positions = currentGalaxy.wormPositions[wormId];
+    std::vector<Radius>& radii = currentGalaxy.wormRadii[wormId];
+
+    // 1. Aggiorna la testa
+    Vec2& head = positions[0];
+
+    // 2. Ogni segmento segue il precedente a distanza del raggio precedente
+    for (size_t i = 1; i < positions.size(); ++i) {
+        Vec2& current = positions[i];
+        const Vec2& previous = positions[i - 1];
+        float distance = radii[i - 1].value; // solo il raggio del cerchio precedente
+
+        Vec2 dir = subtract(previous, current);
+        float len = length(dir);
+
+        if (len > radii[i - 1].value) {
+            Vec2 norm = normalize(dir);
+            current = sum(previous, multiply(norm, -distance));
+        }
+
+        if(i != 1){
+            const Vec2& A = currentGalaxy.wormPositions[wormId][i - 2];
+            const Vec2& B = currentGalaxy.wormPositions[wormId][i - 1];
+            Vec2& C = currentGalaxy.wormPositions[wormId][i];
+
+            Vec2 v1 = subtract(B, A);
+            Vec2 v2 = subtract(C, B);
+
+            float len1 = length(v1);
+            float len2 = length(v2);
+
+            if (len1 > 0.0001f && len2 > 0.0001f) {
+                float dotProduct = dot(v1, v2);
+                float angle = std::acos(dotProduct / (len1 * len2));
+
+                float angleDegrees = angle * (180.0f / M_PI);
+
+                /*if(angleDegrees > 90.0f){
+                    C = rotatePointAroundOrigin(C, 20.0f, B);
+                }
+                if(angleDegrees < -90.0f){
+                    C = rotatePointAroundOrigin(C, -20.0f, B);
+                }
+                else if(angleDegrees > 0){
+                    C = rotatePointAroundOrigin(C, -1.0f, B);
+                }
+                else if(angleDegrees < 0){
+                    C = rotatePointAroundOrigin(C, 1.0f, B);
+                }*/
+            }
+        }
+    }
+}
+
+void Phisics::updateWormMotion(Galaxy& currentGalaxy, size_t wormId) {
+    for(int i = 0; i < currentGalaxy.wormPositions[wormId].size(); i++){
+        currentGalaxy.wormPositions[wormId][i] = sum(currentGalaxy.wormVelocities[wormId][i], currentGalaxy.wormPositions[wormId][i]);
+        Vec2& velocity = currentGalaxy.wormVelocities[wormId][i];
+        velocity = sum(velocity, currentGalaxy.wormAccelerations[wormId][i]);
+    }
+}
+
+void Phisics::updateWormGravity(Galaxy& currentGalaxy, size_t wormId) {
+    for(int i = 0; i < currentGalaxy.wormPositions[wormId].size(); i++){
+        if(currentGalaxy.wormPlanetIndexes[wormId][i] != -1) continue;
+        for(size_t j = 0; j < currentGalaxy.planets.size(); j++){
+            Vec2& position = currentGalaxy.wormPositions[wormId][i];
+            size_t planetId = currentGalaxy.planets[j].index;
+            float distanceX = position.x - currentGalaxy.positions[planetId].x;
+            float distanceY = position.y - currentGalaxy.positions[planetId].y;
+            float distSquared = distanceX * distanceX + distanceY * distanceY;
+            float dist = sqrt(distSquared);
+            float force = currentGalaxy.masses[planetId].value * G / distSquared;
+            currentGalaxy.wormAccelerations[wormId][i].x -= force * distanceX / dist;
+            currentGalaxy.wormAccelerations[wormId][i].y -= force * distanceY / dist;
+        }
+    }
+}
+
+void Phisics::updateWormOverlap(Galaxy& currentGalaxy, size_t wormId) {
+    for(int j = 0; j < currentGalaxy.wormPositions[wormId].size(); j++){
+        Vec2& position = currentGalaxy.wormPositions[wormId][j];
+        int planetId = currentGalaxy.wormPlanetIndexes[wormId][j];
+        if (planetId == -1) continue;
+
+        Radius radius = currentGalaxy.radii[planetId];
+        for (size_t i = 0; i < currentGalaxy.layers[planetId].size(); i++) {
+            if (length(subtract(position, currentGalaxy.positions[planetId])) < currentGalaxy.layers[planetId][i].value + 5) {
+                radius.value = currentGalaxy.layers[planetId][i].value;
+            }
+        }
+
+        Vec2 dir = normalize(subtract(position, currentGalaxy.positions[planetId]));
+        position = sum(currentGalaxy.positions[planetId], multiply(dir, radius.value));
+        currentGalaxy.wormVelocities[wormId][j] = multiply(currentGalaxy.wormVelocities[wormId][j], currentGalaxy.frictions[planetId].value);
+    }
+}
+
+void Phisics::updateWorms(Galaxy& currentGalaxy) {
+    for(int i = 0; i < currentGalaxy.worms.size(); i++){
+        collider.wormsPlanets(currentGalaxy);
+        size_t wormId = currentGalaxy.worms[i].index;
+        updateWormMotion(currentGalaxy, wormId);
+        for(int j = 0; j < currentGalaxy.wormAccelerations[wormId].size(); j++){
+            currentGalaxy.wormAccelerations[wormId][j].x = 0.0f;
+            currentGalaxy.wormAccelerations[wormId][j].y = 0.0f;
+        }
+        updateWormOverlap(currentGalaxy, wormId);
+        updateWormPositions(currentGalaxy, wormId);
+        updateWormGravity(currentGalaxy, wormId);
+    }
 }
 
 //update
 void Phisics::update(Galaxy& currentGalaxy){
     updatePlatformsRotation(currentGalaxy);
     entitiesUpdate(currentGalaxy);
+    updateWorms(currentGalaxy);
 }

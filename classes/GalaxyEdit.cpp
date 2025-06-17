@@ -1,6 +1,6 @@
 #include "../headers/GalaxyEdit.h"
 
-bool pointInRect(float x, float y, Position rectPosition, Size rectSize){
+bool pointInRect(float x, float y, Vec2 rectPosition, Size rectSize){
     return (
         x >= rectPosition.x &&
         x <= rectPosition.x + rectSize.width &&
@@ -13,16 +13,16 @@ GalaxyEdit::GalaxyEdit(){
     //moving tool 0
     selectedTool = 0;
     toolSizes.push_back(Size{50, 30});
-    toolPositions.push_back(Position{20, 20});
+    toolPositions.push_back(Vec2{20, 20});
     //adding tool 1
     toolSizes.push_back(Size{50, 30});
-    toolPositions.push_back(Position{70, 20});
+    toolPositions.push_back(Vec2{70, 20});
     //rubber tool 2
     toolSizes.push_back(Size{50, 30});
-    toolPositions.push_back(Position{120, 20});
+    toolPositions.push_back(Vec2{120, 20});
     // zooming bar 3
     toolSizes.push_back(Size{150, 20});
-    toolPositions.push_back(Position{static_cast<float>(screenWidth) / 2 - 75, static_cast<float>(screenHeight) - 40});
+    toolPositions.push_back(Vec2{static_cast<float>(screenWidth) / 2 - 75, static_cast<float>(screenHeight) - 40});
 
     zooming = false;
     dragging = false;
@@ -46,8 +46,9 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
     if(selectedTool == 0){
         for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
             size_t planetIndex = currentGalaxy.planets[i].index;
-            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - currentGalaxy.positions[0].x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - currentGalaxy.positions[0].y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
+            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - cameraPosition.x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - cameraPosition.y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
                 dragged = planetIndex;
+                objectStartPosition = currentGalaxy.positions[dragged];
                 draggingPlanet = true;
                 dragging = true;
                 return;
@@ -65,8 +66,8 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
             float height = currentGalaxy.sizes[platformIndex].height;
             float width = currentGalaxy.sizes[platformIndex].width;     
 
-            float worldMouseX = mouseX / scale + currentGalaxy.positions[0].x - screenWidth / 2;
-            float worldMouseY = mouseY / scale + currentGalaxy.positions[0].y - screenHeight / 2;
+            float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+            float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
 
             if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
                 dragged = platformIndex;
@@ -82,7 +83,7 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
     if(selectedTool == 2){
         for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
             size_t planetIndex = currentGalaxy.planets[i].index;
-            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - currentGalaxy.positions[0].x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - currentGalaxy.positions[0].y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
+            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - cameraPosition.x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - cameraPosition.y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
                 currentGalaxy.removePlanet(planetIndex);
                 return;
             }
@@ -99,8 +100,8 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
             float height = currentGalaxy.sizes[platformIndex].height;
             float width = currentGalaxy.sizes[platformIndex].width;     
 
-            float worldMouseX = mouseX / scale + currentGalaxy.positions[0].x - screenWidth / 2;
-            float worldMouseY = mouseY / scale + currentGalaxy.positions[0].y - screenHeight / 2;
+            float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+            float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
 
             if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
                 currentGalaxy.removePlanetPlatform(platformIndex);
@@ -116,16 +117,18 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
 void GalaxyEdit::moveObject(Galaxy& currentGalaxy) {
     if (draggingPlanet && dragged != -1) {
         // Muovo pianeta con il mouse (coordinate mondo)
-        float worldMouseX = mouseX / scale + currentGalaxy.positions[0].x - screenWidth / 2;
-        float worldMouseY = mouseY / scale + currentGalaxy.positions[0].y - screenHeight / 2;
+        float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+        float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+        float worldMouseStartX = mouseStartX / scale + cameraPosition.x - screenWidth / 2;
+        float worldMouseStartY = mouseStartY / scale + cameraPosition.y - screenHeight / 2;
 
-        currentGalaxy.positions[dragged].x = worldMouseX;
-        currentGalaxy.positions[dragged].y = worldMouseY;
+        currentGalaxy.positions[dragged].x = objectStartPosition.x + (worldMouseX - worldMouseStartX);
+        currentGalaxy.positions[dragged].y = objectStartPosition.y + (worldMouseY - worldMouseStartY);
     }
     else if (draggingEntity && dragged != -1) {
         // Muovo entità con il mouse (coordinate mondo)
-        float worldMouseX = mouseX / scale + currentGalaxy.positions[0].x - screenWidth / 2;
-        float worldMouseY = mouseY / scale + currentGalaxy.positions[0].y - screenHeight / 2;
+        float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+        float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
 
         currentGalaxy.positions[dragged].x = worldMouseX;
         currentGalaxy.positions[dragged].y = worldMouseY;
@@ -136,11 +139,11 @@ void GalaxyEdit::moveObject(Galaxy& currentGalaxy) {
         // Indice pianeta a cui è legata la piattaforma
         int planetIndex = currentGalaxy.planetIndexes[dragged];
 
-        Position& planetPos = currentGalaxy.positions[planetIndex];
+        Vec2& planetPos = currentGalaxy.positions[planetIndex];
 
         // Calcolo vettore dal pianeta al mouse (coordinate mondo)
-        float worldMouseX = mouseX / scale + currentGalaxy.positions[0].x - screenWidth / 2;
-        float worldMouseY = mouseY / scale + currentGalaxy.positions[0].y - screenHeight / 2;
+        float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+        float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
 
         float dx = worldMouseX - planetPos.x;
         float dy = worldMouseY - planetPos.y;
@@ -165,15 +168,15 @@ void GalaxyEdit::mouseRelease(){
 }
 
 void GalaxyEdit::slidingGalaxy(Galaxy& currentGalaxy){
-    currentGalaxy.positions[0].x = playerStartX - mouseX / scale + mouseStartX / scale;
-    currentGalaxy.positions[0].y = playerStartY - mouseY / scale + mouseStartY / scale;
+    cameraPosition.x = cameraStartX - mouseX / scale + mouseStartX / scale;
+    cameraPosition.y = cameraStartY - mouseY / scale + mouseStartY / scale;
 }
 
 void GalaxyEdit::getListenerStats(EventListener& eventListener, Galaxy& currentGalaxy){
     if(eventListener.isLeftMousePressed()){
         if(!leftMouseClicked){ 
-            playerStartX = currentGalaxy.positions[0].x;
-            playerStartY = currentGalaxy.positions[0].y;
+            cameraStartX = cameraPosition.x;
+            cameraStartY = cameraPosition.y;
             mouseStartX = mouseX = eventListener.getMouseX();
             mouseStartY = mouseY = eventListener.getMouseY();
             mouseClick(currentGalaxy);

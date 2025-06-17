@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL_image.h>
 #include <SDL.h>
+#include <vector>
 
 struct Sprite {
     SDL_Texture* texture;

@@ -1,11 +1,14 @@
 #include "../headers/EventListener.h"
+#include <iostream>
 
-EventListener::EventListener() {
+EventListener::EventListener(SDL_Renderer* renderer) {
     arrowLeftPressed = false;
     arrowRightPressed = false;
     arrowUpPressed = false;
     leftMousePressed = false;
     mouseX = mouseY = 0;
+    renderer = renderer;
+    escPressed = false;
 }
 
 void EventListener::listenEvents() {
@@ -14,11 +17,21 @@ void EventListener::listenEvents() {
             running = false;
         }
 
+        if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
+            screenWidth = e.window.data1;
+            screenHeight = e.window.data2;
+            scale = static_cast<float>(screenWidth) / 1400.0f;
+        }
+
         if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
                 case SDLK_LEFT:  arrowLeftPressed = true; break;
                 case SDLK_RIGHT: arrowRightPressed = true; break;
-                case SDLK_UP:    arrowUpPressed = true; break;
+                case SDLK_UP: arrowUpPressed = true; break;
+                case SDLK_ESCAPE: escPressed = true; break;
+                case SDLK_a: arrowLeftPressed = true; break;
+                case SDLK_d: arrowRightPressed = true; break;
+                case SDLK_w: arrowUpPressed = true; break;
             }
         }
 
@@ -26,7 +39,11 @@ void EventListener::listenEvents() {
             switch (e.key.keysym.sym) {
                 case SDLK_LEFT:  arrowLeftPressed = false; break;
                 case SDLK_RIGHT: arrowRightPressed = false; break;
-                case SDLK_UP:    arrowUpPressed = false; break;
+                case SDLK_UP: arrowUpPressed = false; break;
+                case SDLK_a: arrowLeftPressed = false; break;
+                case SDLK_d: arrowRightPressed = false; break;
+                case SDLK_w: arrowUpPressed = false; break;
+                case SDLK_ESCAPE: escPressed = false; break;
             }
         }
 
@@ -63,6 +80,10 @@ bool EventListener::isUpPressed() const {
 
 bool EventListener::isLeftMousePressed() const {
     return leftMousePressed;
+}
+
+bool EventListener::isEscPressed() const {
+    return escPressed;
 }
 
 int EventListener::getMouseX() const {

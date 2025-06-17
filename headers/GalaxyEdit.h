@@ -11,7 +11,7 @@ class GalaxyEdit {
     private:
     int selectedTool;
     std::vector<Size> toolSizes;
-    std::vector<Position> toolPositions;
+    std::vector<Vec2> toolPositions;
     bool zooming;
     bool dragging;
     bool leftMouseClicked;
@@ -19,8 +19,9 @@ class GalaxyEdit {
     int mouseY;
     int mouseStartX;
     int mouseStartY;
-    int playerStartX;
-    int playerStartY;
+    int cameraStartX;
+    int cameraStartY;
+    Vec2 objectStartPosition;
     bool isSlidingGalaxy;
     Collider collider;
 

@@ -4,6 +4,7 @@
 #include "stats.h"
 #include "Draw.h"
 #include "globals.h"
+#include "utils.h"
 #include <any>
 #include <unordered_map>
 #include "sprites.h"
@@ -17,16 +18,23 @@ class Galaxy {
     std::vector<Object> platforms;
     std::vector<Object> walls;
     std::vector<Object> entries;
+    std::vector<Object> worms;
     //general stats
-    std::unordered_map<size_t, Position> positions;
-    std::unordered_map<size_t, Velocity> velocities;
-    std::unordered_map<size_t, Velocity> relativeVelocities;
-    std::unordered_map<size_t, Acceleration> accelerations;
+    std::unordered_map<size_t, Vec2> positions;
+    std::unordered_map<size_t, Vec2> velocities;
+    std::unordered_map<size_t, Vec2> relativeVelocities;
+    std::unordered_map<size_t, Vec2> accelerations;
     std::unordered_map<size_t, Gravity> gravities;
+    std::unordered_map<size_t, std::vector<Vec2>> wormPositions;
     //body stats
     std::unordered_map<size_t, Size> sizes;
     std::unordered_map<size_t, Radius> radii;
     std::unordered_map<size_t, Angle> angles;
+    std::unordered_map<size_t, std::vector<Radius>> wormRadii;
+    std::unordered_map<size_t, std::vector<Vec2>> wormVelocities;
+    std::unordered_map<size_t, std::vector<Vec2>> wormAccelerations;
+    std::unordered_map<size_t, std::vector<int>> wormPlanetIndexes;
+    std::unordered_map<size_t, std::vector<float>> wormAngles;
     // planet stats
     std::unordered_map<size_t, Mass> masses;
     std::unordered_map<size_t, Friction> frictions;
@@ -39,6 +47,11 @@ class Galaxy {
     std::unordered_map<size_t, Direction> directions;
     std::unordered_map<size_t, Stamina> jumpStaminas;
     std::unordered_map<size_t, Stamina> moveStamina;
+    std::unordered_map<size_t, Stamina> attackStamina;
+
+    std::unordered_map<size_t, HitBox> hitBoxes;
+    std::unordered_map<size_t, Stamina> lifePoints;
+
     // indexes
     std::unordered_map<size_t, int> planetIndexes;
     std::unordered_map<size_t, int> platformIndexes;
@@ -49,16 +62,23 @@ class Galaxy {
     std::unordered_map<size_t, int> endLayers;
     std::unordered_map<size_t, int> widths;
     std::unordered_map<size_t, int> heights;
+    // sprites
+    std::unordered_map<size_t, AnimatedSprite> animatedSpriteMap;
 
 
     Galaxy();
-    void addPlanet(Position position, Velocity velocity, Acceleration acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers);
-    void addEntity(Position position, Velocity velocity, Acceleration acceleration, Size size, Angle angle);
+    void addPlanet(Vec2 position, Vec2 velocity, Vec2 acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers);
+    void addEntity(Vec2 position, Vec2 velocity, Vec2 acceleration, Size size, Angle angle);
     void addPlanetPlatform(Size size, size_t planetIndex, Angle angle, float angularSpeed);
     void addPlanetWall(size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle);
     void addPlanetEntry(size_t planetIndex, int planetStartLayer, int width, Angle angle);
+    void addWorm(Vec2 position, std::vector<Radius> radii);
     void removePlanetPlatform(size_t index);
     void removePlanet(size_t index);
     void removeEntity(size_t index);
+    void removePlanetWall(size_t index);
+    void removePlanetEntry(size_t index);
+    void removeWorm(size_t index);
+    void adjustCameraPosition();
     void draw(Draw& draw);
 };

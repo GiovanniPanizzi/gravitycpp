@@ -4,17 +4,7 @@ struct Gravity{
     bool apply;
 };
 //kinetics
-struct Position {
-    float x;
-    float y;
-};
-
-struct Velocity {
-    float x;
-    float y;
-};
-
-struct Acceleration {
+struct Vec2 {
     float x;
     float y;
 };
@@ -58,6 +48,18 @@ struct layerEntry {
     int depth;
     Angle angle;
     float width;
+};
+
+struct Color {
+    int r;
+    int g;
+    int b;
+    int a;
+};
+
+struct HitBox {
+    Vec2 position;
+    float radius;
 };
 
 //spriteSheet

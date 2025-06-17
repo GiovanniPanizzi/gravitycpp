@@ -9,16 +9,19 @@ private:
     bool arrowRightPressed;
     bool arrowUpPressed;
     bool leftMousePressed;
+    bool escPressed;
     int mouseX, mouseY;
+    SDL_Renderer* renderer;
 
 public:
-    EventListener();
+    EventListener(SDL_Renderer* renderer);
     ~EventListener(){}
     void listenEvents();
     bool isLeftPressed() const;
     bool isRightPressed() const;
     bool isUpPressed() const;
     bool isLeftMousePressed() const;
+    bool isEscPressed() const;
     int getMouseX() const;
     int getMouseY() const;
 };
