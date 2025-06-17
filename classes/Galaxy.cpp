@@ -3,269 +3,261 @@
 #include <iostream>
 
 Galaxy::Galaxy(){
-    Object player = {0};  
-    entities.push_back(player);
-    positions[0] = (Vec2{0.0f, 0.0f});
-    velocities[0] = (Vec2{0.0f, 0.0f});
-    relativeVelocities[0] = (Vec2{0, 0});
-    accelerations[0] = (Vec2{0.0f, 0.0f});
-    sizes[0] = (Size{20, 45});
-    angles[0] = (Angle{0.0f});
-    planetIndexes[0] = (-1);
-    platformIndexes[0] = (-1);
-    wallIndexes[0] = (-1);
-    jumpStaminas[0] = {50, 50}; 
-    moveStamina[0] = {1, 1};
-    directions[0] = {1};
-    index = 1;
-    // Initialize the animated sprite for the player
-    animatedSpriteMap[0] = {nullptr, 0, false};
-    hitBoxes[0] = {{0.0f, 0.0f}, 40.0f};
-    lifePoints[0] = {10, 10};
+    Object player;
+    player.index = humans.entities.size(); 
+    humans.entities.push_back(player);
+    humans.positions.push_back(Vec2{0.0f, 0.0f});
+    humans.velocities.push_back(Vec2{0.0f, 0.0f});
+    humans.relativeVelocities.push_back(Vec2{0, 0});
+    humans.accelerations.push_back(Vec2{0.0f, 0.0f});
+    humans.sizes.push_back(Size{20, 45});
+    humans.angles.push_back(Angle{0.0f});
+    humans.planetIndexes.push_back(-1);
+    humans.platformIndexes.push_back(-1);
+    humans.wallIndexes.push_back(-1);
+    humans.jumpStaminas.push_back({50, 50}); 
+    humans.moveStaminas.push_back({1, 1});
+    humans.attackStaminas.push_back({20, 20});
+    humans.directions.push_back({1});
+    humans.hitBoxes.push_back({{0.0f, 0.0f}, 40.0f});
+    humans.lifePoints.push_back({10, 10});
 }
 
 void Galaxy::addPlanet(Vec2 position, Vec2 velocity, Vec2 acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<Radius> planetLayers) {
-    planets.push_back({index});
-    positions[index] = (position);
-    velocities[index] = (velocity);
-    accelerations[index] = (acceleration);
-    radii[index] = (radius);
-    masses[index] = (mass);
-    frictions[index] = (friction);
-    elasticities[index] = (elasticity);
-    angles[index] = {0.0f};
-    layers[index] = planetLayers;
-    planetPlatforms[index] = {};
-    layerEntries[index] = {};
-    layerWalls[index] = {};
-
-    index++;
+    size_t index = planets.entities.size();
+    planets.entities.push_back({index});
+    planets.positions.push_back(position);
+    planets.velocities.push_back(velocity);
+    planets.accelerations.push_back(acceleration);
+    planets.radii.push_back(radius);
+    planets.masses.push_back(mass);
+    planets.frictions.push_back(friction);
+    planets.elasticities.push_back(elasticity);
+    planets.angles.push_back({0.0f});
+    planets.layers.push_back(planetLayers);
+    planets.planetPlatforms.push_back({});
+    planets.layerEntries.push_back({});
+    planets.layerWalls.push_back({});
 }
 
 void Galaxy::addEntity(Vec2 position, Vec2 velocity, Vec2 acceleration, Size size, Angle angle) {
-    entities.push_back({index});
-    positions[index] = (position);
-    velocities[index] = (velocity);
-    relativeVelocities[index] = (Vec2{0, 0});
-    accelerations[index] = (acceleration);
-    sizes[index] = (size);
-    angles[index] = (angle);
-    planetIndexes[index] = (-1);
-    platformIndexes[index] = (-1);
-    wallIndexes[index] = (-1);
-    jumpStaminas[index] = {30, 30};
-    moveStamina[index] = {5, 5};
-    attackStamina[index] = {20, 20};
-    animatedSpriteMap[index] = {nullptr, 0, false};
-    hitBoxes[index] = {{0.0f, 0.0f}, 40.0f};
-    lifePoints[index] = {10, 10};
-    index++;
+    size_t index = humans.entities.size(); 
+    humans.entities.push_back({index});  
+    humans.positions.push_back(position);
+    humans.velocities.push_back(velocity);
+    humans.relativeVelocities.push_back(Vec2{0, 0}); 
+    humans.accelerations.push_back(acceleration); 
+    humans.sizes.push_back(size); 
+    humans.angles.push_back(angle); 
+    humans.planetIndexes.push_back(-1);
+    humans.platformIndexes.push_back(-1); 
+    humans.wallIndexes.push_back(-1); 
+    humans.jumpStaminas.push_back({30, 30}); 
+    humans.moveStaminas.push_back({5, 5}); 
+    humans.attackStaminas.push_back({20, 20});
+    humans.animatedSprites.push_back({nullptr, 0, false});
+    humans.hitBoxes.push_back({{0.0f, 0.0f}, 40.0f}); 
+    humans.lifePoints.push_back({10, 10}); 
 }
 
-void Galaxy::addPlanetPlatform(Size size, size_t planetIndex, Angle angle, float angularSpeed){
-    platforms.push_back({index});
-    sizes[index] = (size);
-    angles[index] = (angle);
-    planetIndexes[index] = (planetIndex);
-    angularSpeeds[index] = (angularSpeed);
-    if (planetIndex >= 0) {
-        planetPlatforms[planetIndex].push_back(index);
-    }
-    index++;
+void Galaxy::addPlanetPlatform(Size size, size_t planetIndex, Angle angle, float angularSpeed) {
+    size_t index = platforms.entities.size();
+    platforms.entities.push_back({index});
+    platforms.planetIndexes.push_back(planetIndex);
+    platforms.sizes.push_back(size);
+    platforms.angles.push_back(angle);
+    platforms.angularSpeeds.push_back(angularSpeed);
+    planets.planetPlatforms[planetIndex].push_back(index);
 }
 
 void Galaxy::addPlanetWall(size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle) {
-    walls.push_back({index});
-    startLayers[index] = planetStartLayer;
-    endLayers[index] = planetEndLayer;
-    widths[index] = width;
-    angles[index] = (angle);
-    planetIndexes[index] = (planetIndex);
-    if (planetIndex >= 0) {
-        layerWalls[planetIndex].push_back(index);
-    }
-    index++;
+    size_t index = walls.entities.size();
+    walls.entities.push_back({index});
+    walls.planetIndexes.push_back(planetIndex);
+    walls.startLayers.push_back(planetStartLayer);
+    walls.endLayers.push_back(planetEndLayer);
+    walls.widths.push_back(width);
+    walls.angles.push_back(angle);
+    planets.layerWalls[planetIndex].push_back(index);
 }
 
 void Galaxy::addPlanetEntry(size_t planetIndex, int planetStartLayer, int width, Angle angle) {
-    entries.push_back({index});
-    startLayers[index] = planetStartLayer;
-    widths[index] = width;
-    angles[index] = (angle);
-    planetIndexes[index] = (planetIndex);
-    if (planetIndex >= 0) {
-        layerEntries[planetIndex].push_back(index);
-    }
-    index++;
+    size_t index = entries.entities.size();
+    entries.entities.push_back({index});
+    entries.planetIndexes.push_back(planetIndex);
+    entries.startLayers.push_back(planetStartLayer);
+    entries.widths.push_back(width);
+    entries.angles.push_back(angle);
+    planets.layerEntries[planetIndex].push_back(index);
 }
 
-void Galaxy::addWorm(Vec2 position, std::vector<Radius> wormWormRadii) {
-    worms.push_back({index});
-    wormPositions[index].push_back(position);
-    for(int i = 1; i < wormWormRadii.size(); i++){
-        wormPositions[index].push_back(Vec2{wormPositions[index][i - 1].x + wormWormRadii[i - 1].value, position.y});
-    }
-    wormRadii[index] = wormWormRadii;
-    for(int i = 0; i < wormWormRadii.size(); i++){
-        wormVelocities[index].push_back(Vec2{0.0f, 0.0f});
-    }
-    relativeVelocities[index] = (Vec2{0, 0});
-    for(int i = 0; i < wormWormRadii.size(); i++){
-        wormAccelerations[index].push_back(Vec2{0.0f, 0.0f});
-    }
-    for(int i = 0; i < wormWormRadii.size(); i++){
-        wormPlanetIndexes[index].push_back(-1);
-        wormAngles[index].push_back(0.0f);
-    }
-    planetIndexes[index] = (-1);
-    wallIndexes[index] = (-1);
-    platformIndexes[index] = (-1);
-    hitBoxes[index] = {{0.0f, 0.0f}, 30.0f};
-    lifePoints[index] = {5, 5};
-    index++;
-}
+void Galaxy::addWorm(Vec2 position, std::vector<Radius> wormRadii) {
+    size_t wormIndex = worms.entities.size(); 
+    worms.entities.push_back({wormIndex});  
 
-void Galaxy::removePlanetPlatform(size_t indexDelete){
-    for (auto it = platforms.begin(); it != platforms.end(); ++it) {
-        if (it->index == indexDelete) {
-            platforms.erase(it);
-            break;
+    // Aggiungi la posizione iniziale del verme
+    worms.positions.push_back(std::vector<Vec2>());
+    worms.velocities.push_back(std::vector<Vec2>());
+    worms.relativeVelocities.push_back(std::vector<Vec2>());
+    worms.accelerations.push_back(std::vector<Vec2>());
+    worms.radii.push_back(std::vector<Radius>());
+    worms.planetIndexes.push_back(std::vector<int>());
+    worms.angles.push_back(std::vector<float>());
+
+    worms.positions[wormIndex].push_back(position);
+
+    // Inizializza i segmenti del verme in un singolo ciclo
+    for (size_t i = 0; i < wormRadii.size(); i++) {
+        worms.radii[wormIndex].push_back(wormRadii[i]);
+        if (i > 0) {
+            Vec2 prevPosition = worms.positions[wormIndex][i - 1];
+            worms.positions[wormIndex].push_back(Vec2{prevPosition.x + wormRadii[i - 1].value, prevPosition.y});
+            std::cout << "Adding worm segment at position: " << worms.positions[wormIndex][i].x << ", " << worms.positions[wormIndex][i].y << std::endl;
         }
+        worms.velocities[wormIndex].push_back(Vec2{0.0f, 0.0f});
+        worms.relativeVelocities[wormIndex].push_back(Vec2{0.0f, 0.0f});
+        worms.accelerations[wormIndex].push_back(Vec2{0.0f, 0.0f});
+        worms.planetIndexes[wormIndex].push_back(-1);
+        worms.angles[wormIndex].push_back(0.0f);
     }
-    sizes.erase(indexDelete);
-    angles.erase(indexDelete);
-    planetIndexes.erase(indexDelete);
-    angularSpeeds.erase(indexDelete);
+    worms.lifePoints.push_back({5, 5});
+    worms.hitBoxes.push_back({{0.0f, 0.0f}, 30.0f});
+}
+
+void Galaxy::removePlanetPlatform(size_t indexDelete) {
+    size_t lastIndex = planets.planetPlatforms.size() - 1;
+
+    if (indexDelete != lastIndex) {
+        platforms.sizes[indexDelete] = platforms.sizes[lastIndex];
+        platforms.angles[indexDelete] = platforms.angles[lastIndex];
+        platforms.angularSpeeds[indexDelete] = platforms.angularSpeeds[lastIndex];
+    }
+
+    platforms.sizes.pop_back();
+    platforms.angles.pop_back();
+    platforms.angularSpeeds.pop_back();
 }
 
 void Galaxy::removePlanet(size_t indexDelete) {
+    size_t lastIndex = planets.entities.size() - 1;
 
-    if (planetPlatforms.count(indexDelete)) {
-        for (size_t platformId : planetPlatforms[indexDelete]) {
-            removePlanetPlatform(platformId);
+    if (indexDelete != lastIndex) {
+        // Sostituisci l'elemento da eliminare con l'ultimo elemento
+        planets.entities[indexDelete] = planets.entities[lastIndex];
+        planets.positions[indexDelete] = planets.positions[lastIndex];
+        planets.velocities[indexDelete] = planets.velocities[lastIndex];
+        planets.accelerations[indexDelete] = planets.accelerations[lastIndex];
+        planets.radii[indexDelete] = planets.radii[lastIndex];
+        planets.masses[indexDelete] = planets.masses[lastIndex];
+        planets.frictions[indexDelete] = planets.frictions[lastIndex];
+        planets.elasticities[indexDelete] = planets.elasticities[lastIndex];
+        planets.angles[indexDelete] = planets.angles[lastIndex];
+        planets.layers[indexDelete] = planets.layers[lastIndex];
+        planets.planetPlatforms[indexDelete] = planets.planetPlatforms[lastIndex];
+        planets.layerEntries[indexDelete] = planets.layerEntries[lastIndex];
+        planets.layerWalls[indexDelete] = planets.layerWalls[lastIndex];
+
+        // Aggiorna i riferimenti degli oggetti spostati
+        for (size_t& platformIndex : planets.planetPlatforms[indexDelete]) {
+            platformIndex = indexDelete;
         }
-        planetPlatforms.erase(indexDelete);
-    }
-
-    std::vector<size_t> entityKeys;
-    for (const std::pair<const int, int>& pair : planetIndexes) {
-        if (pair.second == static_cast<int>(indexDelete)) {
-            entityKeys.push_back(pair.first);
+        for (size_t& entryIndex : planets.layerEntries[indexDelete]) {
+            entryIndex = indexDelete;
+        }
+        for (size_t& wallIndex : planets.layerWalls[indexDelete]) {
+            wallIndex = indexDelete;
         }
     }
-    for (size_t entityId : entityKeys) {
-        planetIndexes.erase(entityId);
-        platformIndexes.erase(entityId);
-        wallIndexes.erase(entityId);
-    }
 
-    if (layerWalls.count(indexDelete)) {
-        for (size_t wallId : layerWalls[indexDelete]) {
-            // Rimuovi wall da vector walls
-            walls.erase(std::remove_if(walls.begin(), walls.end(),
-                        [wallId](const Object& w) { return w.index == wallId; }),
-                        walls.end());
+    planets.entities.pop_back();
+    planets.positions.pop_back();
+    planets.velocities.pop_back();
+    planets.accelerations.pop_back();
+    planets.radii.pop_back();
+    planets.masses.pop_back();
+    planets.frictions.pop_back();
+    planets.elasticities.pop_back();
+    planets.angles.pop_back();
+    planets.layers.pop_back();
+    planets.planetPlatforms.pop_back();
+    planets.layerEntries.pop_back();
+    planets.layerWalls.pop_back();
 
-            startLayers.erase(wallId);
-            endLayers.erase(wallId);
-            widths.erase(wallId);
-            angles.erase(wallId);
-            planetIndexes.erase(wallId);
+
+    for (size_t i = 0; i < humans.planetIndexes.size(); ++i) {
+        if (humans.planetIndexes[i] == static_cast<int>(lastIndex)) {
+            humans.planetIndexes[i] = static_cast<int>(indexDelete);
+        } else if (humans.planetIndexes[i] == static_cast<int>(indexDelete)) {
+            humans.planetIndexes[i] = -1; 
         }
-        layerWalls.erase(indexDelete);
     }
-
-    if (layerEntries.count(indexDelete)) {
-        for (size_t entryId : layerEntries[indexDelete]) {
-            entries.erase(std::remove_if(entries.begin(), entries.end(),
-                          [entryId](const Object& e) { return e.index == entryId; }),
-                          entries.end());
-
-            startLayers.erase(entryId);
-            widths.erase(entryId);
-            angles.erase(entryId);
-            planetIndexes.erase(entryId);
-        }
-        layerEntries.erase(indexDelete);
-    }
-
-    // 5. Rimuovi dalla lista dei pianeti
-    planets.erase(std::remove_if(planets.begin(), planets.end(),
-                  [indexDelete](const Object& p) { return p.index == indexDelete; }),
-                  planets.end());
-
-    // 6. Cancella tutte le proprietà legate al pianeta
-    positions.erase(indexDelete);
-    velocities.erase(indexDelete);
-    relativeVelocities.erase(indexDelete);
-    accelerations.erase(indexDelete);
-    gravities.erase(indexDelete);
-    sizes.erase(indexDelete);
-    radii.erase(indexDelete);
-    angles.erase(indexDelete);
-    masses.erase(indexDelete);
-    frictions.erase(indexDelete);
-    elasticities.erase(indexDelete);
-    layers.erase(indexDelete);
-    startLayers.erase(indexDelete);
-    endLayers.erase(indexDelete);
-    widths.erase(indexDelete);
-    heights.erase(indexDelete);
-    directions.erase(indexDelete);
-    jumpStaminas.erase(indexDelete);
-    moveStamina.erase(indexDelete);
-    animatedSpriteMap.erase(indexDelete);
-    planetIndexes.erase(indexDelete);
-    platformIndexes.erase(indexDelete);
-    wallIndexes.erase(indexDelete);
 }
 
 void Galaxy::removeEntity(size_t indexDelete) {
-    for (auto it = entities.begin(); it != entities.end(); ++it) {
-        if (it->index == indexDelete) {
-            entities.erase(it);
-            break;
-        }
+    size_t lastIndex = humans.entities.size() - 1;
+
+    if (indexDelete != lastIndex) {
+        humans.entities[indexDelete] = humans.entities[lastIndex];
+        humans.positions[indexDelete] = humans.positions[lastIndex];
+        humans.velocities[indexDelete] = humans.velocities[lastIndex];
+        humans.relativeVelocities[indexDelete] = humans.relativeVelocities[lastIndex];
+        humans.accelerations[indexDelete] = humans.accelerations[lastIndex];
+        humans.sizes[indexDelete] = humans.sizes[lastIndex];
+        humans.angles[indexDelete] = humans.angles[lastIndex];
+        humans.planetIndexes[indexDelete] = humans.planetIndexes[lastIndex];
+        humans.platformIndexes[indexDelete] = humans.platformIndexes[lastIndex];
+        humans.jumpStaminas[indexDelete] = humans.jumpStaminas[lastIndex];
+        humans.moveStaminas[indexDelete] = humans.moveStaminas[lastIndex];
+        humans.hitBoxes[indexDelete] = humans.hitBoxes[lastIndex];
+        humans.lifePoints[indexDelete] = humans.lifePoints[lastIndex];
     }
-    positions.erase(indexDelete);
-    velocities.erase(indexDelete);
-    relativeVelocities.erase(indexDelete);
-    accelerations.erase(indexDelete);
-    sizes.erase(indexDelete);
-    angles.erase(indexDelete);
-    planetIndexes.erase(indexDelete);
-    platformIndexes.erase(indexDelete);
-    jumpStaminas.erase(indexDelete);
-    moveStamina.erase(indexDelete);
-    hitBoxes.erase(indexDelete);
-    lifePoints.erase(indexDelete);
+
+    humans.entities.pop_back();
+    humans.positions.pop_back();
+    humans.velocities.pop_back();
+    humans.relativeVelocities.pop_back();
+    humans.accelerations.pop_back();
+    humans.sizes.pop_back();
+    humans.angles.pop_back();
+    humans.planetIndexes.pop_back();
+    humans.platformIndexes.pop_back();
+    humans.jumpStaminas.pop_back();
+    humans.moveStaminas.pop_back();
+    humans.hitBoxes.pop_back();
+    humans.lifePoints.pop_back();
 }
 
-void Galaxy::removePlanetWall(size_t indexDelete) {
-    for (auto it = walls.begin(); it != walls.end(); ++it) {
-        if (it->index == indexDelete) {
-            walls.erase(it);
-            break;
-        }
+void Galaxy::removePlanetWall(size_t wallIndex) {
+    size_t lastIndex = planets.layerWalls.size() - 1;
+
+    if (wallIndex != lastIndex) {
+        walls.startLayers[wallIndex] = walls.startLayers[lastIndex];
+        walls.endLayers[wallIndex] = walls.endLayers[lastIndex];
+        walls.widths[wallIndex] = walls.widths[lastIndex];
+        walls.angles[wallIndex] = walls.angles[lastIndex];
     }
-    startLayers.erase(indexDelete);
-    endLayers.erase(indexDelete);
-    widths.erase(indexDelete);
-    angles.erase(indexDelete);
-    planetIndexes.erase(indexDelete);
+
+    walls.startLayers.pop_back();
+    walls.endLayers.pop_back();
+    walls.widths.pop_back();
+    walls.angles.pop_back();
 }
 
-void Galaxy::removePlanetEntry(size_t indexDelete) {
-    for (auto it = entries.begin(); it != entries.end(); ++it) {
-        if (it->index == indexDelete) {
-            entries.erase(it);
-            break;
-        }
+void Galaxy::removePlanetEntry(size_t entryIndex) {
+    size_t lastIndex = planets.layerEntries.size() - 1;
+
+    if (entryIndex != lastIndex) {
+        // Replace the entry to be removed with the last entry
+        planets.layerEntries[entryIndex] = planets.layerEntries[lastIndex];
+        entries.startLayers[entryIndex] = entries.startLayers[lastIndex];
+        entries.widths[entryIndex] = entries.widths[lastIndex];
+        entries.angles[entryIndex] = entries.angles[lastIndex];
     }
-    startLayers.erase(indexDelete);
-    widths.erase(indexDelete);
-    angles.erase(indexDelete);
-    planetIndexes.erase(indexDelete);
+
+    // Remove the last entry
+    entries.startLayers.pop_back();
+    entries.widths.pop_back();
+    entries.angles.pop_back();
 }
 
 void rotatePointAroundOrigin(int& x, int& y, float angleDeg, float pivotX, float pivotY) {
@@ -292,11 +284,11 @@ bool isCircleVisible(int drawX, int drawY, float radius) {
 }
 
 void Galaxy::adjustCameraPosition() {
-    Vec2 playerPosition = positions[0];
+    Vec2 playerPosition = humans.positions[0];
 
     float offsetDistance = 50.0f;
-    float direction = directions[0].value;
-    float angleRad = angles[0].deg * M_PI / 180.0f;
+    float direction = humans.directions[0].value;
+    float angleRad = humans.angles[0].deg * M_PI / 180.0f;
 
     float offsetX = offsetDistance * direction * cos(angleRad);
     float offsetY = offsetDistance * direction * sin(angleRad);
@@ -312,155 +304,151 @@ void Galaxy::adjustCameraPosition() {
     cameraPosition.y += (targetY - cameraPosition.y) * t * dist / 30.0f;
 }
 
-void Galaxy::draw(Draw& draw){
+void Galaxy::draw(Draw& draw) {
+    draw.clearScreen(0, 0, 0, 50);
 
-    draw.clearScreen(0, 0, 0, 50); 
+    // Draw planets and their layers
+    for (size_t i = 0; i < planets.entities.size(); i++) {
+        Vec2 planetPosition = planets.positions[i];
+        Radius planetRadius = planets.radii[i];
 
-    for (size_t i = 0; i < planets.size(); i++) {
-        size_t index = planets[i].index;
-        Radius planetRadius = radii[index];
-        Vec2 planetPosition = positions[index];
+        int drawX = (planetPosition.x - cameraPosition.x) * scale + screenWidth / 2;
+        int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2;
 
-        int drawX = (positions[index].x - cameraPosition.x) * scale + screenWidth / 2; 
-        int drawY = (positions[index].y - cameraPosition.y) * scale + screenHeight / 2;
+        if (!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
 
-        //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
-        if(!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
         draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 60, 40, 40, 255);
-        for(int i = 0; i < layers[index].size(); i++){
-            float layerRadius = layers[index][i].value;
-            if(!isCircleVisible(drawX, drawY, layerRadius * scale)) continue;
-            if(i % 2 == 0){
+
+        for (size_t j = 0; j < planets.layers[i].size(); j++) {
+            float layerRadius = planets.layers[i][j].value;
+            if (!isCircleVisible(drawX, drawY, layerRadius * scale)) continue;
+
+            if (j % 2 == 0) {
                 draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 40, 20, 20, 255);
-            }
-            else{
+            } else {
                 draw.drawFilledCircle(drawX, drawY, layerRadius * scale, 60, 40, 40, 255);
             }
         }
     }
 
-    for(size_t i = 0; i < walls.size(); i++) {
-        size_t index = walls[i].index;
-        int planetIndex = planetIndexes[index];
-        if (planetIndex < 0) continue;
+    // Draw walls
+    for (size_t i = 0; i < planets.entities.size(); i++) {
+        for (size_t j = 0; j < planets.layerWalls[i].size(); j++) {
+            size_t wallIndex = planets.layerWalls[i][j];
 
-        float angleDeg = angles[index].deg;
-        int startLayer = startLayers[index];
-        int endLayer = endLayers[index];
-        int width = widths[index];
+            float angleDeg = walls.angles[wallIndex].deg;
+            int startLayer = walls.startLayers[wallIndex];
+            int endLayer = walls.endLayers[wallIndex];
+            int width = walls.widths[wallIndex];
 
-        float planetX = positions[planetIndex].x;
-        float planetY = positions[planetIndex].y;
+            Vec2 planetPosition = planets.positions[i];
+            float innerRadius = planets.layers[i][startLayer].value;
+            float outerRadius = planets.layers[i][endLayer].value;
 
-        float radius = radii[planetIndex].value; 
+            float startAngle = angleDeg - width / 2.0f;
+            float endAngle = angleDeg + width / 2.0f;
 
-        float innerRadius = layers[planetIndex][startLayer].value;
-        float outerRadius = layers[planetIndex][endLayer].value;
+            int drawX = (planetPosition.x - cameraPosition.x) * scale + screenWidth / 2.0f;
+            int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2.0f;
 
-        float startAngle = angleDeg - width / 2.0f;
-        float endAngle = angleDeg + width / 2.0f;
+            if (!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
 
-        int drawX = (planetX - cameraPosition.x) * scale + screenWidth / 2.0f;
-        int drawY = (planetY - cameraPosition.y) * scale + screenHeight / 2.0f;
-        //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
-
-        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
-
-        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 60, 40, 40, 255);
-    }
-
-    for (size_t i = 0; i < entries.size(); i++) {
-        size_t index = entries[i].index;
-        int planetIndex = planetIndexes[index];
-        if (planetIndex < 0) continue;
-
-        float angleDeg = angles[index].deg;
-        int startLayer = startLayers[index];
-        int width = widths[index];
-
-        float planetX = positions[planetIndex].x;
-        float planetY = positions[planetIndex].y;
-
-        float radius = radii[planetIndex].value; 
-
-        float innerRadius = layers[planetIndex][startLayer].value;
-        float outerRadius;
-        if(startLayer == 0){
-            outerRadius = radius;
-        }else{
-            outerRadius = layers[planetIndex][startLayer - 1].value;
+            draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 60, 40, 40, 255);
         }
-
-        float startAngle = angleDeg - width / 2.0f;
-        float endAngle = angleDeg + width / 2.0f;
-
-        int drawX = (planetX - cameraPosition.x) * scale + screenWidth / 2.0f;
-        int drawY = (planetY - cameraPosition.y) * scale + screenHeight / 2.0f;
-        //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
-
-        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
-
-        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 40, 20, 20, 255);
     }
 
-    for (size_t i = 0; i < platforms.size(); i++) {
-        size_t index = platforms[i].index;
+    // Draw entries
+    for (size_t i = 0; i < planets.entities.size(); i++) {
+        for (size_t j = 0; j < planets.layerEntries[i].size(); j++) {
+            size_t entryIndex = planets.layerEntries[i][j];
 
-        float angleDeg = angles[index].deg;
-        float widthDeg = sizes[index].width;
-        float height = sizes[index].height;
+            float angleDeg = entries.angles[entryIndex].deg;
+            int startLayer = entries.startLayers[entryIndex];
+            int width = entries.widths[entryIndex];
 
-        int planetIndex = planetIndexes[index];
-        if (planetIndex < 0) continue;
+            Vec2 planetPosition = planets.positions[i];
+            float innerRadius = planets.layers[i][startLayer].value;
+            float outerRadius = (startLayer == 0) ? planets.radii[i].value : planets.layers[i][startLayer - 1].value;
 
-        float planetX = positions[planetIndex].x;
-        float planetY = positions[planetIndex].y;
+            float startAngle = angleDeg - width / 2.0f;
+            float endAngle = angleDeg + width / 2.0f;
 
-        float radius = radii[planetIndex].value; 
+            int drawX = (planetPosition.x - cameraPosition.x) * scale + screenWidth / 2.0f;
+            int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2.0f;
 
-        float innerRadius = radius;
-        float outerRadius = radius + height;
+            if (!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
 
-        float startAngle = angleDeg - widthDeg / 2.0f;
-        float endAngle = angleDeg + widthDeg / 2.0f;
-
-        int drawX = (planetX - cameraPosition.x) * scale + screenWidth / 2.0f;
-        int drawY = (planetY - cameraPosition.y) * scale + screenHeight / 2.0f;
-
-        if(!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
-
-        //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2, screenHeight / 2);
-
-        draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 100, 130, 0, 255);
+            draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 40, 20, 20, 255);
+        }
     }
 
-    for (size_t i = 0; i < entities.size(); i++) {
-        size_t index = entities[i].index;
-        Size entitySize = sizes[index];
-        int pivotX = entitySize.width * scale / 2;  
-        int pivotY = entitySize.height * scale; 
-        int drawX = (positions[index].x - cameraPosition.x) * scale - entitySize.width * scale / 2 + screenWidth / 2; 
-        int drawY = (positions[index].y - cameraPosition.y) * scale -entitySize.height * scale + screenHeight / 2;
-        //rotatePointAroundOrigin(drawX, drawY, angles[0].deg, screenWidth / 2 + 100, screenHeight / 2);
-        float angleDeg = angles[index].deg;
+    // Draw platforms
+    for (size_t i = 0; i < planets.entities.size(); i++) {
+        for (size_t j = 0; j < planets.planetPlatforms[i].size(); j++) {
+            size_t platformIndex = planets.planetPlatforms[i][j];
+
+            float angleDeg = platforms.angles[platformIndex].deg;
+            float widthDeg = platforms.sizes[platformIndex].width;
+            float height = platforms.sizes[platformIndex].height;
+
+            Vec2 planetPosition = planets.positions[i];
+            float radius = planets.radii[i].value;
+
+            float innerRadius = radius;
+            float outerRadius = radius + height;
+
+            float startAngle = angleDeg - widthDeg / 2.0f;
+            float endAngle = angleDeg + widthDeg / 2.0f;
+
+            int drawX = (planetPosition.x - cameraPosition.x) * scale + screenWidth / 2.0f;
+            int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2.0f;
+
+            if (!isCircleVisible(drawX, drawY, outerRadius * scale)) continue;
+
+            draw.drawPlatform(drawX, drawY, innerRadius * scale, outerRadius * scale, startAngle, endAngle, 100, 130, 0, 255);
+        }
+    }
+
+    // Draw entities
+    for (size_t i = 0; i < humans.entities.size(); i++) {
+        Vec2 entityPosition = humans.positions[i];
+        Size entitySize = humans.sizes[i];
+        float angleDeg = humans.angles[i].deg;
+
+        int pivotX = entitySize.width * scale / 2;
+        int pivotY = entitySize.height * scale;
+
+        int drawX = (entityPosition.x - cameraPosition.x) * scale - entitySize.width * scale / 2 + screenWidth / 2;
+        int drawY = (entityPosition.y - cameraPosition.y) * scale - entitySize.height * scale + screenHeight / 2;
+
         draw.drawFilledRotatedRect(drawX, drawY, entitySize.width * scale, entitySize.height * scale, angleDeg, pivotX, pivotY, 100, 50, 255, 255);
 
-        //draw life points
-        if(index == 0){
-            draw.drawFilledRotatedRect(drawX - entitySize.width * scale + 1.5f * lifePoints[index].value * scale, drawY - 10 * scale, 3 * lifePoints[index].value * scale, 5 * scale, angleDeg, pivotX + entitySize.width * scale - 1.5f * lifePoints[index].value * scale, pivotY + 10 * scale, 255, 255, 255, 255);
+        // Draw life points for the player
+        if (i == 0) {
+            draw.drawFilledRotatedRect(
+                drawX - entitySize.width * scale + 1.5f * humans.lifePoints[i].value * scale,
+                drawY - 10 * scale,
+                3 * humans.lifePoints[i].value * scale,
+                5 * scale,
+                angleDeg,
+                pivotX + entitySize.width * scale - 1.5f * humans.lifePoints[i].value * scale,
+                pivotY + 10 * scale,
+                255, 255, 255, 255
+            );
         }
     }
 
-    for (size_t i = 0; i < worms.size(); i++) {
-        size_t index = worms[i].index;
-        std::vector<Radius> wormRadiiVec = wormRadii[index];
+    // Draw worms
+    for (size_t i = 0; i < worms.entities.size(); i++) {
+        for (size_t j = 0; j < worms.radii[i].size(); j++) {
+            float radius = worms.radii[i][j].value;
+            Vec2 wormPosition = worms.positions[i][j];
 
-        for (size_t j = 0; j < wormRadiiVec.size(); j++) {
-            float radius = wormRadiiVec[j].value;
-            Vec2 wormPosition = wormPositions[index][j];
             int drawX = (wormPosition.x - cameraPosition.x) * scale + screenWidth / 2;
             int drawY = (wormPosition.y - cameraPosition.y) * scale + screenHeight / 2;
-            if(!isCircleVisible(drawX, drawY, radius * scale)) continue;
+
+            if (!isCircleVisible(drawX, drawY, radius * scale)) continue;
+
             draw.drawFilledCircle(drawX, drawY, radius * scale, 100, 50, 0, 255);
         }
     }

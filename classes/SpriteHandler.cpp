@@ -1,7 +1,8 @@
 #include "../headers/SpriteHandler.h"
 #include <iostream>
 
-void SpriteHandler::createSprite(const std::string& filePath, SDL_Renderer* renderer, int width, int height) {
+/*void SpriteHandler::createSprite(const std::string& filePath, SDL_Renderer* renderer, int width, int height) {
+
     SDL_Texture* texture = textureLoader.loadTexture(filePath.c_str(), renderer);
     if (!texture) return;
 
@@ -48,3 +49,4 @@ void SpriteHandler::updateAnimatedSprites(Galaxy& currentGalaxy){
 void SpriteHandler::update(Galaxy& currentGalaxy){
     updateSprites(currentGalaxy);
 }
+*/

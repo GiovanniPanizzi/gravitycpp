@@ -87,7 +87,7 @@ void normalPlayingFunction(Draw& draw, Galaxy& currentGalaxy, EventListener& eve
     entityController.updateControls(currentGalaxy, 0, eventListener.isLeftPressed(), eventListener.isRightPressed(), eventListener.isUpPressed());
     entityController.drawState(currentGalaxy, draw, 0);
     wormController.allMove(currentGalaxy);
-    spriteHandler.update(currentGalaxy);
+    //spriteHandler.update(currentGalaxy);
     draw.present();
     if(eventListener.isEscPressed()){
         state = 3;
@@ -116,41 +116,40 @@ int main(int argc, char *argv[]) {
     galaxy.addPlanet({1000, -2600}, {0, 0}, {0, 0}, {700}, {2500}, {0.80f}, {0.0f}, {{}});
     galaxy.addPlanet({-1300, -5000}, {0, 0}, {0, 0}, {1200}, {5000}, {0.80f}, {0.0f}, {{}});
     galaxy.addPlanet({200, 1400}, {0, 0}, {0, 0}, {150}, {300}, {0.80f}, {0.0f}, {{}});
-    galaxy.addPlanet({100, 1200}, {0, 0}, {0, 0}, {150}, {300}, {0.80f}, {0.0f}, {{}});
 
     //platforms
     //Size size, size_t planetIndex, Angle angle, float angularSpeed
-    galaxy.addPlanetPlatform({10, 10}, 7, {0.0f}, 0.01f);
-    galaxy.addPlanetPlatform({10, 10}, 1, {30.0f}, 0.3f);
+    galaxy.addPlanetPlatform({10, 10}, 6, {0.0f}, 0.01f);
+    galaxy.addPlanetPlatform({10, 10}, 0, {30.0f}, 0.3f);
     //walls
     //size_t planetIndex, int planetStartLayer, int planetEndLayer, int width, Angle angle
-    galaxy.addPlanetWall(1, 14, 2, 5, {0.0f});
-    galaxy.addPlanetWall(1, 14, 5, 5, {30.0f});
-    galaxy.addPlanetWall(1, 1, 0, 5, {30.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {60.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {90.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {120.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {150.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {180.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {210.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {240.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {270.0f});
-    galaxy.addPlanetWall(1, 14, 0, 5, {300.0f});
-    galaxy.addPlanetWall(1, 14, 7, 5, {330.0f});
-    galaxy.addPlanetWall(1, 5, 4, 5, {330.0f});
+    galaxy.addPlanetWall(0, 14, 2, 5, {0.0f});
+    galaxy.addPlanetWall(0, 14, 5, 5, {30.0f});
+    galaxy.addPlanetWall(0, 1, 0, 5, {30.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {60.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {90.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {120.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {150.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {180.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {210.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {240.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {270.0f});
+    galaxy.addPlanetWall(0, 14, 0, 5, {300.0f});
+    galaxy.addPlanetWall(0, 14, 7, 5, {330.0f});
+    galaxy.addPlanetWall(0, 5, 4, 5, {330.0f});
 
     //entries
     //size_t planetIndex, int planetStartLayer, int width, Angle angle
-    galaxy.addPlanetEntry(1, 0, 10, {15.0f});
-    galaxy.addPlanetEntry(1, 2, 10, {-15.0f});
-    galaxy.addPlanetEntry(1, 4, 10, {-45.0f});
+    galaxy.addPlanetEntry(0, 0, 10, {15.0f});
+    galaxy.addPlanetEntry(0, 2, 10, {-15.0f});
+    galaxy.addPlanetEntry(0, 4, 10, {-45.0f});
 
     //entities
 
     //worms
-    galaxy.addWorm({500, 0}, {{30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}});
+    //galaxy.addWorm({500, 0}, {{30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}, {30}});
     galaxy.addWorm({100, 100}, {{30}, {30}, {50}, {40}, {30}, {20}, {15}, {10}, {5}, {3}, {2}, {1}});
-
+    
     Galaxy& currentGalaxy = galaxy;
 
     //SDL initialize
@@ -187,7 +186,7 @@ int main(int argc, char *argv[]) {
     Draw draw(*renderer);
 
     //create sprites
-    spriteHandler.createSprite("sprites/spritesheet.png", renderer, 20, 40);
+    //spriteHandler.createSprite("sprites/spritesheet.png", renderer, 20, 40);
 
     //timing variables
     float time = 0.0f;
@@ -211,7 +210,7 @@ int main(int argc, char *argv[]) {
             currentFPS = frameCount;
             frameCount = 0;
             time = 0.0f;
-            std::cout << currentFPS << std::endl;
+            //std::cout << currentFPS << std::endl;
         }
         state1 = state;
         eventListener.listenEvents();

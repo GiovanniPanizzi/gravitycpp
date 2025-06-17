@@ -35,77 +35,90 @@ GalaxyEdit::GalaxyEdit(){
     draggingPlatform = false;
 }
 
-void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
+void GalaxyEdit::mouseClick(Galaxy& currentGalaxy) {
     leftMouseClicked = true;
-    for(int i = 0; i < toolSizes.size(); i++){
-        if(pointInRect(mouseX, mouseY, toolPositions[i], toolSizes[i])){
+    for (int i = 0; i < toolSizes.size(); i++) {
+        if (pointInRect(mouseX, mouseY, toolPositions[i], toolSizes[i])) {
             selectedTool = i;
             return;
         }
     }
-    if(selectedTool == 0){
-        for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
-            size_t planetIndex = currentGalaxy.planets[i].index;
-            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - cameraPosition.x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - cameraPosition.y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
+
+    if (selectedTool == 0) { // Moving tool
+        for (size_t i = 0; i < currentGalaxy.planets.entities.size(); i++) {
+            size_t planetIndex = currentGalaxy.planets.entities[i].index;
+            if (collider.pointInCircle(
+                    mouseX, mouseY,
+                    currentGalaxy.planets.positions[planetIndex].x - cameraPosition.x + screenWidth / 2,
+                    currentGalaxy.planets.positions[planetIndex].y - cameraPosition.y + screenHeight / 2,
+                    currentGalaxy.planets.radii[planetIndex].value)) {
                 dragged = planetIndex;
-                objectStartPosition = currentGalaxy.positions[dragged];
+                objectStartPosition = currentGalaxy.planets.positions[dragged];
                 draggingPlanet = true;
                 dragging = true;
                 return;
             }
         }
-        for (size_t i = 0; i < currentGalaxy.platforms.size(); i++) {
-            size_t platformIndex = currentGalaxy.platforms[i].index;
-            size_t planetId = currentGalaxy.planetIndexes[platformIndex];
 
-            float planetX = currentGalaxy.positions[planetId].x;
-            float planetY = currentGalaxy.positions[planetId].y;
-            float planetR = currentGalaxy.radii[planetId].value;
+        for (size_t i = 0; i < currentGalaxy.planets.planetPlatforms.size(); i++) {
+            for (size_t j = 0; j < currentGalaxy.planets.planetPlatforms[i].size(); j++) {
+                size_t platformIndex = currentGalaxy.planets.planetPlatforms[i][j];
+                size_t planetId = i;
 
-            float angleDeg = currentGalaxy.angles[platformIndex].deg;
-            float height = currentGalaxy.sizes[platformIndex].height;
-            float width = currentGalaxy.sizes[platformIndex].width;     
+                float planetX = currentGalaxy.planets.positions[planetId].x;
+                float planetY = currentGalaxy.planets.positions[planetId].y;
+                float planetR = currentGalaxy.planets.radii[planetId].value;
 
-            float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
-            float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+                float angleDeg = currentGalaxy.platforms.angles[platformIndex].deg;
+                float height = currentGalaxy.platforms.sizes[platformIndex].height;
+                float width = currentGalaxy.platforms.sizes[platformIndex].width;
 
-            if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
-                dragged = platformIndex;
-                draggingPlatform = true;
-                dragging = true;
-                return;
+                float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+                float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+
+                if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
+                    dragged = platformIndex;
+                    draggingPlatform = true;
+                    dragging = true;
+                    return;
+                }
             }
         }
     }
-    if(selectedTool == 1){
 
-    }
-    if(selectedTool == 2){
-        for(size_t i = 0; i < currentGalaxy.planets.size(); i++){
-            size_t planetIndex = currentGalaxy.planets[i].index;
-            if(collider.pointInCircle(mouseX, mouseY, currentGalaxy.positions[planetIndex].x - cameraPosition.x + screenWidth / 2, currentGalaxy.positions[planetIndex].y - cameraPosition.y + screenHeight / 2, currentGalaxy.radii[planetIndex].value)){
+    if (selectedTool == 2) { // Rubber tool
+        for (size_t i = 0; i < currentGalaxy.planets.entities.size(); i++) {
+            size_t planetIndex = currentGalaxy.planets.entities[i].index;
+            if (collider.pointInCircle(
+                    mouseX, mouseY,
+                    currentGalaxy.planets.positions[planetIndex].x - cameraPosition.x + screenWidth / 2,
+                    currentGalaxy.planets.positions[planetIndex].y - cameraPosition.y + screenHeight / 2,
+                    currentGalaxy.planets.radii[planetIndex].value)) {
                 currentGalaxy.removePlanet(planetIndex);
                 return;
             }
         }
-        for (size_t i = 0; i < currentGalaxy.platforms.size(); i++) {
-            size_t platformIndex = currentGalaxy.platforms[i].index;
-            size_t planetId = currentGalaxy.planetIndexes[platformIndex];
 
-            float planetX = currentGalaxy.positions[planetId].x;
-            float planetY = currentGalaxy.positions[planetId].y;
-            float planetR = currentGalaxy.radii[planetId].value;
+        for (size_t i = 0; i < currentGalaxy.planets.planetPlatforms.size(); i++) {
+            for (size_t j = 0; j < currentGalaxy.planets.planetPlatforms[i].size(); j++) {
+                size_t platformIndex = currentGalaxy.planets.planetPlatforms[i][j];
+                size_t planetId = i;
 
-            float angleDeg = currentGalaxy.angles[platformIndex].deg;
-            float height = currentGalaxy.sizes[platformIndex].height;
-            float width = currentGalaxy.sizes[platformIndex].width;     
+                float planetX = currentGalaxy.planets.positions[planetId].x;
+                float planetY = currentGalaxy.planets.positions[planetId].y;
+                float planetR = currentGalaxy.planets.radii[planetId].value;
 
-            float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
-            float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+                float angleDeg = currentGalaxy.platforms.angles[platformIndex].deg;
+                float height = currentGalaxy.platforms.sizes[platformIndex].height;
+                float width = currentGalaxy.platforms.sizes[platformIndex].width;
 
-            if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
-                currentGalaxy.removePlanetPlatform(platformIndex);
-                return;
+                float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
+                float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+
+                if (collider.pointInPlatform(worldMouseX, worldMouseY, planetX, planetY, planetR, height, width, angleDeg)) {
+                    currentGalaxy.removePlanetPlatform(platformIndex);
+                    return;
+                }
             }
         }
     }
@@ -116,47 +129,31 @@ void GalaxyEdit::mouseClick(Galaxy& currentGalaxy){
 
 void GalaxyEdit::moveObject(Galaxy& currentGalaxy) {
     if (draggingPlanet && dragged != -1) {
-        // Muovo pianeta con il mouse (coordinate mondo)
+        // Move planet with the mouse (world coordinates)
         float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
         float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
         float worldMouseStartX = mouseStartX / scale + cameraPosition.x - screenWidth / 2;
         float worldMouseStartY = mouseStartY / scale + cameraPosition.y - screenHeight / 2;
 
-        currentGalaxy.positions[dragged].x = objectStartPosition.x + (worldMouseX - worldMouseStartX);
-        currentGalaxy.positions[dragged].y = objectStartPosition.y + (worldMouseY - worldMouseStartY);
-    }
-    else if (draggingEntity && dragged != -1) {
-        // Muovo entità con il mouse (coordinate mondo)
-        float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
-        float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
+        currentGalaxy.planets.positions[dragged].x = objectStartPosition.x + (worldMouseX - worldMouseStartX);
+        currentGalaxy.planets.positions[dragged].y = objectStartPosition.y + (worldMouseY - worldMouseStartY);
+    } else if (draggingPlatform && dragged != -1) {
+        // Rotate platform around its associated planet
+        Vec2& planetPos = currentGalaxy.planets.positions[dragged];
 
-        currentGalaxy.positions[dragged].x = worldMouseX;
-        currentGalaxy.positions[dragged].y = worldMouseY;
-    }
-    else if (draggingPlatform && dragged != -1) {
-        // Ruoto piattaforma attorno al pianeta corrispondente
-
-        // Indice pianeta a cui è legata la piattaforma
-        int planetIndex = currentGalaxy.planetIndexes[dragged];
-
-        Vec2& planetPos = currentGalaxy.positions[planetIndex];
-
-        // Calcolo vettore dal pianeta al mouse (coordinate mondo)
         float worldMouseX = mouseX / scale + cameraPosition.x - screenWidth / 2;
         float worldMouseY = mouseY / scale + cameraPosition.y - screenHeight / 2;
 
         float dx = worldMouseX - planetPos.x;
         float dy = worldMouseY - planetPos.y;
 
-        // Calcolo angolo con atan2 (in radianti)
         float angle = atan2(dy, dx) * 180.0f / M_PI;
 
-        // Aggiorna l'angolo della piattaforma
-        currentGalaxy.angles[dragged].deg = angle;
+        currentGalaxy.planets.angles[dragged].deg = angle;
     }
 }
 
-void GalaxyEdit::mouseRelease(){
+void GalaxyEdit::mouseRelease() {
     isSlidingGalaxy = false;
     zooming = false;
     dragging = false;

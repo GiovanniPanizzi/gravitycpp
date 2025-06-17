@@ -85,55 +85,67 @@ bool Collider::pointInWall(float pointX, float pointY, float circleX, float circ
 
 bool Collider::pointInPlanet(size_t planet, size_t entity, Galaxy& currentGalaxy) {
     bool inPlanet = false;
-    float entityX = currentGalaxy.positions[entity].x + currentGalaxy.velocities[entity].x;
-    float entityY = currentGalaxy.positions[entity].y + currentGalaxy.velocities[entity].y;
-    float planetX = currentGalaxy.positions[planet].x;
-    float planetY = currentGalaxy.positions[planet].y;
 
-    float headX = entityX + std::cos(currentGalaxy.angles[entity].deg * M_PI / 180.0f - M_PI / 2) * currentGalaxy.sizes[entity].height;
-    float headY = entityY + std::sin(currentGalaxy.angles[entity].deg * M_PI / 180.0f - M_PI / 2) * currentGalaxy.sizes[entity].height;
+    // Get entity and planet positions
+    float entityX = currentGalaxy.humans.positions[entity].x + currentGalaxy.humans.velocities[entity].x;
+    float entityY = currentGalaxy.humans.positions[entity].y + currentGalaxy.humans.velocities[entity].y;
+    float planetX = currentGalaxy.planets.positions[planet].x;
+    float planetY = currentGalaxy.planets.positions[planet].y;
+
+    // Calculate the head position of the entity
+    float headX = entityX + std::cos(currentGalaxy.humans.angles[entity].deg * M_PI / 180.0f - M_PI / 2) * currentGalaxy.humans.sizes[entity].height;
+    float headY = entityY + std::sin(currentGalaxy.humans.angles[entity].deg * M_PI / 180.0f - M_PI / 2) * currentGalaxy.humans.sizes[entity].height;
+
     // Check if the entity's head is in the planet
     bool headInPlanet = pointInCircle(
-        headX + currentGalaxy.velocities[entity].x , headY + currentGalaxy.velocities[entity].y,
+        headX + currentGalaxy.humans.velocities[entity].x,
+        headY + currentGalaxy.humans.velocities[entity].y,
         planetX, planetY,
-        currentGalaxy.radii[planet].value + 5
+        currentGalaxy.planets.radii[planet].value + 5
     );
-    //xor for layers
-    for(size_t i = 0; i < currentGalaxy.layers[planet].size(); i++) {
-        float layerValue = currentGalaxy.layers[planet][i].value;
+
+    // XOR for layers
+    for (size_t i = 0; i < currentGalaxy.planets.layers[planet].size(); i++) {
+        float layerValue = currentGalaxy.planets.layers[planet][i].value;
         headInPlanet ^= pointInCircle(
-            headX + currentGalaxy.velocities[entity].x,
-            headY + currentGalaxy.velocities[entity].y,
+            headX + currentGalaxy.humans.velocities[entity].x,
+            headY + currentGalaxy.humans.velocities[entity].y,
             planetX,
             planetY,
             layerValue + 5
         );
     }
+
     // Check if the entity's head is in any entry
-    for(size_t i = 0; i < currentGalaxy.layerEntries[planet].size(); i++) {
-        size_t entryIndex = currentGalaxy.layerEntries[planet][i];
-        float innerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex]].value;
-        float outerR;
-        if(currentGalaxy.startLayers[entryIndex] == 0){
-            outerR = currentGalaxy.radii[planet].value;
-        } else {
-            outerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex] - 1].value;
-        }
-        if(pointInWall(
-            headX + currentGalaxy.velocities[entity].x,
-            headY + currentGalaxy.velocities[entity].y,
-            currentGalaxy.positions[planet].x,
-            currentGalaxy.positions[planet].y,
+    for (size_t i = 0; i < currentGalaxy.planets.layerEntries[planet].size(); i++) {
+        size_t entryIndex = currentGalaxy.planets.layerEntries[planet][i];
+        float innerR = currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex]].value;
+        float outerR = (currentGalaxy.entries.startLayers[entryIndex] == 0)
+            ? currentGalaxy.planets.radii[planet].value
+            : currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex] - 1].value;
+
+        if (pointInWall(
+            headX + currentGalaxy.humans.velocities[entity].x,
+            headY + currentGalaxy.humans.velocities[entity].y,
+            planetX, planetY,
             innerR - 5, outerR + 5,
-            currentGalaxy.widths[entryIndex],
-            currentGalaxy.angles[entryIndex].deg
+            currentGalaxy.entries.widths[entryIndex],
+            currentGalaxy.entries.angles[entryIndex].deg
         )) {
             headInPlanet = false;
         }
     }
 
-    if(headInPlanet){
-        currentGalaxy.velocities[entity] = subtract(currentGalaxy.velocities[entity], velocityTowardsPoint(currentGalaxy.positions[planet], currentGalaxy.positions[entity], currentGalaxy.velocities[entity]));
+    // If the head is in the planet, adjust velocity and return false
+    if (headInPlanet) {
+        currentGalaxy.humans.velocities[entity] = subtract(
+            currentGalaxy.humans.velocities[entity],
+            velocityTowardsPoint(
+                currentGalaxy.planets.positions[planet],
+                currentGalaxy.humans.positions[entity],
+                currentGalaxy.humans.velocities[entity]
+            )
+        );
         return false;
     }
 
@@ -141,69 +153,68 @@ bool Collider::pointInPlanet(size_t planet, size_t entity, Galaxy& currentGalaxy
     inPlanet = pointInCircle(
         entityX, entityY,
         planetX, planetY,
-        currentGalaxy.radii[planet].value + 5
+        currentGalaxy.planets.radii[planet].value + 5
     );
-    //xor for layers
-    for(size_t i = 0; i < currentGalaxy.layers[planet].size(); i++) {
-        float layerValue = currentGalaxy.layers[planet][i].value;
+
+    // XOR for layers
+    for (size_t i = 0; i < currentGalaxy.planets.layers[planet].size(); i++) {
+        float layerValue = currentGalaxy.planets.layers[planet][i].value;
         inPlanet ^= pointInCircle(
-            entityX,
-            entityY,
-            planetX,
-            planetY,
+            entityX, entityY,
+            planetX, planetY,
             layerValue + 5
         );
     }
-    //is in entry
-    for(size_t i = 0; i < currentGalaxy.layerEntries[planet].size(); i++) {
-        size_t entryIndex = currentGalaxy.layerEntries[planet][i];
-        float innerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex]].value;
-        float outerR;
-        if(currentGalaxy.startLayers[entryIndex] == 0){
-            outerR = currentGalaxy.radii[planet].value;
-        } else {
-            outerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex] - 1].value;
-        }
-        if(pointInWall(
-            entityX,
-            entityY,
-            currentGalaxy.positions[planet].x,
-            currentGalaxy.positions[planet].y,
+
+    // Check if the entity's body is in any entry
+    for (size_t i = 0; i < currentGalaxy.planets.layerEntries[planet].size(); i++) {
+        size_t entryIndex = currentGalaxy.planets.layerEntries[planet][i];
+        float innerR = currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex]].value;
+        float outerR = (currentGalaxy.entries.startLayers[entryIndex] == 0)
+            ? currentGalaxy.planets.radii[planet].value
+            : currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex] - 1].value;
+
+        if (pointInWall(
+            entityX, entityY,
+            planetX, planetY,
             innerR - 5, outerR + 5,
-            currentGalaxy.widths[entryIndex],
-            currentGalaxy.angles[entryIndex].deg
+            currentGalaxy.entries.widths[entryIndex],
+            currentGalaxy.entries.angles[entryIndex].deg
         )) {
             return false;
         }
     }
-    //is in wall
-    for(size_t i = 0; i < currentGalaxy.layerWalls[planet].size(); i++) {
-        size_t wallIndex = currentGalaxy.layerWalls[planet][i];
-        if( pointInWall(
-            entityX,
-            entityY,
-            currentGalaxy.positions[planet].x,
-            currentGalaxy.positions[planet].y,
-            currentGalaxy.layers[planet][currentGalaxy.startLayers[wallIndex]].value - 5,
-            currentGalaxy.layers[planet][currentGalaxy.endLayers[wallIndex]].value + 5,
-            currentGalaxy.widths[wallIndex],
-            currentGalaxy.angles[wallIndex].deg
+
+    // Check if the entity's body is in any wall
+    for (size_t i = 0; i < currentGalaxy.planets.layerWalls[planet].size(); i++) {
+        size_t wallIndex = currentGalaxy.planets.layerWalls[planet][i];
+        if (pointInWall(
+            entityX, entityY,
+            planetX, planetY,
+            currentGalaxy.planets.layers[planet][currentGalaxy.walls.startLayers[wallIndex]].value - 5,
+            currentGalaxy.planets.layers[planet][currentGalaxy.walls.endLayers[wallIndex]].value + 5,
+            currentGalaxy.walls.widths[wallIndex],
+            currentGalaxy.walls.angles[wallIndex].deg
         )) {
-            currentGalaxy.wallIndexes[entity] = wallIndex;
+            currentGalaxy.humans.wallIndexes[entity] = wallIndex;
             return false;
         }
     }
+
     return inPlanet;
 }
 
-bool Collider::wormInPlanet(size_t planet, size_t wormIndex, size_t node, Galaxy& currentGalaxy){
+bool Collider::wormInPlanet(size_t planet, size_t wormIndex, size_t node, Galaxy& currentGalaxy) {
     bool inPlanet = false;
-    Vec2 position = currentGalaxy.wormPositions[wormIndex][node];
-    Vec2 planetPosition = currentGalaxy.positions[planet];
-    inPlanet = pointInCircle(position.x, position.y, planetPosition.x, planetPosition.y, currentGalaxy.radii[planet].value + 5);
-    //xor for layers
-    for(size_t i = 0; i < currentGalaxy.layers[planet].size(); i++) {
-        float layerValue = currentGalaxy.layers[planet][i].value;
+    Vec2 position = currentGalaxy.worms.positions[wormIndex][node];
+    Vec2 planetPosition = currentGalaxy.planets.positions[planet];
+
+    // Check if the worm node is in the planet's radius
+    inPlanet = pointInCircle(position.x, position.y, planetPosition.x, planetPosition.y, currentGalaxy.planets.radii[planet].value + 5);
+
+    // XOR for layers
+    for (size_t i = 0; i < currentGalaxy.planets.layers[planet].size(); i++) {
+        float layerValue = currentGalaxy.planets.layers[planet][i].value;
         inPlanet ^= pointInCircle(
             position.x,
             position.y,
@@ -212,92 +223,91 @@ bool Collider::wormInPlanet(size_t planet, size_t wormIndex, size_t node, Galaxy
             layerValue + 5
         );
     }
-    //entries
-    for(size_t i = 0; i < currentGalaxy.layerEntries[planet].size(); i++) {
-        size_t entryIndex = currentGalaxy.layerEntries[planet][i];
-        float innerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex]].value;
-        float outerR;
-        if(currentGalaxy.startLayers[entryIndex] == 0){
-            outerR = currentGalaxy.radii[planet].value;
-        } else {
-            outerR = currentGalaxy.layers[planet][currentGalaxy.startLayers[entryIndex] - 1].value;
-        }
-        if(pointInWall(
+
+    // Check entries
+    for (size_t i = 0; i < currentGalaxy.planets.layerEntries[planet].size(); i++) {
+        size_t entryIndex = currentGalaxy.planets.layerEntries[planet][i];
+        float innerR = currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex]].value;
+        float outerR = (currentGalaxy.entries.startLayers[entryIndex] == 0)
+            ? currentGalaxy.planets.radii[planet].value
+            : currentGalaxy.planets.layers[planet][currentGalaxy.entries.startLayers[entryIndex] - 1].value;
+
+        if (pointInWall(
             position.x,
             position.y,
-            currentGalaxy.positions[planet].x,
-            currentGalaxy.positions[planet].y,
+            planetPosition.x,
+            planetPosition.y,
             innerR - 5, outerR + 5,
-            currentGalaxy.widths[entryIndex],
-            currentGalaxy.angles[entryIndex].deg
+            currentGalaxy.entries.widths[entryIndex],
+            currentGalaxy.entries.angles[entryIndex].deg
         )) {
             return false;
         }
     }
+
     return inPlanet;
 }
 
 void Collider::entitiesPlatforms(Galaxy& currentGalaxy) {
-    for (size_t i = 0; i < currentGalaxy.entities.size(); i++) {
-        size_t entityIndex = currentGalaxy.entities[i].index;
-        float px = currentGalaxy.positions[entityIndex].x;
-        float py = currentGalaxy.positions[entityIndex].y;
-        currentGalaxy.platformIndexes[entityIndex] = -1;
+    for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
+        size_t entityIndex = currentGalaxy.humans.entities[i].index;
+        float px = currentGalaxy.humans.positions[entityIndex].x;
+        float py = currentGalaxy.humans.positions[entityIndex].y;
 
-        for (size_t j = 0; j < currentGalaxy.platforms.size(); j++) {
-            size_t platformIndex = currentGalaxy.platforms[j].index;
+        currentGalaxy.humans.platformIndexes[entityIndex] = -1;
 
-            int planetId = currentGalaxy.planetIndexes[platformIndex];
-            if (planetId < 0) continue;
+        for (size_t j = 0; j < currentGalaxy.planets.planetPlatforms.size(); j++) {
+            for (size_t k = 0; k < currentGalaxy.planets.planetPlatforms[j].size(); k++) {
+                size_t platformIndex = currentGalaxy.planets.planetPlatforms[j][k];
+                int planetId = j;
 
-            float cx = currentGalaxy.positions[planetId].x;
-            float cy = currentGalaxy.positions[planetId].y;
-            float radius = currentGalaxy.radii[planetId].value;
+                Vec2& planetPos = currentGalaxy.planets.positions[planetId];
+                float radius = currentGalaxy.planets.radii[planetId].value;
+                float height = currentGalaxy.platforms.sizes[platformIndex].height;
+                float width = currentGalaxy.platforms.sizes[platformIndex].width;
+                float angle = currentGalaxy.platforms.angles[platformIndex].deg;
 
-            float height = currentGalaxy.sizes[platformIndex].height;
-            float width = currentGalaxy.sizes[platformIndex].width;
-            float angle = currentGalaxy.angles[platformIndex].deg;
-
-            if (pointInPlatform(px, py, cx, cy, radius, height + 5, width, angle)) {
-                currentGalaxy.platformIndexes[entityIndex] = platformIndex;
-                currentGalaxy.planetIndexes[entityIndex] = currentGalaxy.planetIndexes[platformIndex];
-                continue;
+                if (pointInPlatform(px, py, planetPos.x, planetPos.y, radius, height + 5, width, angle)) {
+                    currentGalaxy.humans.platformIndexes[entityIndex] = platformIndex;
+                    currentGalaxy.humans.planetIndexes[entityIndex] = planetId;
+                    break;
+                }
             }
         }
     }
 }
 
 void Collider::entitiesPlanets(Galaxy& currentGalaxy) {
-    for (size_t i = 0; i < currentGalaxy.entities.size(); i++) {
-        size_t entityIndex = currentGalaxy.entities[i].index;
-        float px = currentGalaxy.positions[entityIndex].x;
-        float py = currentGalaxy.positions[entityIndex].y;
+    for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
+        size_t entityIndex = currentGalaxy.humans.entities[i].index;
+        float px = currentGalaxy.humans.positions[entityIndex].x;
+        float py = currentGalaxy.humans.positions[entityIndex].y;
 
-        int currentPlanetId = currentGalaxy.planetIndexes[entityIndex];
+        currentGalaxy.humans.planetIndexes[entityIndex] = -1;
+        currentGalaxy.humans.wallIndexes[entityIndex] = -1;
 
-        currentGalaxy.planetIndexes[entityIndex] = -1;
-        currentGalaxy.wallIndexes[entityIndex] = -1;
+        for (size_t j = 0; j < currentGalaxy.planets.entities.size(); j++) {
+            size_t planetIndex = currentGalaxy.planets.entities[j].index;
 
-        for (size_t j = 0; j < currentGalaxy.planets.size(); j++) {
-            size_t planetIndex = currentGalaxy.planets[j].index;
-            if(pointInPlanet(planetIndex, entityIndex, currentGalaxy)) {
-                currentGalaxy.planetIndexes[entityIndex] = planetIndex;
+            if (pointInPlanet(planetIndex, entityIndex, currentGalaxy)) {
+                currentGalaxy.humans.planetIndexes[entityIndex] = planetIndex;
             }
         }
     }
 }
 
 void Collider::wormsPlanets(Galaxy& currentGalaxy) {
-    for (size_t i = 0; i < currentGalaxy.worms.size(); i++) {
-        size_t wormIndex = currentGalaxy.worms[i].index;
-        for (size_t j = 0; j < currentGalaxy.wormPositions[wormIndex].size(); j++) {
-            currentGalaxy.wormPlanetIndexes[wormIndex][j] = -1;
-            int currentPlanetId = -1;
-            for (size_t k = 0; k < currentGalaxy.planets.size(); k++) {
-                size_t planetIndex = currentGalaxy.planets[k].index;
+    for (size_t i = 0; i < currentGalaxy.worms.entities.size(); i++) {
+        size_t wormIndex = currentGalaxy.worms.entities[i].index;
+
+        for (size_t j = 0; j < currentGalaxy.worms.positions[wormIndex].size(); j++) {
+            currentGalaxy.worms.planetIndexes[wormIndex][j] = -1;
+
+            for (size_t k = 0; k < currentGalaxy.planets.entities.size(); k++) {
+                size_t planetIndex = currentGalaxy.planets.entities[k].index;
+
                 if (wormInPlanet(planetIndex, wormIndex, j, currentGalaxy)) {
-                    currentPlanetId = planetIndex;
-                    currentGalaxy.wormPlanetIndexes[wormIndex][j] = planetIndex;
+                    currentGalaxy.worms.planetIndexes[wormIndex][j] = planetIndex;
                 }
             }
         }
@@ -305,7 +315,12 @@ void Collider::wormsPlanets(Galaxy& currentGalaxy) {
 }
 
 void Collider::updateCollisions(Galaxy& currentGalaxy) {
+    // Update collisions between entities and planets
     entitiesPlanets(currentGalaxy);
+
+    // Update collisions between entities and platforms
     entitiesPlatforms(currentGalaxy);
-    //wormsPlanets(currentGalaxy);
+
+    // Update collisions between worms and planets
+    wormsPlanets(currentGalaxy);
 }
