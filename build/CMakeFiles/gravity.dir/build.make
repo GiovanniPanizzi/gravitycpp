@@ -86,10 +86,38 @@ CMakeFiles/gravity.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gravity.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/main.cpp -o CMakeFiles/gravity.dir/src/main.cpp.s
 
+CMakeFiles/gravity.dir/src/classes/Window.cpp.o: CMakeFiles/gravity.dir/flags.make
+CMakeFiles/gravity.dir/src/classes/Window.cpp.o: /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp
+CMakeFiles/gravity.dir/src/classes/Window.cpp.o: CMakeFiles/gravity.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/gravity.dir/src/classes/Window.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gravity.dir/src/classes/Window.cpp.o -MF CMakeFiles/gravity.dir/src/classes/Window.cpp.o.d -o CMakeFiles/gravity.dir/src/classes/Window.cpp.o -c /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp
+
+CMakeFiles/gravity.dir/src/classes/Window.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gravity.dir/src/classes/Window.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp > CMakeFiles/gravity.dir/src/classes/Window.cpp.i
+
+CMakeFiles/gravity.dir/src/classes/Window.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gravity.dir/src/classes/Window.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp -o CMakeFiles/gravity.dir/src/classes/Window.cpp.s
+
+CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o: CMakeFiles/gravity.dir/flags.make
+CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o: /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/EventListener.cpp
+CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o: CMakeFiles/gravity.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o -MF CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o.d -o CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o -c /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/EventListener.cpp
+
+CMakeFiles/gravity.dir/src/classes/EventListener.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gravity.dir/src/classes/EventListener.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/EventListener.cpp > CMakeFiles/gravity.dir/src/classes/EventListener.cpp.i
+
+CMakeFiles/gravity.dir/src/classes/EventListener.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gravity.dir/src/classes/EventListener.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/EventListener.cpp -o CMakeFiles/gravity.dir/src/classes/EventListener.cpp.s
+
 CMakeFiles/gravity.dir/src/utilities/utils.cpp.o: CMakeFiles/gravity.dir/flags.make
 CMakeFiles/gravity.dir/src/utilities/utils.cpp.o: /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/utils.cpp
 CMakeFiles/gravity.dir/src/utilities/utils.cpp.o: CMakeFiles/gravity.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/gravity.dir/src/utilities/utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/gravity.dir/src/utilities/utils.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gravity.dir/src/utilities/utils.cpp.o -MF CMakeFiles/gravity.dir/src/utilities/utils.cpp.o.d -o CMakeFiles/gravity.dir/src/utilities/utils.cpp.o -c /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/utils.cpp
 
 CMakeFiles/gravity.dir/src/utilities/utils.cpp.i: cmake_force
@@ -100,20 +128,40 @@ CMakeFiles/gravity.dir/src/utilities/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gravity.dir/src/utilities/utils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/utils.cpp -o CMakeFiles/gravity.dir/src/utilities/utils.cpp.s
 
+CMakeFiles/gravity.dir/src/utilities/globals.cpp.o: CMakeFiles/gravity.dir/flags.make
+CMakeFiles/gravity.dir/src/utilities/globals.cpp.o: /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/globals.cpp
+CMakeFiles/gravity.dir/src/utilities/globals.cpp.o: CMakeFiles/gravity.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/gravity.dir/src/utilities/globals.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gravity.dir/src/utilities/globals.cpp.o -MF CMakeFiles/gravity.dir/src/utilities/globals.cpp.o.d -o CMakeFiles/gravity.dir/src/utilities/globals.cpp.o -c /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/globals.cpp
+
+CMakeFiles/gravity.dir/src/utilities/globals.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gravity.dir/src/utilities/globals.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/globals.cpp > CMakeFiles/gravity.dir/src/utilities/globals.cpp.i
+
+CMakeFiles/gravity.dir/src/utilities/globals.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gravity.dir/src/utilities/globals.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/globals.cpp -o CMakeFiles/gravity.dir/src/utilities/globals.cpp.s
+
 # Object files for target gravity
 gravity_OBJECTS = \
 "CMakeFiles/gravity.dir/src/main.cpp.o" \
-"CMakeFiles/gravity.dir/src/utilities/utils.cpp.o"
+"CMakeFiles/gravity.dir/src/classes/Window.cpp.o" \
+"CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o" \
+"CMakeFiles/gravity.dir/src/utilities/utils.cpp.o" \
+"CMakeFiles/gravity.dir/src/utilities/globals.cpp.o"
 
 # External object files for target gravity
 gravity_EXTERNAL_OBJECTS =
 
 gravity: CMakeFiles/gravity.dir/src/main.cpp.o
+gravity: CMakeFiles/gravity.dir/src/classes/Window.cpp.o
+gravity: CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o
 gravity: CMakeFiles/gravity.dir/src/utilities/utils.cpp.o
+gravity: CMakeFiles/gravity.dir/src/utilities/globals.cpp.o
 gravity: CMakeFiles/gravity.dir/build.make
 gravity: /opt/homebrew/Cellar/sdl2/2.32.6/lib/libSDL2.dylib
 gravity: CMakeFiles/gravity.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable gravity"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/giovannipanizzi/Desktop/SuperModular-Gravity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable gravity"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/gravity.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

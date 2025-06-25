@@ -129,6 +129,54 @@ gravity/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/build
 .PHONY : gravity/fast
 
+src/classes/EventListener.o: src/classes/EventListener.cpp.o
+.PHONY : src/classes/EventListener.o
+
+# target to build an object file
+src/classes/EventListener.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o
+.PHONY : src/classes/EventListener.cpp.o
+
+src/classes/EventListener.i: src/classes/EventListener.cpp.i
+.PHONY : src/classes/EventListener.i
+
+# target to preprocess a source file
+src/classes/EventListener.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.i
+.PHONY : src/classes/EventListener.cpp.i
+
+src/classes/EventListener.s: src/classes/EventListener.cpp.s
+.PHONY : src/classes/EventListener.s
+
+# target to generate assembly for a file
+src/classes/EventListener.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.s
+.PHONY : src/classes/EventListener.cpp.s
+
+src/classes/Window.o: src/classes/Window.cpp.o
+.PHONY : src/classes/Window.o
+
+# target to build an object file
+src/classes/Window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.o
+.PHONY : src/classes/Window.cpp.o
+
+src/classes/Window.i: src/classes/Window.cpp.i
+.PHONY : src/classes/Window.i
+
+# target to preprocess a source file
+src/classes/Window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.i
+.PHONY : src/classes/Window.cpp.i
+
+src/classes/Window.s: src/classes/Window.cpp.s
+.PHONY : src/classes/Window.s
+
+# target to generate assembly for a file
+src/classes/Window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.s
+.PHONY : src/classes/Window.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -152,6 +200,30 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/utilities/globals.o: src/utilities/globals.cpp.o
+.PHONY : src/utilities/globals.o
+
+# target to build an object file
+src/utilities/globals.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/utilities/globals.cpp.o
+.PHONY : src/utilities/globals.cpp.o
+
+src/utilities/globals.i: src/utilities/globals.cpp.i
+.PHONY : src/utilities/globals.i
+
+# target to preprocess a source file
+src/utilities/globals.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/utilities/globals.cpp.i
+.PHONY : src/utilities/globals.cpp.i
+
+src/utilities/globals.s: src/utilities/globals.cpp.s
+.PHONY : src/utilities/globals.s
+
+# target to generate assembly for a file
+src/utilities/globals.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/utilities/globals.cpp.s
+.PHONY : src/utilities/globals.cpp.s
 
 src/utilities/utils.o: src/utilities/utils.cpp.o
 .PHONY : src/utilities/utils.o
@@ -186,9 +258,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... gravity"
+	@echo "... src/classes/EventListener.o"
+	@echo "... src/classes/EventListener.i"
+	@echo "... src/classes/EventListener.s"
+	@echo "... src/classes/Window.o"
+	@echo "... src/classes/Window.i"
+	@echo "... src/classes/Window.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/utilities/globals.o"
+	@echo "... src/utilities/globals.i"
+	@echo "... src/utilities/globals.s"
 	@echo "... src/utilities/utils.o"
 	@echo "... src/utilities/utils.i"
 	@echo "... src/utilities/utils.s"
