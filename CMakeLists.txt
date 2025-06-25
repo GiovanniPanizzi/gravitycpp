@@ -12,9 +12,9 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_executable(gravity
     src/main.cpp
 
-    src/classes/Window.cpp
-    src/classes/EventListener.cpp
-    src/classes/Draw.cpp
+    src/classes/generalPurpose/Window.cpp
+    src/classes/generalPurpose/EventListener.cpp
+    src/classes/generalPurpose/Draw.cpp
 
     src/utilities/utils.cpp
     src/utilities/globals.cpp

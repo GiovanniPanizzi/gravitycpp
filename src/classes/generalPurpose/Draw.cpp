@@ -1,4 +1,4 @@
-#include "../../include/classes/Draw.hpp"
+#include "../../../include/classes/generalPurpose/Draw.hpp"
 
 Draw::Draw(Window& window) : window(window) {}
 Draw::~Draw() {}

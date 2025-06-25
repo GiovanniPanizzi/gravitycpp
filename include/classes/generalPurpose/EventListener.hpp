@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.hpp"
-#include "../utilities/globals.hpp"
+#include "../../utilities/globals.hpp"
 
 class EventListener {
 private:

@@ -1,4 +1,4 @@
-#include "../../include/classes/Window.hpp"
+#include "../../../include/classes/generalPurpose/Window.hpp"
 
 Window::Window(const char* title, int width, int height) {
     // Initialize SDL

@@ -1,4 +1,4 @@
-#include "../../include/classes/EventListener.hpp"
+#include "../../../include/classes/generalPurpose/EventListener.hpp"
 
 EventListener::EventListener(Window& window) : window(window) {
     arrowLeftPressed = false;
