@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/gravity.dir/src/main.cpp.o CMakeFiles/gravity.dir/src/utilities/utils.cpp.o -o gravity   -L/opt/homebrew/Cellar/sdl2/2.32.6/lib  -Wl,-rpath,/opt/homebrew/Cellar/sdl2/2.32.6/lib /opt/homebrew/Cellar/sdl2/2.32.6/lib/libSDL2.dylib
