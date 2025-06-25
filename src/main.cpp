@@ -2,6 +2,7 @@
 #include "../include/classes/generalPurpose/EventListener.hpp"
 #include "../include/classes/generalPurpose/Draw.hpp"
 #include "../include/utilities/globals.hpp"
+#include "../include/objects/Galaxy.hpp"
 #include <iostream>
 
 //create main classes

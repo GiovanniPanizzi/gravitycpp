@@ -9,9 +9,9 @@ float calculateSine(float angle) {
 float calculateAtan2(float y, float x) {
     return atan2f(y, x);
 }
-float distance(float x1, float y1, float x2, float y2) {
-    return sqrtf((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+float distance(Vec2 a, Vec2 b) {
+    return sqrtf(powf(b.x - a.x, 2) + powf(b.y - a.y, 2));
 }
-float distanceSquared(float x1, float y1, float x2, float y2) {
-    return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+float distSquared(Vec2 a, Vec2 b) {
+    return powf(b.x - a.x, 2) + powf(b.y - a.y, 2);
 }

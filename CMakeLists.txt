@@ -16,6 +16,8 @@ add_executable(gravity
     src/classes/generalPurpose/EventListener.cpp
     src/classes/generalPurpose/Draw.cpp
 
+    src/objects/Galaxy.cpp
+
     src/utilities/utils.cpp
     src/utilities/globals.cpp
 )

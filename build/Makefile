@@ -225,6 +225,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/objects/Galaxy.o: src/objects/Galaxy.cpp.o
+.PHONY : src/objects/Galaxy.o
+
+# target to build an object file
+src/objects/Galaxy.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o
+.PHONY : src/objects/Galaxy.cpp.o
+
+src/objects/Galaxy.i: src/objects/Galaxy.cpp.i
+.PHONY : src/objects/Galaxy.i
+
+# target to preprocess a source file
+src/objects/Galaxy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.i
+.PHONY : src/objects/Galaxy.cpp.i
+
+src/objects/Galaxy.s: src/objects/Galaxy.cpp.s
+.PHONY : src/objects/Galaxy.s
+
+# target to generate assembly for a file
+src/objects/Galaxy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.s
+.PHONY : src/objects/Galaxy.cpp.s
+
 src/utilities/globals.o: src/utilities/globals.cpp.o
 .PHONY : src/utilities/globals.o
 
@@ -294,6 +318,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/objects/Galaxy.o"
+	@echo "... src/objects/Galaxy.i"
+	@echo "... src/objects/Galaxy.s"
 	@echo "... src/utilities/globals.o"
 	@echo "... src/utilities/globals.i"
 	@echo "... src/utilities/globals.s"

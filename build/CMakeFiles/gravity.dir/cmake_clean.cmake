@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.o.d"
   "CMakeFiles/gravity.dir/src/main.cpp.o"
   "CMakeFiles/gravity.dir/src/main.cpp.o.d"
+  "CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o"
+  "CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o.d"
   "CMakeFiles/gravity.dir/src/utilities/globals.cpp.o"
   "CMakeFiles/gravity.dir/src/utilities/globals.cpp.o.d"
   "CMakeFiles/gravity.dir/src/utilities/utils.cpp.o"

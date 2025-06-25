@@ -36,7 +36,7 @@ struct Planets {
     std::vector<Elasticity> elasticities;
     std::vector<Angle> angles;
     std::vector<float> angularSpeeds;
-    std::vector<LayerSection> layers;
+    std::vector<std::vector<LayerSection>> layers;
     std::vector<std::vector<size_t>> planetPlatforms;
 };
 

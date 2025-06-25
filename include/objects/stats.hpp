@@ -12,10 +12,6 @@ struct Angle {
 };
 
 //body stats 
-struct Radius {
-    float value;
-};
-
 struct Mass {
     float value;
 };
