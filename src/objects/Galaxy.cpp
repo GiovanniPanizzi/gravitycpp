@@ -1,4 +1,5 @@
 #include "../../include/objects/Galaxy.hpp"
+#include <iostream>
 
 Galaxy::Galaxy(){
     Object player;
@@ -227,9 +228,10 @@ void Galaxy::adjustCameraPosition() {
 }
 
 void Galaxy::draw(Draw& draw) {
+    adjustCameraPosition();
     draw.clearScreen(0, 0, 0, 50);
 
-    // Draw planets and their layers
+    //draw planets and their layers
     for (size_t i = 0; i < planets.entities.size(); i++) {
         Vec2 planetPosition = planets.positions[i];
         Radius planetRadius = planets.radii[i];
@@ -238,7 +240,53 @@ void Galaxy::draw(Draw& draw) {
         int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2;
 
         if (!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
+        if(planets.layers[i].empty()) {
+            draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 60, 40, 40, 255);
+            continue;
+        }
+        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 50, 20, 20, 255);
+        for(size_t j = 0; j < planets.layers[i].size(); j++){
+            LayerSection& section = planets.layers[i][j];
+            float outerRadius = section.shape.outerRadius.value * scale;
+            float innerRadius = section.shape.innerRadius.value * scale;
+            float startAngle = section.shape.startAngle.rad;
+            float endAngle = section.shape.endAngle.rad;
+            if(section.material == Material::ROCK){
+                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 60, 40, 40, 255);
+                continue;
+            }
+            if(section.material == Material::ICE) {
+                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 100, 100, 255, 255);
+                continue;
+            }
+            if(section.material == Material::METAL){
+                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 200, 200, 200, 255);
+                continue;
+            }
+            if(section.material == Material::GRAVITANIUM){
+                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 50, 0, 100, 255);
+                continue;
+            }
+            if(section.material == Material::VOID){
+                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 50, 20, 20, 255);
+                continue;
+            }
+        }
+    }
 
-        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 60, 40, 40, 255);
+    //draw humans
+    for(size_t i = 0; i < humans.entities.size(); i++) {
+        Vec2 humanPosition = humans.positions[i];
+        RectSize humanSize = humans.sizes[i];
+        Angle humanAngle = humans.angles[i];
+
+        int drawX = (humanPosition.x - humanSize.width / 2 - cameraPosition.x) * scale + screenWidth / 2;
+        int drawY = (humanPosition.y - humanSize.height / 2 - cameraPosition.y) * scale + screenHeight / 2;
+
+        if (!isCircleVisible(drawX, drawY, humanSize.height * scale)) continue;
+
+        draw.drawFilledRotatedRect(drawX, drawY, humanSize.width * scale, humanSize.height * scale,
+                                   humanAngle.rad, humanSize.width / 2, humanSize.height,
+                                   255, 255, 255, 255);
     }
 }

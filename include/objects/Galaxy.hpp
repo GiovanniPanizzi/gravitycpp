@@ -13,7 +13,6 @@ class Galaxy {
     Worms worms;
 
     Galaxy();
-    ~Galaxy();
 
     void addPlanet(Vec2 position, Vec2 velocity, Vec2 acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<LayerSection> planetLayers);
     void addEntity(Vec2 position, Vec2 velocity, Vec2 acceleration, RectSize size, Angle angle);

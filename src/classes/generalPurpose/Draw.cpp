@@ -40,14 +40,48 @@ void Draw::drawFilledCircle(int centerX, int centerY, int radius, Uint8 r, Uint8
         }
     }
 }
-void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius, float startAngleRad, float endAngleRad, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-    SDL_SetRenderDrawColor(window.getSDLRenderer(), r, g, b, a);
-    for (float angle = startAngleRad; angle < endAngleRad; angle += 0.01f) {
-        for (int radius = innerRadius; radius <= outerRadius; radius++) {
-            int x = centerX + static_cast<int>(radius * cos(angle));
-            int y = centerY + static_cast<int>(radius * sin(angle));
-            SDL_RenderDrawPoint(window.getSDLRenderer(), x, y);
-        }
+void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius,
+                               float startAngleRad, float endAngleRad,
+                               Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+    SDL_Renderer* renderer = window.getSDLRenderer();
+
+    const float angleStep = 1.0f;
+
+    for (float angle = startAngleRad; angle < endAngleRad; angle += angleStep) {
+        float nextAngle = angle + angleStep;
+        if (nextAngle > endAngleRad) nextAngle = endAngleRad;
+
+        // Calcola i 4 punti dell'anello tra due angoli
+        float cosA1 = cosf(angle);
+        float sinA1 = sinf(angle);
+        float cosA2 = cosf(nextAngle);
+        float sinA2 = sinf(nextAngle);
+
+        SDL_Vertex vertices[6];
+
+        // Punto interno 1
+        vertices[0].position = { centerX + innerRadius * cosA1, centerY + innerRadius * sinA1 };
+        vertices[0].color = { r, g, b, a };
+
+        // Punto esterno 1
+        vertices[1].position = { centerX + outerRadius * cosA1, centerY + outerRadius * sinA1 };
+        vertices[1].color = { r, g, b, a };
+
+        // Punto esterno 2
+        vertices[2].position = { centerX + outerRadius * cosA2, centerY + outerRadius * sinA2 };
+        vertices[2].color = { r, g, b, a };
+
+        // Punto interno 1 (di nuovo per secondo triangolo)
+        vertices[3] = vertices[0];
+
+        // Punto esterno 2 (di nuovo)
+        vertices[4] = vertices[2];
+
+        // Punto interno 2
+        vertices[5].position = { centerX + innerRadius * cosA2, centerY + innerRadius * sinA2 };
+        vertices[5].color = { r, g, b, a };
+
+        SDL_RenderGeometry(renderer, nullptr, vertices, 6, nullptr, 0);
     }
 }
 void Draw::present() {
