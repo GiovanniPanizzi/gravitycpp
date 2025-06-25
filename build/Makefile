@@ -129,6 +129,30 @@ gravity/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/build
 .PHONY : gravity/fast
 
+src/classes/Draw.o: src/classes/Draw.cpp.o
+.PHONY : src/classes/Draw.o
+
+# target to build an object file
+src/classes/Draw.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.o
+.PHONY : src/classes/Draw.cpp.o
+
+src/classes/Draw.i: src/classes/Draw.cpp.i
+.PHONY : src/classes/Draw.i
+
+# target to preprocess a source file
+src/classes/Draw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.i
+.PHONY : src/classes/Draw.cpp.i
+
+src/classes/Draw.s: src/classes/Draw.cpp.s
+.PHONY : src/classes/Draw.s
+
+# target to generate assembly for a file
+src/classes/Draw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.s
+.PHONY : src/classes/Draw.cpp.s
+
 src/classes/EventListener.o: src/classes/EventListener.cpp.o
 .PHONY : src/classes/EventListener.o
 
@@ -258,6 +282,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... gravity"
+	@echo "... src/classes/Draw.o"
+	@echo "... src/classes/Draw.i"
+	@echo "... src/classes/Draw.s"
 	@echo "... src/classes/EventListener.o"
 	@echo "... src/classes/EventListener.i"
 	@echo "... src/classes/EventListener.s"

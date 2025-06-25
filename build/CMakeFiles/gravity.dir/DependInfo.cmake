@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Draw.cpp" "CMakeFiles/gravity.dir/src/classes/Draw.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/Draw.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/EventListener.cpp" "CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp" "CMakeFiles/gravity.dir/src/classes/Window.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/Window.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/main.cpp" "CMakeFiles/gravity.dir/src/main.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/main.cpp.o.d"

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/gravity.dir/src/classes/Draw.cpp.o"
+  "CMakeFiles/gravity.dir/src/classes/Draw.cpp.o.d"
   "CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o"
   "CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o.d"
   "CMakeFiles/gravity.dir/src/classes/Window.cpp.o"

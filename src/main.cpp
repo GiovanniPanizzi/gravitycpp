@@ -1,5 +1,6 @@
 #include "../include/classes/Window.hpp"
 #include "../include/classes/EventListener.hpp"
+#include "../include/classes/Draw.hpp"
 #include "../include/utilities/globals.hpp"
 #include <iostream>
 
