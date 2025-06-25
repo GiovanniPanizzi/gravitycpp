@@ -1,6 +1,6 @@
 CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/main.cpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/Window.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/Window.hpp \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_main.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_stdinc.h \
@@ -898,10 +898,10 @@ CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/byteswap.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/has_single_bit.h \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/EventListener.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/../utilities/globals.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/../utilities/generalStructs.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/Draw.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/EventListener.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../utilities/globals.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../utilities/generalStructs.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/Draw.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/utilities/globals.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/ios \

@@ -129,77 +129,77 @@ gravity/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/build
 .PHONY : gravity/fast
 
-src/classes/Draw.o: src/classes/Draw.cpp.o
-.PHONY : src/classes/Draw.o
+src/classes/generalPurpose/Draw.o: src/classes/generalPurpose/Draw.cpp.o
+.PHONY : src/classes/generalPurpose/Draw.o
 
 # target to build an object file
-src/classes/Draw.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.o
-.PHONY : src/classes/Draw.cpp.o
+src/classes/generalPurpose/Draw.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Draw.cpp.o
+.PHONY : src/classes/generalPurpose/Draw.cpp.o
 
-src/classes/Draw.i: src/classes/Draw.cpp.i
-.PHONY : src/classes/Draw.i
+src/classes/generalPurpose/Draw.i: src/classes/generalPurpose/Draw.cpp.i
+.PHONY : src/classes/generalPurpose/Draw.i
 
 # target to preprocess a source file
-src/classes/Draw.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.i
-.PHONY : src/classes/Draw.cpp.i
+src/classes/generalPurpose/Draw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Draw.cpp.i
+.PHONY : src/classes/generalPurpose/Draw.cpp.i
 
-src/classes/Draw.s: src/classes/Draw.cpp.s
-.PHONY : src/classes/Draw.s
+src/classes/generalPurpose/Draw.s: src/classes/generalPurpose/Draw.cpp.s
+.PHONY : src/classes/generalPurpose/Draw.s
 
 # target to generate assembly for a file
-src/classes/Draw.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Draw.cpp.s
-.PHONY : src/classes/Draw.cpp.s
+src/classes/generalPurpose/Draw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Draw.cpp.s
+.PHONY : src/classes/generalPurpose/Draw.cpp.s
 
-src/classes/EventListener.o: src/classes/EventListener.cpp.o
-.PHONY : src/classes/EventListener.o
+src/classes/generalPurpose/EventListener.o: src/classes/generalPurpose/EventListener.cpp.o
+.PHONY : src/classes/generalPurpose/EventListener.o
 
 # target to build an object file
-src/classes/EventListener.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.o
-.PHONY : src/classes/EventListener.cpp.o
+src/classes/generalPurpose/EventListener.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.o
+.PHONY : src/classes/generalPurpose/EventListener.cpp.o
 
-src/classes/EventListener.i: src/classes/EventListener.cpp.i
-.PHONY : src/classes/EventListener.i
+src/classes/generalPurpose/EventListener.i: src/classes/generalPurpose/EventListener.cpp.i
+.PHONY : src/classes/generalPurpose/EventListener.i
 
 # target to preprocess a source file
-src/classes/EventListener.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.i
-.PHONY : src/classes/EventListener.cpp.i
+src/classes/generalPurpose/EventListener.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.i
+.PHONY : src/classes/generalPurpose/EventListener.cpp.i
 
-src/classes/EventListener.s: src/classes/EventListener.cpp.s
-.PHONY : src/classes/EventListener.s
+src/classes/generalPurpose/EventListener.s: src/classes/generalPurpose/EventListener.cpp.s
+.PHONY : src/classes/generalPurpose/EventListener.s
 
 # target to generate assembly for a file
-src/classes/EventListener.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/EventListener.cpp.s
-.PHONY : src/classes/EventListener.cpp.s
+src/classes/generalPurpose/EventListener.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.s
+.PHONY : src/classes/generalPurpose/EventListener.cpp.s
 
-src/classes/Window.o: src/classes/Window.cpp.o
-.PHONY : src/classes/Window.o
+src/classes/generalPurpose/Window.o: src/classes/generalPurpose/Window.cpp.o
+.PHONY : src/classes/generalPurpose/Window.o
 
 # target to build an object file
-src/classes/Window.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.o
-.PHONY : src/classes/Window.cpp.o
+src/classes/generalPurpose/Window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.o
+.PHONY : src/classes/generalPurpose/Window.cpp.o
 
-src/classes/Window.i: src/classes/Window.cpp.i
-.PHONY : src/classes/Window.i
+src/classes/generalPurpose/Window.i: src/classes/generalPurpose/Window.cpp.i
+.PHONY : src/classes/generalPurpose/Window.i
 
 # target to preprocess a source file
-src/classes/Window.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.i
-.PHONY : src/classes/Window.cpp.i
+src/classes/generalPurpose/Window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.i
+.PHONY : src/classes/generalPurpose/Window.cpp.i
 
-src/classes/Window.s: src/classes/Window.cpp.s
-.PHONY : src/classes/Window.s
+src/classes/generalPurpose/Window.s: src/classes/generalPurpose/Window.cpp.s
+.PHONY : src/classes/generalPurpose/Window.s
 
 # target to generate assembly for a file
-src/classes/Window.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/Window.cpp.s
-.PHONY : src/classes/Window.cpp.s
+src/classes/generalPurpose/Window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.s
+.PHONY : src/classes/generalPurpose/Window.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -282,15 +282,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... gravity"
-	@echo "... src/classes/Draw.o"
-	@echo "... src/classes/Draw.i"
-	@echo "... src/classes/Draw.s"
-	@echo "... src/classes/EventListener.o"
-	@echo "... src/classes/EventListener.i"
-	@echo "... src/classes/EventListener.s"
-	@echo "... src/classes/Window.o"
-	@echo "... src/classes/Window.i"
-	@echo "... src/classes/Window.s"
+	@echo "... src/classes/generalPurpose/Draw.o"
+	@echo "... src/classes/generalPurpose/Draw.i"
+	@echo "... src/classes/generalPurpose/Draw.s"
+	@echo "... src/classes/generalPurpose/EventListener.o"
+	@echo "... src/classes/generalPurpose/EventListener.i"
+	@echo "... src/classes/generalPurpose/EventListener.s"
+	@echo "... src/classes/generalPurpose/Window.o"
+	@echo "... src/classes/generalPurpose/Window.i"
+	@echo "... src/classes/generalPurpose/Window.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

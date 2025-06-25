@@ -1,6 +1,6 @@
 CMakeFiles/gravity.dir/src/classes/Window.cpp.o: \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Window.cpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/../../include/classes/Window.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/../../include/classes/generalPurpose/Window.hpp \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_main.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_stdinc.h \

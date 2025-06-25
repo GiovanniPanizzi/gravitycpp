@@ -1,7 +1,7 @@
-CMakeFiles/gravity.dir/src/classes/Draw.cpp.o: \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/Draw.cpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/../../include/classes/generalPurpose/Draw.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/../../include/classes/generalPurpose/Window.hpp \
+CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.o: \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/EventListener.cpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/../../../include/classes/generalPurpose/EventListener.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/../../../include/classes/generalPurpose/Window.hpp \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_main.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_stdinc.h \
@@ -898,4 +898,6 @@ CMakeFiles/gravity.dir/src/classes/Draw.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/bit_width.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/byteswap.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/endian.h \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/has_single_bit.h
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit/has_single_bit.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/../../../include/classes/generalPurpose/../../utilities/globals.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/../../../include/classes/generalPurpose/../../utilities/generalStructs.hpp
