@@ -5,6 +5,7 @@ Collider::Collider() {}
 Collider::~Collider() {}
 
 bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t planet){
+    Vec2& humanPosition = currentGalaxy.humans.positions[humanIndex];
     Vec2 humanFuturePosition = currentGalaxy.humans.positions[humanIndex];
     Circle planetCircle;
     planetCircle.position = currentGalaxy.planets.positions[planet];
@@ -18,9 +19,27 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     if(!isRectInCircle(humanRect, humanAngle, pivot, planetCircle)) {
         return false;
     }
-    if(currentGalaxy.planets.layers.empty()) {
+    if(currentGalaxy.planets.layers[planet].empty()) {
+        Vec2 perpendicularVelocity = velocityTowardsPoint(planetCircle.position, humanPosition, currentGalaxy.humans.velocities[humanIndex]);
+        if(length(perpendicularVelocity) != 0) {
+            currentGalaxy.humans.velocities[humanIndex] = subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity);
+        }
+        Vec2 dir = subtract(humanPosition, planetCircle.position);
+        float dist = length(dir);
 
+        Vec2 dirNormalized;
+        if (dist == 0) {
+            // Se human è al centro del pianeta, spostalo verso destra (asse x positivo)
+            dirNormalized = {1.0f, 0.0f};
+        } else {
+            dirNormalized = normalize(dir);
+        }
+
+        humanPosition = add(planetCircle.position, multiply(dirNormalized, planetCircle.radius.value));
+
+        return true;
     }
+
     return false;
 }
 
@@ -30,5 +49,11 @@ void Collider::updateHumanCollisions(Galaxy& currentGalaxy, size_t humanIndex){
         if(humanInPlanet(currentGalaxy, humanIndex, i)) {
             currentGalaxy.humans.planetIndexes[humanIndex] = i;
         }
+    }
+}
+
+void Collider::updateHumansCollisions(Galaxy& currentGalaxy) {
+    for(size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
+        updateHumanCollisions(currentGalaxy, i);
     }
 }

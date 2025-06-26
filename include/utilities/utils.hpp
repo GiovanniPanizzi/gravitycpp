@@ -1,6 +1,7 @@
 #pragma once
 #include <math.h>
 #include "generalStructs.hpp"
+#include "../objects/stats.hpp"
 
 float calculateCosine(float angle);
 float calculateSine(float angle);
@@ -23,6 +24,14 @@ bool isPointInRect(const Vec2 point, const Rect rect);
 bool isPointInCircle(const Vec2 point, const Circle circle);
 
 bool isRectInCircle(const Rect& rect, float angleRad, const Vec2& pivot, const Circle& circle);
+
+bool isRectInAnnularSection(
+    const Rect& rect,
+    float rectAngleRad,
+    const AnnularSection& section,
+    const Vec2& pivot,
+    const Vec2& annulusCenter
+);
 
 
 

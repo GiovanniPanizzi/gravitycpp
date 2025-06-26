@@ -10,9 +10,11 @@
 Window window("Gravity 5.0", 800, 600);
 EventListener eventListener(window);
 Draw draw(window);
+Phisics phisics;
 
 void mainPlayingFunction(Galaxy& currentGalaxy){
-
+    //collider
+    phisics.update(currentGalaxy);
     //draw
     draw.clearScreen(0, 0, 0, 255);
     draw.adjustCameraPosition(currentGalaxy);
@@ -29,7 +31,7 @@ int main(){
     float layerRadius = 2000.0f;
     int i = 0;
 
-    while(true){
+    /*while(true){
         if(layerRadius <= 300.0f) break;
         LayerSection layerSection;
         layerSection.material = Material::ROCK;
@@ -51,6 +53,8 @@ int main(){
     planetLayers.push_back({{Radius{200.0f}, Radius{0.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
     currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
+    */
+    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {1.0f}, {1.0f}, {});
 
     //timing variables
     float time = 0.0f;

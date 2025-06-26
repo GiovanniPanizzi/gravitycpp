@@ -247,4 +247,6 @@ CMakeFiles/gravity.dir/src/utilities/utils.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_abort.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_dev_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_mode_t.h \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/../../include/utilities/generalStructs.hpp
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/../../include/utilities/generalStructs.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/../../include/utilities/../objects/stats.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/utilities/../../include/utilities/../objects/../utilities/generalStructs.hpp

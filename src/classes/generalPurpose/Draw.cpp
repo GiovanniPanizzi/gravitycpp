@@ -180,6 +180,8 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
             if(currentGalaxy.planets.layers[i].empty()) {
                 drawFilledCircle(centerX, centerY, static_cast<int>(currentGalaxy.planets.radii[i].value * scale), 60, 40, 40, 255);
+                SDL_SetRenderTarget(renderer, nullptr);
+                currentGalaxy.planets.textures[i] = texture;
                 continue;
             }
 
@@ -258,7 +260,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
         int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width / 2 + screenWidth / 2);
         int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height + screenHeight / 2);
 
-        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width / 2, size.height / 2, 255, 255, 255, 255);
+        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width / 2, size.height, 30, 50, 90, 255);
     }
 }
 

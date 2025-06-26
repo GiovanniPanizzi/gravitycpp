@@ -976,6 +976,7 @@ CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/utils.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/../objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/Phisics.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/Collider.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/../../objects/Galaxy.hpp \

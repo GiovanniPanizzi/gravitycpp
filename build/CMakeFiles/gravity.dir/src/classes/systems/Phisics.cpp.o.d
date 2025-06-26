@@ -972,4 +972,5 @@ CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.o: \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_locale.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_misc.h \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/globals.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/utils.hpp
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/utils.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/../objects/stats.hpp

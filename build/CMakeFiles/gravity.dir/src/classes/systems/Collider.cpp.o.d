@@ -972,6 +972,7 @@ CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.o: \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_misc.h \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/utils.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/../../../include/classes/systems/../../objects/../utilities/../objects/stats.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream \

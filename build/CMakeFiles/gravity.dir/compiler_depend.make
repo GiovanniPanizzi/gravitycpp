@@ -971,6 +971,7 @@ CMakeFiles/gravity.dir/src/classes/generalPurpose/Draw.cpp.o: /Users/giovannipan
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp \
@@ -3805,6 +3806,7 @@ CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.o: /Users/giovannipanizz
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp \
@@ -4779,6 +4781,7 @@ CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.o: /Users/giovannipanizzi
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp \
@@ -5808,6 +5811,7 @@ CMakeFiles/gravity.dir/src/main.cpp.o: /Users/giovannipanizzi/Desktop/SuperModul
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp \
@@ -6845,6 +6849,7 @@ CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o: /Users/giovannipanizzi/Desktop/
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp \
@@ -7153,6 +7158,8 @@ CMakeFiles/gravity.dir/src/utilities/utils.cpp.o: /Users/giovannipanizzi/Desktop
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/__stddef_wchar_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/include/utilities/utils.hpp
 
