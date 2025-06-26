@@ -26,6 +26,7 @@ int main(){
     std::vector<LayerSection> planetLayers;
     float layerRadius = 2000.0f;
     int i = 0;
+
     while(true){
         if(layerRadius <= 300.0f) break;
         LayerSection layerSection;
@@ -48,10 +49,38 @@ int main(){
     planetLayers.push_back({{Radius{200.0f}, Radius{0.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
     currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
+
+    //timing variables
+    float time = 0.0f;
+    int frameCount = 0;
+    int currentFPS = 0;
+    const int desiredFPS = 90;
+    const int frameDelay = 1000 / desiredFPS;
+    Uint32 lastTick = SDL_GetTicks();
+    float deltaTime;
     
     while(running){
+        Uint32 frameStart = SDL_GetTicks();
+        deltaTime = (frameStart - lastTick) / 1000.0f;
+        lastTick = frameStart;
+
+        time += deltaTime;
+        frameCount++;
+
+        if (time >= 1.0f) {
+            currentFPS = frameCount;
+            frameCount = 0;
+            time = 0.0f;
+            std::cout << currentFPS << std::endl;
+        }
         eventListener.listenEvents();
+    
         mainPlayingFunction(currentGalaxy);
+
+        Uint32 frameTime = SDL_GetTicks() - frameStart;
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
 
     return 0;   

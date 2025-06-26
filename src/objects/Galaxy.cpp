@@ -251,6 +251,7 @@ void Galaxy::draw(Draw& draw) {
             float innerRadius = section.shape.innerRadius.value * scale;
             float startAngle = section.shape.startAngle.rad;
             float endAngle = section.shape.endAngle.rad;
+            if (!isCircleVisible(drawX, drawY, outerRadius * scale) || (drawX + innerRadius >= screenWidth && (drawX - innerRadius <= 0))) continue;
             if(section.material == Material::ROCK){
                 draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 60, 40, 40, 255);
                 continue;
