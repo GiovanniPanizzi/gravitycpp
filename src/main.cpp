@@ -14,7 +14,8 @@ void mainPlayingFunction(Galaxy& currentGalaxy){
 
     //draw
     draw.clearScreen(0, 0, 0, 255);
-    currentGalaxy.draw(draw);
+    draw.adjustCameraPosition(currentGalaxy);
+    draw.drawGalaxy(currentGalaxy);
     draw.present();
 }
 

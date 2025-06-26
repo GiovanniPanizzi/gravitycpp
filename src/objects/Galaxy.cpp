@@ -34,6 +34,7 @@ void Galaxy::addPlanet(Vec2 position, Vec2 velocity, Vec2 acceleration, Radius r
     planets.angles.push_back({0.0f});
     planets.layers.push_back(planetLayers);
     planets.planetPlatforms.push_back({});
+    planets.textures.push_back(nullptr);
 }
 
 void Galaxy::addEntity(Vec2 position, Vec2 velocity, Vec2 acceleration, RectSize size, Angle angle) {
@@ -123,6 +124,7 @@ void Galaxy::removePlanet(size_t indexDelete) {
         planets.angles[indexDelete] = planets.angles[lastIndex];
         planets.layers[indexDelete] = planets.layers[lastIndex];
         planets.planetPlatforms[indexDelete] = planets.planetPlatforms[lastIndex];
+        planets.textures[indexDelete] = planets.textures[lastIndex];
 
         for (size_t& platformIndex : planets.planetPlatforms[indexDelete]) {
             platformIndex = indexDelete;
@@ -140,6 +142,7 @@ void Galaxy::removePlanet(size_t indexDelete) {
     planets.angles.pop_back();
     planets.layers.pop_back();
     planets.planetPlatforms.pop_back();
+    planets.textures.pop_back();
 
     for (size_t i = 0; i < humans.planetIndexes.size(); ++i) {
         if (humans.planetIndexes[i] == static_cast<int>(lastIndex)) {
@@ -204,90 +207,4 @@ void rotatePointAroundOrigin(int& x, int& y, float angleRad, float pivotX, float
 bool isCircleVisible(int drawX, int drawY, float radius) {
     return !(drawX + radius < 0 || drawX - radius > screenWidth ||
              drawY + radius < 0 || drawY - radius > screenHeight);
-}
-
-void Galaxy::adjustCameraPosition() {
-    Vec2 playerPosition = humans.positions[0];
-
-    float offsetDistance = 50.0f;
-    float direction = humans.directions[0].value;
-    float angleRad = humans.angles[0].rad * M_PI / 180.0f;
-
-    float offsetX = offsetDistance * direction * cos(angleRad);
-    float offsetY = offsetDistance * direction * sin(angleRad);
-
-    float targetX = playerPosition.x + offsetX;
-    float targetY = playerPosition.y + offsetY;
-
-    float dist = distance(Vec2{targetX, targetY}, cameraPosition);
-
-    float t = 0.01f;
-
-    cameraPosition.x += (targetX - cameraPosition.x) * t * dist / 30.0f;
-    cameraPosition.y += (targetY - cameraPosition.y) * t * dist / 30.0f;
-}
-
-void Galaxy::draw(Draw& draw) {
-    adjustCameraPosition();
-    draw.clearScreen(0, 0, 0, 50);
-
-    //draw planets and their layers
-    for (size_t i = 0; i < planets.entities.size(); i++) {
-        Vec2 planetPosition = planets.positions[i];
-        Radius planetRadius = planets.radii[i];
-
-        int drawX = (planetPosition.x - cameraPosition.x) * scale + screenWidth / 2;
-        int drawY = (planetPosition.y - cameraPosition.y) * scale + screenHeight / 2;
-
-        if (!isCircleVisible(drawX, drawY, planetRadius.value * scale)) continue;
-        if(planets.layers[i].empty()) {
-            draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 60, 40, 40, 255);
-            continue;
-        }
-        draw.drawFilledCircle(drawX, drawY, planetRadius.value * scale, 50, 20, 20, 255);
-        for(size_t j = 0; j < planets.layers[i].size(); j++){
-            LayerSection& section = planets.layers[i][j];
-            float outerRadius = section.shape.outerRadius.value * scale;
-            float innerRadius = section.shape.innerRadius.value * scale;
-            float startAngle = section.shape.startAngle.rad;
-            float endAngle = section.shape.endAngle.rad;
-            if (!isCircleVisible(drawX, drawY, outerRadius * scale) || (drawX + innerRadius >= screenWidth && (drawX - innerRadius <= 0))) continue;
-            if(section.material == Material::ROCK){
-                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 60, 40, 40, 255);
-                continue;
-            }
-            if(section.material == Material::ICE) {
-                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 100, 100, 255, 255);
-                continue;
-            }
-            if(section.material == Material::METAL){
-                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 200, 200, 200, 255);
-                continue;
-            }
-            if(section.material == Material::GRAVITANIUM){
-                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 50, 0, 100, 255);
-                continue;
-            }
-            if(section.material == Material::VOID){
-                draw.drawAnnularSection(drawX, drawY, innerRadius, outerRadius, startAngle, endAngle, 50, 20, 20, 255);
-                continue;
-            }
-        }
-    }
-
-    //draw humans
-    for(size_t i = 0; i < humans.entities.size(); i++) {
-        Vec2 humanPosition = humans.positions[i];
-        RectSize humanSize = humans.sizes[i];
-        Angle humanAngle = humans.angles[i];
-
-        int drawX = (humanPosition.x - humanSize.width / 2 - cameraPosition.x) * scale + screenWidth / 2;
-        int drawY = (humanPosition.y - humanSize.height / 2 - cameraPosition.y) * scale + screenHeight / 2;
-
-        if (!isCircleVisible(drawX, drawY, humanSize.height * scale)) continue;
-
-        draw.drawFilledRotatedRect(drawX, drawY, humanSize.width * scale, humanSize.height * scale,
-                                   humanAngle.rad, humanSize.width / 2, humanSize.height,
-                                   255, 255, 255, 255);
-    }
 }

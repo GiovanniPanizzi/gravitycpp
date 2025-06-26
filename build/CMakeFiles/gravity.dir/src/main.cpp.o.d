@@ -902,9 +902,8 @@ CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../utilities/generalStructs.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/Draw.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/utilities/globals.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/Galaxy.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/galaxyObjects.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/Galaxy.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/galaxyObjects.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/vector \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__bit_reference \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/formatter.h \
@@ -973,11 +972,12 @@ CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstdarg \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/temp_value.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__split_buffer \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/stats.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/../utilities/generalStructs.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/../classes/generalPurpose/Draw.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/../utilities/globals.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/../utilities/utils.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/stats.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/generalStructs.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/globals.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/generalPurpose/../../objects/../utilities/utils.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/utilities/globals.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/Galaxy.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream \

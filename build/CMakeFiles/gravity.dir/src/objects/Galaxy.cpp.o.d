@@ -906,8 +906,6 @@ CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__split_buffer \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/objects/../../include/objects/stats.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/objects/../../include/objects/../utilities/generalStructs.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/objects/../../include/objects/../classes/generalPurpose/Draw.hpp \
-  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/objects/../../include/objects/../classes/generalPurpose/Window.hpp \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_main.h \
   /opt/homebrew/Cellar/sdl2/2.32.6/include/SDL2/SDL_stdinc.h \

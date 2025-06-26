@@ -1,6 +1,5 @@
 #pragma once
 #include "galaxyObjects.hpp"
-#include "../classes/generalPurpose/Draw.hpp"
 #include "../utilities/globals.hpp"
 #include "../utilities/utils.hpp"
 
@@ -23,7 +22,4 @@ class Galaxy {
     void removePlanet(size_t index);
     void removeEntity(size_t index);
     void removeWorm(size_t index);
-
-    void adjustCameraPosition();
-    void draw(Draw& draw);
 };

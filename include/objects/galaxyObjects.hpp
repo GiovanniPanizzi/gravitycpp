@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <vector>
 #include "stats.hpp"
+#include <SDL.h>
 
 struct Object {
     size_t index;
@@ -38,6 +39,7 @@ struct Planets {
     std::vector<float> angularSpeeds;
     std::vector<std::vector<LayerSection>> layers;
     std::vector<std::vector<size_t>> planetPlatforms;
+    std::vector<SDL_Texture*> textures;
 };
 
 struct Platforms {
