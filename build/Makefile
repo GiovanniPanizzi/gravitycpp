@@ -201,6 +201,54 @@ src/classes/generalPurpose/Window.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.s
 .PHONY : src/classes/generalPurpose/Window.cpp.s
 
+src/classes/systems/Collider.o: src/classes/systems/Collider.cpp.o
+.PHONY : src/classes/systems/Collider.o
+
+# target to build an object file
+src/classes/systems/Collider.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.o
+.PHONY : src/classes/systems/Collider.cpp.o
+
+src/classes/systems/Collider.i: src/classes/systems/Collider.cpp.i
+.PHONY : src/classes/systems/Collider.i
+
+# target to preprocess a source file
+src/classes/systems/Collider.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.i
+.PHONY : src/classes/systems/Collider.cpp.i
+
+src/classes/systems/Collider.s: src/classes/systems/Collider.cpp.s
+.PHONY : src/classes/systems/Collider.s
+
+# target to generate assembly for a file
+src/classes/systems/Collider.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.s
+.PHONY : src/classes/systems/Collider.cpp.s
+
+src/classes/systems/Phisics.o: src/classes/systems/Phisics.cpp.o
+.PHONY : src/classes/systems/Phisics.o
+
+# target to build an object file
+src/classes/systems/Phisics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.o
+.PHONY : src/classes/systems/Phisics.cpp.o
+
+src/classes/systems/Phisics.i: src/classes/systems/Phisics.cpp.i
+.PHONY : src/classes/systems/Phisics.i
+
+# target to preprocess a source file
+src/classes/systems/Phisics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.i
+.PHONY : src/classes/systems/Phisics.cpp.i
+
+src/classes/systems/Phisics.s: src/classes/systems/Phisics.cpp.s
+.PHONY : src/classes/systems/Phisics.s
+
+# target to generate assembly for a file
+src/classes/systems/Phisics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.s
+.PHONY : src/classes/systems/Phisics.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -315,6 +363,12 @@ help:
 	@echo "... src/classes/generalPurpose/Window.o"
 	@echo "... src/classes/generalPurpose/Window.i"
 	@echo "... src/classes/generalPurpose/Window.s"
+	@echo "... src/classes/systems/Collider.o"
+	@echo "... src/classes/systems/Collider.i"
+	@echo "... src/classes/systems/Collider.s"
+	@echo "... src/classes/systems/Phisics.o"
+	@echo "... src/classes/systems/Phisics.i"
+	@echo "... src/classes/systems/Phisics.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

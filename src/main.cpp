@@ -1,6 +1,7 @@
 #include "../include/classes/generalPurpose/Window.hpp"
 #include "../include/classes/generalPurpose/EventListener.hpp"
 #include "../include/classes/generalPurpose/Draw.hpp"
+#include "../include/classes/systems/Phisics.hpp"
 #include "../include/utilities/globals.hpp"
 #include "../include/objects/Galaxy.hpp"
 #include <iostream>

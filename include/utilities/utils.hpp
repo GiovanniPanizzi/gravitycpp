@@ -22,6 +22,8 @@ Vec2 velocityTowardsPoint(const Vec2 point, const Vec2 origin, const Vec2 veloci
 bool isPointInRect(const Vec2 point, const Rect rect);
 bool isPointInCircle(const Vec2 point, const Circle circle);
 
+bool isRectInCircle(const Rect& rect, float angleRad, const Vec2& pivot, const Circle& circle);
+
 
 
 

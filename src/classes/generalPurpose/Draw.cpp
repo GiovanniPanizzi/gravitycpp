@@ -41,9 +41,7 @@ void Draw::drawFilledCircle(int centerX, int centerY, int radius, Uint8 r, Uint8
     }
 }
 
-void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius,
-                               float startAngleRad, float endAngleRad,
-                               Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius, float startAngleRad, float endAngleRad, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
  SDL_Renderer* renderer = window.getSDLRenderer();
 
     int segments = std::max(4, int((endAngleRad - startAngleRad) / (2 * M_PI) * 300));
@@ -125,6 +123,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
     //draw planets
     for (int i = 0; i < currentGalaxy.planets.entities.size(); i++) {
+
         if(currentGalaxy.planets.textures[i] != nullptr) {
             SDL_Texture* texture = currentGalaxy.planets.textures[i];
             Vec2 position = currentGalaxy.planets.positions[i];
@@ -249,6 +248,17 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
             currentGalaxy.planets.textures[i] = texture;
             std::cout << "Texture creata per il pianeta " << i << std::endl;
         }
+    }
+
+    //draw humans
+    for( int i = 0; i < currentGalaxy.humans.positions.size(); i++) {
+        Vec2 position = currentGalaxy.humans.positions[i];
+        RectSize size = currentGalaxy.humans.sizes[i];
+        Angle angle = currentGalaxy.humans.angles[i];
+        int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width / 2 + screenWidth / 2);
+        int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height + screenHeight / 2);
+
+        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width / 2, size.height / 2, 255, 255, 255, 255);
     }
 }
 
