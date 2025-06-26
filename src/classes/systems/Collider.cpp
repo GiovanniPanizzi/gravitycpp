@@ -15,10 +15,11 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     humanRect.size = currentGalaxy.humans.sizes[humanIndex];
     float humanAngle = currentGalaxy.humans.angles[humanIndex].rad;
     Vec2 pivot = {humanFuturePosition.x, humanFuturePosition.y};
-
+    //not in planet
     if(!isRectInCircle(humanRect, humanAngle, pivot, planetCircle)) {
         return false;
     }
+    //planet with no layers
     if(currentGalaxy.planets.layers[planet].empty()) {
         Vec2 perpendicularVelocity = velocityTowardsPoint(planetCircle.position, humanPosition, currentGalaxy.humans.velocities[humanIndex]);
         if(length(perpendicularVelocity) != 0) {
@@ -38,6 +39,26 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
         humanPosition = add(planetCircle.position, multiply(dirNormalized, planetCircle.radius.value));
 
         return true;
+    }
+    //planet with layers
+    for(int i = 0; i < currentGalaxy.planets.layers[planet].size(); i++){
+        /*std::cout << "HumanRect pos: " << humanRect.position.x << "," << humanRect.position.y << std::endl;
+        std::cout << "Size: " << humanRect.size.width << "x" << humanRect.size.height << std::endl;
+        std::cout << "Angle: " << humanAngle << std::endl;
+        std::cout << "PlanetLayer " << i << " shape: " 
+                  << currentGalaxy.planets.layers[planet][i].shape.innerRadius.value << " - "
+                  << currentGalaxy.planets.layers[planet][i].shape.outerRadius.value << std::endl;
+        std::cout << "Start angle: " << currentGalaxy.planets.layers[planet][i].shape.startAngle.rad << std::endl;
+        std::cout << "End angle: " << currentGalaxy.planets.layers[planet][i].shape.endAngle.rad << std::endl;
+        std::cout << "Pivot:" << pivot.x << "," << pivot.y << std::endl;
+        std::cout << "PlanetCircle pos: " << planetCircle.position.x << "," << planetCircle.position.y << std::endl;*/
+        if(isRectInAnnularSection(humanRect, humanAngle, currentGalaxy.planets.layers[planet][i].shape, humanFuturePosition, planetCircle.position)){
+            Vec2 perpendicularVelocity = velocityTowardsAnnularSection(humanPosition, currentGalaxy.humans.velocities[humanIndex], currentGalaxy.planets.layers[planet][i].shape, planetCircle.position);
+            if(length(perpendicularVelocity) != 0) {
+                currentGalaxy.humans.velocities[humanIndex] = subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity);
+            }
+            humanPosition = projectOntoAnnularSectionSurface(humanPosition, currentGalaxy.planets.layers[planet][i].shape, planetCircle.position);
+        }
     }
 
     return false;

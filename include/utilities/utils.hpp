@@ -33,6 +33,14 @@ bool isRectInAnnularSection(
     const Vec2& annulusCenter
 );
 
+Vec2 projectOntoAnnularSectionSurface(const Vec2& point, const AnnularSection& section, const Vec2& center);
+
+Vec2 velocityTowardsAnnularSection(
+    const Vec2& origin,
+    const Vec2& velocity,
+    const AnnularSection& section,
+    const Vec2& center
+);
 
 
 

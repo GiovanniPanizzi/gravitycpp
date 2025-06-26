@@ -1,4 +1,6 @@
 #include "../../include/utilities/utils.hpp"
+#include <cmath>
+#include <iostream>
 
 float calculateCosine(float angle) {
     return cosf(angle);
@@ -145,25 +147,117 @@ bool isRectInAnnularSection(
         {rect.position.x, rect.position.y + rect.size.height}
     };
 
+    rectAngleRad = normalizeAngle(rectAngleRad);
+
+    // Caso speciale: cerchio pieno (inner = 0, angolo completo)
+    bool isFullCircle = (
+        section.innerRadius.value <= 0.01f &&
+        std::abs(normalizeAngle(section.startAngle.rad) - 0.0f) <= 0.01f &&
+        std::abs(normalizeAngle(section.endAngle.rad)) <= 0.01f
+    );
+
     for (int i = 0; i < 4; i++) {
-        // Ruota il vertice attorno al pivot di -rectAngleRad
         Vec2 rotatedVertex = rotatePoint(vertices[i], pivot, -rectAngleRad);
+        Vec2 dir = subtract(rotatedVertex, annulusCenter);
+        float dist = length(dir);
 
-        // Calcola il vettore dal centro dell'annulus al vertice ruotato
-        Vec2 dir = {rotatedVertex.x - annulusCenter.x, rotatedVertex.y - annulusCenter.y};
-        float dist = sqrtf(dir.x * dir.x + dir.y * dir.y);
+        if (dist < section.innerRadius.value || dist > section.outerRadius.value){
+            continue;
+        }
 
-        // Verifica che il vertice sia tra raggio interno ed esterno
-        if (dist < section.innerRadius.value || dist > section.outerRadius.value) continue;
+        if (isFullCircle) {
+            return true;
+        }
 
-        // Calcola angolo del vertice rispetto al centro dell'annulus
         float vertexAngle = atan2f(dir.y, dir.x);
-
-        // Verifica se l'angolo è nell'intervallo [startAngle, endAngle]
         if (angleInRange(vertexAngle, section.startAngle.rad, section.endAngle.rad)) {
             return true;
         }
     }
 
     return false;
+}
+
+Vec2 projectOntoAnnularSectionSurface(const Vec2& position, const AnnularSection& section, const Vec2& annulusCenter) {
+    // Calcola il vettore dal centro annulus alla posizione
+    Vec2 dir = subtract(position, annulusCenter);
+    float dist = length(dir);
+    if (dist == 0) {
+        // Caso posizione esattamente sul centro: sposto verso raggio interno in direzione x positiva
+        return add(annulusCenter, {section.outerRadius.value, 0});
+    }
+
+    Vec2 dirNormalized = multiply(dir, 1.0f / dist);
+
+    // Clamping del raggio sulla superficie (inner o outer)
+    float clampedDist = dist;
+    if (dist < section.innerRadius.value) {
+        clampedDist = section.innerRadius.value;
+    } else if (dist > section.outerRadius.value) {
+        clampedDist = section.outerRadius.value;
+    } else {
+        // Sei già sulla superficie (o dentro il range), non sposto
+        return position;
+    }
+
+    // Torno la posizione sulla circonferenza corretta
+    return add(annulusCenter, multiply(dirNormalized, clampedDist));
+}
+
+Vec2 velocityTowardsAnnularSection(
+    const Vec2& origin,
+    const Vec2& velocity,
+    const AnnularSection& section,
+    const Vec2& center
+) {
+    // 1) Calcola il vettore da centro a origin
+    Vec2 dir = subtract(origin, center);
+    float dist = length(dir);
+
+    // Se sei esattamente nel centro, scegli una direzione arbitraria (es. orizzontale)
+    if (dist == 0.0f) dir = {1.0f, 0.0f};
+    else dir = normalize(dir);
+
+    // 2) Clamp della distanza sul raggio interno e esterno
+    float clampedDist = dist;
+    if (clampedDist < section.innerRadius.value) clampedDist = section.innerRadius.value;
+    if (clampedDist > section.outerRadius.value) clampedDist = section.outerRadius.value;
+
+    // 3) Calcola l'angolo della posizione origin rispetto al centro
+    float angle = atan2f(dir.y, dir.x);
+
+    // 4) Clamp angolo nell'intervallo della sezione anulare
+    float start = normalizeAngle(section.startAngle.rad);
+    float end = normalizeAngle(section.endAngle.rad);
+    float normalizedAngle = normalizeAngle(angle);
+
+    bool crossesZero = start > end;
+    bool angleInside = crossesZero ? (normalizedAngle >= start || normalizedAngle <= end) 
+                                   : (normalizedAngle >= start && normalizedAngle <= end);
+
+    if (!angleInside) {
+        // Se l'angolo non è dentro l'intervallo, scegli l'angolo più vicino tra start e end
+        float diffStart = fabsf(normalizeAngle(normalizedAngle - start));
+        float diffEnd = fabsf(normalizeAngle(normalizedAngle - end));
+        if (diffStart < diffEnd) normalizedAngle = start;
+        else normalizedAngle = end;
+    }
+
+    // 5) Calcola punto più vicino nella sezione anulare
+    Vec2 closestPoint = {
+        center.x + clampedDist * cosf(normalizedAngle),
+        center.y + clampedDist * sinf(normalizedAngle)
+    };
+
+    // 6) Calcola direzione verso closestPoint da origin
+    Vec2 toSection = subtract(closestPoint, origin);
+    float toSectionLength = length(toSection);
+    if (toSectionLength == 0.0f) return {0.0f, 0.0f};
+    Vec2 toSectionDir = multiply(toSection, 1.0f / toSectionLength);
+
+    // 7) Proietta la velocità sulla direzione verso la sezione
+    float projection = dotProduct(velocity, toSectionDir);
+    if (projection <= 0.0f) return {0.0f, 0.0f}; // La velocità non punta verso la sezione
+
+    return multiply(toSectionDir, projection);
 }

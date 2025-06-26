@@ -50,11 +50,11 @@ int main(){
         planetLayers.push_back(layerSection);
         i++;
     }
-    planetLayers.push_back({{Radius{200.0f}, Radius{0.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
+    planetLayers.push_back({{Radius{0.0f}, Radius{200.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
-    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
+    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
     
-    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {1.0f}, {1.0f}, {});
+    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {1.0f}, {1.0f}, {});
 
     //timing variables
     float time = 0.0f;
