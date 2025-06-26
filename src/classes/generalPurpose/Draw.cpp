@@ -257,10 +257,10 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
         Vec2 position = currentGalaxy.humans.positions[i];
         RectSize size = currentGalaxy.humans.sizes[i];
         Angle angle = currentGalaxy.humans.angles[i];
-        int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width / 2 + screenWidth / 2);
-        int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height + screenHeight / 2);
+        int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width * scale / 2 + screenWidth / 2);
+        int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height * scale + screenHeight / 2);
 
-        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width / 2, size.height, 30, 50, 90, 255);
+        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width * scale / 2, size.height * scale, 30, 50, 90, 255);
     }
 }
 

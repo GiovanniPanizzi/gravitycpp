@@ -31,7 +31,7 @@ int main(){
     float layerRadius = 2000.0f;
     int i = 0;
 
-    /*while(true){
+    while(true){
         if(layerRadius <= 300.0f) break;
         LayerSection layerSection;
         layerSection.material = Material::ROCK;
@@ -52,8 +52,8 @@ int main(){
     }
     planetLayers.push_back({{Radius{200.0f}, Radius{0.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
-    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
-    */
+    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
+    
     currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {1.0f}, {1.0f}, {});
 
     //timing variables
