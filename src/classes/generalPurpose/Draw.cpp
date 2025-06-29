@@ -28,6 +28,13 @@ void Draw::drawFilledRotatedRect(int x, int y, int w, int h, double angleDeg, in
     SDL_DestroyTexture(tex);
 }
 
+void Draw::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+    SDL_Renderer* renderer = window.getSDLRenderer();
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_Rect rect = { x, y, w, h };
+    SDL_RenderFillRect(renderer, &rect);
+}
+
 void Draw::drawFilledCircle(int centerX, int centerY, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     SDL_SetRenderDrawColor(window.getSDLRenderer(), r, g, b, a);
     for (int w = 0; w < radius * 2; w++) {
@@ -248,7 +255,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
             SDL_SetRenderTarget(renderer, nullptr);
 
             currentGalaxy.planets.textures[i] = texture;
-            std::cout << "Texture creata per il pianeta " << i << std::endl;
+            //std::cout << "Texture creata per il pianeta " << i << std::endl;
         }
     }
 

@@ -90,8 +90,8 @@ void HumanController::updateControls(Galaxy& currentGalaxy, size_t entityIndex, 
 
 
 void HumanController::drawState(Galaxy& currentGalaxy, Draw& draw, size_t entityIndex) {
-    /*draw.drawRect(100, 60, currentGalaxy.humans.jumpStaminas[entityIndex].value, 5, 0, 255, 0, 255);
+    draw.drawRect(100, 60, currentGalaxy.humans.jumpStaminas[entityIndex].value, 5, 0, 255, 0, 255);
     draw.drawRect(100 + currentGalaxy.humans.jumpStaminas[entityIndex].value, 60, currentGalaxy.humans.jumpStaminas[entityIndex].maxValue - currentGalaxy.humans.jumpStaminas[entityIndex].value, 5, 255, 0, 0, 255);
     draw.drawRect(100, 80, 20 * jumpingState, 5, 255, 255, 255, 255);
-    draw.drawRect(100 + 20 * jumpingState, 80, 240 - 20 * jumpingState, 5, 100, 100, 100, 255);*/
+    draw.drawRect(100 + 20 * jumpingState, 80, 240 - 20 * jumpingState, 5, 100, 100, 100, 255);
 }

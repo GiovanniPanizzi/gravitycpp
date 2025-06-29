@@ -22,6 +22,8 @@ void mainPlayingFunction(Galaxy& currentGalaxy){
     draw.clearScreen(0, 0, 0, 255);
     draw.adjustCameraPosition(currentGalaxy);
     draw.drawGalaxy(currentGalaxy);
+    humanController.drawState(currentGalaxy, draw, 0);
+
     draw.present();
 }
 
@@ -57,7 +59,9 @@ int main(){
 
     //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {1.0f}, {1.0f}, planetLayers);
     
-    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.9f}, {0.85f}, {});
+    currentGalaxy.addPlanet({-100.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.85f}, {0.85f}, {});
+
+    currentGalaxy.addPlanet({800.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.85f}, {0.85f}, {});
 
     //timing variables
     float time = 0.0f;
@@ -80,7 +84,7 @@ int main(){
             currentFPS = frameCount;
             frameCount = 0;
             time = 0.0f;
-            std::cout << currentFPS << std::endl;
+            //std::cout << currentFPS << std::endl;
         }
         eventListener.listenEvents();
     

@@ -22,9 +22,10 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     //planet with no layers
     if(currentGalaxy.planets.layers[planet].empty()) {
         Vec2 perpendicularVelocity = velocityTowardsPoint(planetCircle.position, humanPosition, currentGalaxy.humans.velocities[humanIndex]);
-        if(length(perpendicularVelocity) != 0) {
-            currentGalaxy.humans.velocities[humanIndex] = multiply(subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity), currentGalaxy.planets.frictions[planet].value);
+        if(length(perpendicularVelocity) > 1) {
+            currentGalaxy.humans.velocities[humanIndex] = subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity);
         }
+        currentGalaxy.humans.velocities[humanIndex] = multiply(currentGalaxy.humans.velocities[humanIndex], currentGalaxy.planets.frictions[planet].value);
         Vec2 dir = subtract(humanPosition, planetCircle.position);
         float dist = length(dir);
 
@@ -70,6 +71,7 @@ void Collider::updateHumanCollisions(Galaxy& currentGalaxy, size_t humanIndex){
         currentGalaxy.humans.planetIndexes[humanIndex] = -1;
         if(humanInPlanet(currentGalaxy, humanIndex, i)) {
             currentGalaxy.humans.planetIndexes[humanIndex] = i;
+            return;
         }
     }
 }

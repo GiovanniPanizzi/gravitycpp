@@ -68,7 +68,7 @@ void Phisics::updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
     int platformId = currentGalaxy.humans.platformIndexes[entityId];
 
     if (platformId != -1) {
-        float omega = currentGalaxy.platforms.angularSpeeds[platformId] * M_PI / 180.0f;
+        float omega = currentGalaxy.platforms.angularSpeeds[platformId];
         int planetId = currentGalaxy.platforms.planetIndexes[platformId];
         Vec2& planetPos = currentGalaxy.planets.positions[planetId];
         Vec2& entityPos = currentGalaxy.humans.positions[entityId];
@@ -99,10 +99,11 @@ void Phisics::updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
 void Phisics::updateEntityAcceleration(Galaxy& currentGalaxy, size_t entityId) {
     currentGalaxy.humans.accelerations[entityId].x = 0.0f;
     currentGalaxy.humans.accelerations[entityId].y = 0.0f;
+    if(currentGalaxy.humans.planetIndexes[entityId] == -1)
     updateEntityGravitalForce(currentGalaxy, entityId);
 }
 
-void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
+void Phisics::entitiesUpdate(Galaxy& currentGalaxy) { 
     collider.updateHumansCollisions(currentGalaxy);
     // Update rotation, overlap, and stamina for each entity
     for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
@@ -120,6 +121,10 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
         }
 
         // Calculate total velocity
+        if(length(currentGalaxy.humans.velocities[entityId]) < 0.01f) {
+            currentGalaxy.humans.velocities[entityId].x = 0.0f;
+            currentGalaxy.humans.velocities[entityId].y = 0.0f;
+        }
         float totalVx = currentGalaxy.humans.velocities[entityId].x + currentGalaxy.humans.relativeVelocities[entityId].x;
         float totalVy = currentGalaxy.humans.velocities[entityId].y + currentGalaxy.humans.relativeVelocities[entityId].y;
 
@@ -128,8 +133,8 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
         currentGalaxy.humans.positions[entityId].y += totalVy;
 
         // Update motion and acceleration
-        updateEntityAcceleration(currentGalaxy, entityId);
         updateEntityMotion(currentGalaxy, entityId);
+        updateEntityAcceleration(currentGalaxy, entityId);
 
         // Update entity rotation
         updateEntityRotation(currentGalaxy, entityId);
