@@ -4,6 +4,7 @@
 #include "../include/classes/systems/Phisics.hpp"
 #include "../include/utilities/globals.hpp"
 #include "../include/objects/Galaxy.hpp"
+#include "../include/classes/systems/HumanController.hpp"
 #include <iostream>
 
 //create main classes
@@ -11,10 +12,12 @@ Window window("Gravity 5.0", 800, 600);
 EventListener eventListener(window);
 Draw draw(window);
 Phisics phisics;
+HumanController humanController;
 
 void mainPlayingFunction(Galaxy& currentGalaxy){
     //collider
     phisics.update(currentGalaxy);
+    humanController.updateControls(currentGalaxy, 0, eventListener.isLeftPressed(), eventListener.isRightPressed(), eventListener.isUpPressed());
     //draw
     draw.clearScreen(0, 0, 0, 255);
     draw.adjustCameraPosition(currentGalaxy);
@@ -52,9 +55,9 @@ int main(){
     }
     planetLayers.push_back({{Radius{0.0f}, Radius{200.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
-    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {300.0f}, {1.0f}, {1.0f}, planetLayers);
+    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {1.0f}, {1.0f}, planetLayers);
     
-    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {1.0f}, {1.0f}, {});
+    currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.9f}, {0.85f}, {});
 
     //timing variables
     float time = 0.0f;

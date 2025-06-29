@@ -9,7 +9,7 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     Vec2 humanFuturePosition = currentGalaxy.humans.positions[humanIndex];
     Circle planetCircle;
     planetCircle.position = currentGalaxy.planets.positions[planet];
-    planetCircle.radius = currentGalaxy.planets.radii[planet];
+    planetCircle.radius.value = currentGalaxy.planets.radii[planet].value;
     Rect humanRect;
     humanRect.position = {humanFuturePosition.x - currentGalaxy.humans.sizes[humanIndex].width / 2, humanFuturePosition.y - currentGalaxy.humans.sizes[humanIndex].height};
     humanRect.size = currentGalaxy.humans.sizes[humanIndex];
@@ -23,7 +23,7 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     if(currentGalaxy.planets.layers[planet].empty()) {
         Vec2 perpendicularVelocity = velocityTowardsPoint(planetCircle.position, humanPosition, currentGalaxy.humans.velocities[humanIndex]);
         if(length(perpendicularVelocity) != 0) {
-            currentGalaxy.humans.velocities[humanIndex] = subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity);
+            currentGalaxy.humans.velocities[humanIndex] = multiply(subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity), currentGalaxy.planets.frictions[planet].value);
         }
         Vec2 dir = subtract(humanPosition, planetCircle.position);
         float dist = length(dir);
@@ -58,6 +58,7 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
                 currentGalaxy.humans.velocities[humanIndex] = subtract(currentGalaxy.humans.velocities[humanIndex], perpendicularVelocity);
             }
             humanPosition = projectOntoAnnularSectionSurface(humanPosition, currentGalaxy.planets.layers[planet][i].shape, planetCircle.position);
+            return true;
         }
     }
 

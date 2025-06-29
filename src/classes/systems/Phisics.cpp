@@ -1,4 +1,5 @@
 #include "../../../include/classes/systems/Phisics.hpp"
+#include <iostream>
 
 Collider collider;
 
@@ -105,10 +106,8 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
     collider.updateHumansCollisions(currentGalaxy);
     // Update rotation, overlap, and stamina for each entity
     for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
-        size_t entityId = i;
 
-        // Update entity rotation
-        updateEntityRotation(currentGalaxy, entityId);
+        size_t entityId = i;
 
         // Regenerate jump stamina
         if (currentGalaxy.humans.jumpStaminas[entityId].value < currentGalaxy.humans.jumpStaminas[entityId].maxValue) {
@@ -119,11 +118,6 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
         if (currentGalaxy.humans.moveStaminas[entityId].value < currentGalaxy.humans.moveStaminas[entityId].maxValue) {
             currentGalaxy.humans.moveStaminas[entityId].value++;
         }
-    }
-
-    // Update motion, acceleration, and hitboxes for each entity
-    for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
-        size_t entityId = currentGalaxy.humans.entities[i].index;
 
         // Calculate total velocity
         float totalVx = currentGalaxy.humans.velocities[entityId].x + currentGalaxy.humans.relativeVelocities[entityId].x;
@@ -134,8 +128,11 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
         currentGalaxy.humans.positions[entityId].y += totalVy;
 
         // Update motion and acceleration
-        updateEntityMotion(currentGalaxy, entityId);
         updateEntityAcceleration(currentGalaxy, entityId);
+        updateEntityMotion(currentGalaxy, entityId);
+
+        // Update entity rotation
+        updateEntityRotation(currentGalaxy, entityId);
 
         // Update hitbox
         float radAngle = currentGalaxy.humans.angles[entityId].rad;

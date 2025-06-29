@@ -225,6 +225,30 @@ src/classes/systems/Collider.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.s
 .PHONY : src/classes/systems/Collider.cpp.s
 
+src/classes/systems/HumanController.o: src/classes/systems/HumanController.cpp.o
+.PHONY : src/classes/systems/HumanController.o
+
+# target to build an object file
+src/classes/systems/HumanController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/HumanController.cpp.o
+.PHONY : src/classes/systems/HumanController.cpp.o
+
+src/classes/systems/HumanController.i: src/classes/systems/HumanController.cpp.i
+.PHONY : src/classes/systems/HumanController.i
+
+# target to preprocess a source file
+src/classes/systems/HumanController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/HumanController.cpp.i
+.PHONY : src/classes/systems/HumanController.cpp.i
+
+src/classes/systems/HumanController.s: src/classes/systems/HumanController.cpp.s
+.PHONY : src/classes/systems/HumanController.s
+
+# target to generate assembly for a file
+src/classes/systems/HumanController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gravity.dir/build.make CMakeFiles/gravity.dir/src/classes/systems/HumanController.cpp.s
+.PHONY : src/classes/systems/HumanController.cpp.s
+
 src/classes/systems/Phisics.o: src/classes/systems/Phisics.cpp.o
 .PHONY : src/classes/systems/Phisics.o
 
@@ -366,6 +390,9 @@ help:
 	@echo "... src/classes/systems/Collider.o"
 	@echo "... src/classes/systems/Collider.i"
 	@echo "... src/classes/systems/Collider.s"
+	@echo "... src/classes/systems/HumanController.o"
+	@echo "... src/classes/systems/HumanController.i"
+	@echo "... src/classes/systems/HumanController.s"
 	@echo "... src/classes/systems/Phisics.o"
 	@echo "... src/classes/systems/Phisics.i"
 	@echo "... src/classes/systems/Phisics.s"

@@ -102,7 +102,7 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
 
     float offsetDistance = 50.0f;
     float direction = currentGalaxy.humans.directions[0].value;
-    float angleRad = currentGalaxy.humans.angles[0].rad * M_PI / 180.0f;
+    float angleRad = currentGalaxy.humans.angles[0].rad;
 
     float offsetX = offsetDistance * direction * cos(angleRad);
     float offsetY = offsetDistance * direction * sin(angleRad);
@@ -260,7 +260,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
         int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width * scale / 2 + screenWidth / 2);
         int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height * scale + screenHeight / 2);
 
-        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width * scale / 2, size.height * scale, 30, 50, 90, 255);
+        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width * scale / 2, size.height * scale, 100, 50, 130, 255);
     }
 }
 

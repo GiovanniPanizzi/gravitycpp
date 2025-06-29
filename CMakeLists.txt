@@ -18,6 +18,7 @@ add_executable(gravity
 
     src/classes/systems/Phisics.cpp 
     src/classes/systems/Collider.cpp
+    src/classes/systems/HumanController.cpp
 
     src/objects/Galaxy.cpp
 

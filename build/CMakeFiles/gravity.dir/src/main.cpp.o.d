@@ -982,6 +982,8 @@ CMakeFiles/gravity.dir/src/main.cpp.o: \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/../../objects/Galaxy.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/utilities/globals.hpp \
   /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/objects/Galaxy.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/HumanController.hpp \
+  /Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/../include/classes/systems/../generalPurpose/Draw.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream \

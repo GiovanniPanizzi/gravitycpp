@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/EventListener.cpp" "CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/generalPurpose/EventListener.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/generalPurpose/Window.cpp" "CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/generalPurpose/Window.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/Collider.cpp" "CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/systems/Collider.cpp.o.d"
+  "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/HumanController.cpp" "CMakeFiles/gravity.dir/src/classes/systems/HumanController.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/systems/HumanController.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/classes/systems/Phisics.cpp" "CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/classes/systems/Phisics.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/main.cpp" "CMakeFiles/gravity.dir/src/main.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/main.cpp.o.d"
   "/Users/giovannipanizzi/Desktop/SuperModular-Gravity/src/objects/Galaxy.cpp" "CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o" "gcc" "CMakeFiles/gravity.dir/src/objects/Galaxy.cpp.o.d"
