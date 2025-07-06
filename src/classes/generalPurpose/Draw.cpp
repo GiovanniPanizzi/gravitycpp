@@ -123,27 +123,96 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
 
     cameraPosition.x += (targetX - cameraPosition.x) * t * dist / 30.0f;
     cameraPosition.y += (targetY - cameraPosition.y) * t * dist / 30.0f;
+
+    //adjust camera angle
+    float targetAngle = currentGalaxy.humans.angles[0].rad;
+    float angleDiff = targetAngle - cameraAngle;
+    if (angleDiff > M_PI) {
+        angleDiff -= 2 * M_PI;
+    } else if (angleDiff < -M_PI) {
+        angleDiff += 2 * M_PI;
+    }
+    cameraAngle += angleDiff * t * dist / 30.0f;
+    if (cameraAngle < 0) {
+        cameraAngle += 2 * M_PI;
+    } else if (cameraAngle >= 2 * M_PI) {
+        cameraAngle -= 2 * M_PI;
+    }
 }
 
 void Draw::drawGalaxy(Galaxy& currentGalaxy){
     SDL_Renderer* renderer = window.getSDLRenderer();
 
-    //draw planets
-    for (int i = 0; i < currentGalaxy.planets.entities.size(); i++) {
+    // Generate a color palette based on a base RGB color with small random variations
+    auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 4, int variation = 3) {
+        std::vector<SDL_Color> palette;
+        auto clampColor = [](int val) -> Uint8 {
+            return static_cast<Uint8>(std::clamp(val, 0, 255));
+        };
+        // Add base color as first palette color
+        palette.push_back({ baseR, baseG, baseB, 255 });
+        // Generate additional colors with slight random variation
+        for (int i = 1; i < numColors; ++i) {
+            int vr = (rand() % (variation * 2 + 1)) - variation;
+            int vg = (rand() % (variation * 2 + 1)) - variation;
+            int vb = (rand() % (variation * 2 + 1)) - variation;
+            palette.push_back({
+                clampColor(baseR + vr),
+                clampColor(baseG + vg),
+                clampColor(baseB + vb),
+                255
+            });
+        }
+        return palette;
+    };
 
-        if(currentGalaxy.planets.textures[i] != nullptr) {
+    // Draw a planet as a circle composed of small colored blocks (pixels)
+    auto drawPlanetWithBlocks = [&](int centerX, int centerY, float radius, const std::vector<SDL_Color>& palette) {
+        int blockSize = 1; // Size of each block
+        for (int y = -static_cast<int>(radius); y <= static_cast<int>(radius); y += blockSize) {
+            for (int x = -static_cast<int>(radius); x <= static_cast<int>(radius); x += blockSize) {
+                float dist = std::sqrt(float(x*x + y*y));
+                if (dist <= radius) {
+                    // Choose color from palette in a pattern based on block position
+                    int index = (x / blockSize + y / blockSize) % static_cast<int>(palette.size());
+                    if (index < 0) index += palette.size();
+                    SDL_Color c = palette[index];
+                    SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+                    SDL_FRect rect = { static_cast<float>(centerX + x), static_cast<float>(centerY + y), (float)blockSize, (float)blockSize };
+                    SDL_RenderFillRectF(renderer, &rect);
+                }
+            }
+        }
+    };
+
+    // Center of the screen (camera)
+    float cx = screenWidth / 2.0f;
+    float cy = screenHeight / 2.0f;
+
+    // Loop over all planets
+    for (int i = 0; i < currentGalaxy.planets.entities.size(); i++) {
+        if (currentGalaxy.planets.textures[i] != nullptr) {
             SDL_Texture* texture = currentGalaxy.planets.textures[i];
             Vec2 position = currentGalaxy.planets.positions[i];
             Radius radius = currentGalaxy.planets.radii[i];
             Angle angle = currentGalaxy.planets.angles[i];
 
-            int x = static_cast<int>(position.x * scale - cameraPosition.x * scale + screenWidth / 2);
-            int y = static_cast<int>(position.y * scale - cameraPosition.y * scale + screenHeight / 2);
+            // Compute position relative to camera
+            Vec2 relativePos = subtract(position, cameraPosition);
+
+            // Rotate around camera by -cameraAngle
+            float cosA = cos(-cameraAngle);
+            float sinA = sin(-cameraAngle);
+
+            float rotatedX = relativePos.x * cosA - relativePos.y * sinA;
+            float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
+
+            // Screen coordinates with scale and screen center offset
+            int x = static_cast<int>(rotatedX * scale + screenWidth / 2);
+            int y = static_cast<int>(rotatedY * scale + screenHeight / 2);
 
             int pivotX = static_cast<int>(radius.value * scale);
             int pivotY = static_cast<int>(radius.value * scale);
-
-            double angleRad = angle.rad * M_PI / 180.0;
 
             int w = static_cast<int>(radius.value * scale * 2);
             int h = static_cast<int>(radius.value * scale * 2);
@@ -156,51 +225,58 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
             SDL_FPoint pivot = { static_cast<float>(pivotX), static_cast<float>(pivotY) };
 
-            float angleDeg = static_cast<float>(angleRad * 180.0 / M_PI);
+            // Rotate planet by its angle minus camera angle (in degrees)
+            float angleDeg = static_cast<float>((angle.rad - cameraAngle) * 180.0 / M_PI);
 
-            SDL_RenderCopyExF(window.getSDLRenderer(), texture, NULL, &dstRect, angleDeg, &pivot, SDL_FLIP_NONE);
+            SDL_RenderCopyExF(renderer, texture, NULL, &dstRect, angleDeg, &pivot, SDL_FLIP_NONE);
         }
-
-        //create texture for planets
-        if (currentGalaxy.planets.textures[i] == nullptr) {
+        else {
+            // If no texture, create a procedural texture with blocks for planet surface and layers
 
             int diameter = static_cast<int>(currentGalaxy.planets.radii[i].value * 2.0f * scale);
-
             SDL_Texture* texture = SDL_CreateTexture(renderer,
                                                     SDL_PIXELFORMAT_RGBA8888,
                                                     SDL_TEXTUREACCESS_TARGET,
                                                     diameter, diameter);
             SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
             if (!texture) {
-                SDL_Log("Errore creazione texture: %s", SDL_GetError());
+                SDL_Log("Error creating texture: %s", SDL_GetError());
                 continue;
             }
-
             SDL_SetRenderTarget(renderer, texture);
             SDL_RenderSetViewport(renderer, nullptr);
-
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
             SDL_RenderClear(renderer);
 
             int centerX = diameter / 2;
             int centerY = diameter / 2;
+            float radius = currentGalaxy.planets.radii[i].value * scale;
 
-            if(currentGalaxy.planets.layers[i].empty()) {
-                drawFilledCircle(centerX, centerY, static_cast<int>(currentGalaxy.planets.radii[i].value * scale), 60, 40, 40, 255);
-                SDL_SetRenderTarget(renderer, nullptr);
-                currentGalaxy.planets.textures[i] = texture;
-                continue;
+            // Determine base color based on material type
+            Uint8 baseR = 60, baseG = 40, baseB = 40;
+            if (!currentGalaxy.planets.layers[i].empty()) {
+                switch (currentGalaxy.planets.layers[i][0].material) {
+                    case Material::ROCK: baseR = 60; baseG = 40; baseB = 40; break;
+                    case Material::ICE: baseR = 100; baseG = 100; baseB = 255; break;
+                    case Material::METAL: baseR = 200; baseG = 200; baseB = 200; break;
+                    case Material::GRAVITANIUM: baseR = 50; baseG = 0; baseB = 100; break;
+                    case Material::VOID: baseR = 50; baseG = 20; baseB = 20; break;
+                    default: baseR = 255; baseG = 255; baseB = 255; break;
+                }
             }
 
-            drawFilledCircle(centerX, centerY, static_cast<int>(currentGalaxy.planets.radii[i].value * scale), 40, 20, 20, 255);
+            // Generate base palette and draw planet blocks
+            auto basePalette = generatePalette(baseR, baseG, baseB, 4, 3);
+            drawPlanetWithBlocks(centerX, centerY, radius, basePalette);
 
+            // Draw layers as rings of blocks with slightly different color palette
             for (const auto& section : currentGalaxy.planets.layers[i]) {
                 float outerRadius = section.shape.outerRadius.value * scale;
                 float innerRadius = section.shape.innerRadius.value * scale;
                 float startAngle = section.shape.startAngle.rad;
                 float endAngle = section.shape.endAngle.rad;
 
-                Uint8 r = 255, g = 255, b = 255, a = 255;
+                Uint8 r = 255, g = 255, b = 255;
                 switch (section.material) {
                     case Material::ROCK: r = 60; g = 40; b = 40; break;
                     case Material::ICE: r = 100; g = 100; b = 255; break;
@@ -210,64 +286,58 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
                     default: r = 255; g = 255; b = 255; break;
                 }
 
-                SDL_SetRenderDrawColor(renderer, r, g, b, a);
+                // Create palette for layer with colors slightly brighter
+                auto layerPalette = generatePalette(std::min(r + 30, 255), std::min(g + 30, 255), std::min(b + 30, 255), 4, 3);
 
-                // Disegna la sezione circolare (approssimazione con triangoli)
                 const int segments = 100;
                 float step = (endAngle - startAngle) / segments;
 
+                // Draw blocks along the ring shape between inner and outer radius
                 for (int s = 0; s < segments; ++s) {
                     float a1 = startAngle + s * step;
                     float a2 = startAngle + (s + 1) * step;
 
-                    float x1_outer = centerX + outerRadius * std::cos(a1);
-                    float y1_outer = centerY + outerRadius * std::sin(a1);
-                    float x2_outer = centerX + outerRadius * std::cos(a2);
-                    float y2_outer = centerY + outerRadius * std::sin(a2);
+                    for (float radPos = innerRadius; radPos < outerRadius; radPos += 4.0f) {
+                        float midAngle = (a1 + a2) / 2;
+                        float xBlock = centerX + radPos * std::cos(midAngle);
+                        float yBlock = centerY + radPos * std::sin(midAngle);
 
-                    float x1_inner = centerX + innerRadius * std::cos(a1);
-                    float y1_inner = centerY + innerRadius * std::sin(a1);
-                    float x2_inner = centerX + innerRadius * std::cos(a2);
-                    float y2_inner = centerY + innerRadius * std::sin(a2);
+                        int colorIndex = (static_cast<int>(xBlock / 4) + static_cast<int>(yBlock / 4)) % static_cast<int>(layerPalette.size());
+                        if (colorIndex < 0) colorIndex += layerPalette.size();
 
-                    // Disegna il "quad" curvo come due triangoli
-                    SDL_Vertex verts[6];
+                        SDL_Color c = layerPalette[colorIndex];
+                        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
 
-                    verts[0].position = { x1_inner, y1_inner };
-                    verts[1].position = { x1_outer, y1_outer };
-                    verts[2].position = { x2_outer, y2_outer };
-
-                    verts[3].position = { x1_inner, y1_inner };
-                    verts[4].position = { x2_outer, y2_outer };
-                    verts[5].position = { x2_inner, y2_inner };
-
-                    for (int v = 0; v < 6; ++v) {
-                        verts[v].color.r = r;
-                        verts[v].color.g = g;
-                        verts[v].color.b = b;
-                        verts[v].color.a = a;
+                        SDL_FRect blockRect = { xBlock, yBlock, 4.0f, 4.0f };
+                        SDL_RenderFillRectF(renderer, &blockRect);
                     }
-
-                    SDL_RenderGeometry(renderer, nullptr, verts, 6, nullptr, 0);
                 }
             }
-
             SDL_SetRenderTarget(renderer, nullptr);
-
             currentGalaxy.planets.textures[i] = texture;
-            //std::cout << "Texture creata per il pianeta " << i << std::endl;
         }
     }
 
-    //draw humans
-    for( int i = 0; i < currentGalaxy.humans.positions.size(); i++) {
+    // Draw humans, applying the same rotation relative to the camera
+    for (int i = 0; i < currentGalaxy.humans.positions.size(); i++) {
         Vec2 position = currentGalaxy.humans.positions[i];
         RectSize size = currentGalaxy.humans.sizes[i];
         Angle angle = currentGalaxy.humans.angles[i];
-        int x = static_cast<int>(position.x * scale - cameraPosition.x * scale - size.width * scale / 2 + screenWidth / 2);
-        int y = static_cast<int>(position.y * scale - cameraPosition.y * scale - size.height * scale + screenHeight / 2);
 
-        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), angle.rad * 180.0 / M_PI, size.width * scale / 2, size.height * scale, 100, 50, 130, 255);
+        Vec2 relativePos = subtract(position, cameraPosition);
+
+        float cosA = cos(-cameraAngle);
+        float sinA = sin(-cameraAngle);
+
+        float rotatedX = relativePos.x * cosA - relativePos.y * sinA;
+        float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
+
+        int x = static_cast<int>(rotatedX * scale - size.width * scale / 2 + screenWidth / 2);
+        int y = static_cast<int>(rotatedY * scale - size.height * scale + screenHeight / 2);
+
+        float objAngleDeg = (angle.rad - cameraAngle) * 180.0f / M_PI;
+
+        drawFilledRotatedRect(x, y, static_cast<int>(size.width * scale), static_cast<int>(size.height * scale), objAngleDeg, size.width * scale / 2, size.height * scale, 100, 50, 130, 255);
     }
 }
 

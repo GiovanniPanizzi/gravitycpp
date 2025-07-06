@@ -57,11 +57,7 @@ void Phisics::updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
             currentGalaxy.humans.accelerations[entityId].y,
             currentGalaxy.humans.accelerations[entityId].x
         ) - M_PI / 2;
-    } else {
-        float dx = currentGalaxy.planets.positions[planetId].x - currentGalaxy.humans.positions[entityId].x;
-        float dy = currentGalaxy.planets.positions[planetId].y - currentGalaxy.humans.positions[entityId].y;
-        currentGalaxy.humans.angles[entityId].rad = std::atan2(dy, dx) - M_PI / 2;
-    }
+    } 
 }
 
 void Phisics::updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {

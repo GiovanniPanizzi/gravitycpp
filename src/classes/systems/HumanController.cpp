@@ -34,7 +34,7 @@ void HumanController::jump(Galaxy& currentGalaxy, size_t entityIndex) {
         bool isOnGround = currentGalaxy.humans.planetIndexes[entityIndex] != -1 || currentGalaxy.humans.platformIndexes[entityIndex] != -1;
 
         if (isOnGround || coyoteTimer > 0) {
-            currentGalaxy.humans.jumpStaminas[entityIndex].value = 0;
+            currentGalaxy.humans.jumpStaminas[entityIndex].value = 0.0f;
 
             float dx;
             float dy;
@@ -80,6 +80,9 @@ void HumanController::updateControls(Galaxy& currentGalaxy, size_t entityIndex, 
         }
     } else {
         if (jumpingState > 0.0f) {
+            if(jumpingState < 5.0f){
+                jumpingState = 5.0f;
+            }
             if (jumpingState > 12.0f) {
                 jumpingState = 12.0f;
             }

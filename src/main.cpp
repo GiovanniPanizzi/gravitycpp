@@ -42,10 +42,14 @@ int main(){
         layerSection.material = Material::ROCK;
         layerSection.shape.outerRadius.value = layerRadius;
         if(i % 2 == 0){
-            layerSection.shape.startAngle.rad = 0.0f + i * M_PI / 8;
+            layerSection.shape.startAngle.rad = 0.0f + M_PI * i / 8;
             layerSection.shape.innerRadius.value = layerRadius - 50.0f;
-            layerSection.shape.endAngle.rad = 2 * M_PI - M_PI / 8 + i * M_PI / 8;
+            layerSection.shape.endAngle.rad = 2 * M_PI - M_PI / 8 + M_PI * i / 8;
             layerRadius -= 50.0f;
+            while(layerSection.shape.startAngle.rad > 2 * M_PI) {
+                layerSection.shape.endAngle.rad -= 2 * M_PI;
+                layerSection.shape.startAngle.rad -= 2 * M_PI;
+            }
         } else {
             layerSection.shape.startAngle.rad = 0.0f;
             layerSection.shape.innerRadius.value = layerRadius - 150.0f;
@@ -57,7 +61,7 @@ int main(){
     }
     planetLayers.push_back({{Radius{0.0f}, Radius{200.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
-    //currentGalaxy.addPlanet({0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {1.0f}, {1.0f}, planetLayers);
+    currentGalaxy.addPlanet({-2000.0f, 4000.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {0.85f}, {0.6f}, planetLayers);
     
     currentGalaxy.addPlanet({-100.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.85f}, {0.85f}, {});
 
