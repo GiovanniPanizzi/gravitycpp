@@ -49,7 +49,7 @@ void Draw::drawFilledCircle(int centerX, int centerY, int radius, Uint8 r, Uint8
 }
 
 void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius, float startAngleRad, float endAngleRad, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
- SDL_Renderer* renderer = window.getSDLRenderer();
+    SDL_Renderer* renderer = window.getSDLRenderer();
 
     int segments = std::max(4, int((endAngleRad - startAngleRad) / (2 * M_PI) * 300));
     float totalAngle = endAngleRad - startAngleRad;
@@ -104,6 +104,76 @@ void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int out
                        indices.data(), static_cast<int>(indices.size()));
 }
 
+void Draw::drawAnnularSectionWithPalette(
+    int centerX, int centerY, 
+    int innerRadius, int outerRadius, 
+    float startAngleRad, float endAngleRad, 
+    const std::vector<SDL_Color>& palette,
+    Uint8 a = 255)
+{
+    SDL_Renderer* renderer = window.getSDLRenderer();
+
+    // Calculate number of segments (blocks) along the arc
+    int segments = std::max(4, int((endAngleRad - startAngleRad) / (2 * M_PI) * 300));
+    float totalAngle = endAngleRad - startAngleRad;
+    int numArcSegments = static_cast<int>(std::ceil(totalAngle / (2 * M_PI) * segments));
+    if (numArcSegments < 2) numArcSegments = 2;
+
+    std::vector<SDL_Vertex> vertices;
+    std::vector<int> indices;
+
+    vertices.reserve((numArcSegments + 1) * 2);
+    indices.reserve(numArcSegments * 6);
+
+    for (int i = 0; i <= numArcSegments; ++i) {
+        float currentAngle = startAngleRad + (static_cast<float>(i) / numArcSegments) * totalAngle;
+
+        // Choose color from palette cycling by segment index (except for last vertex)
+        // For the last vertex (i == numArcSegments) reuse previous color to avoid mismatch
+        int colorIndex = (i == numArcSegments) ? (i - 1) % static_cast<int>(palette.size()) : i % static_cast<int>(palette.size());
+        SDL_Color col = palette[colorIndex];
+        col.a = a;
+
+        // Inner vertex
+        SDL_Vertex innerVert;
+        innerVert.position.x = static_cast<float>(centerX + innerRadius * std::cos(currentAngle));
+        innerVert.position.y = static_cast<float>(centerY + innerRadius * std::sin(currentAngle));
+        innerVert.color = col;
+        innerVert.tex_coord = {0.0f, 0.0f};
+        vertices.push_back(innerVert);
+
+        // Outer vertex
+        SDL_Vertex outerVert;
+        outerVert.position.x = static_cast<float>(centerX + outerRadius * std::cos(currentAngle));
+        outerVert.position.y = static_cast<float>(centerY + outerRadius * std::sin(currentAngle));
+        outerVert.color = col;
+        outerVert.tex_coord = {0.0f, 0.0f};
+        vertices.push_back(outerVert);
+    }
+
+    // Create indices for triangles forming quads between segments
+    for (int i = 0; i < numArcSegments; ++i) {
+        int v0 = i * 2;       // inner current
+        int v1 = i * 2 + 1;   // outer current
+        int v2 = (i + 1) * 2; // inner next
+        int v3 = (i + 1) * 2 + 1; // outer next
+
+        // First triangle
+        indices.push_back(v0);
+        indices.push_back(v1);
+        indices.push_back(v2);
+
+        // Second triangle
+        indices.push_back(v2);
+        indices.push_back(v1);
+        indices.push_back(v3);
+    }
+
+    SDL_RenderGeometry(renderer, nullptr,
+                       vertices.data(), static_cast<int>(vertices.size()),
+                       indices.data(), static_cast<int>(indices.size()));
+}
+
 void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
     Vec2 playerPosition = currentGalaxy.humans.positions[0];
 
@@ -132,7 +202,17 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
     } else if (angleDiff < -M_PI) {
         angleDiff += 2 * M_PI;
     }
-    cameraAngle += angleDiff * t * dist / 30.0f;
+    //if angle diff is too large, slow down the camera rotation
+    if (fabs(angleDiff) > M_PI / 2) {
+        angleDiff = (angleDiff > 0 ? 1 : -1) * M_PI / 2;
+    }
+
+    if(currentGalaxy.humans.planetIndexes[0] == -1) {
+        cameraAngle += angleDiff * t * dist / 120.0f;
+    }
+    else{
+        cameraAngle += angleDiff * t * dist / 90.0f;
+    }
     if (cameraAngle < 0) {
         cameraAngle += 2 * M_PI;
     } else if (cameraAngle >= 2 * M_PI) {
@@ -144,7 +224,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
     SDL_Renderer* renderer = window.getSDLRenderer();
 
     // Generate a color palette based on a base RGB color with small random variations
-    auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 4, int variation = 3) {
+    auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 2, int variation = 5) {
         std::vector<SDL_Color> palette;
         auto clampColor = [](int val) -> Uint8 {
             return static_cast<Uint8>(std::clamp(val, 0, 255));
@@ -168,7 +248,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
     // Draw a planet as a circle composed of small colored blocks (pixels)
     auto drawPlanetWithBlocks = [&](int centerX, int centerY, float radius, const std::vector<SDL_Color>& palette) {
-        int blockSize = 1; // Size of each block
+        int blockSize = 2; // Size of each block
         for (int y = -static_cast<int>(radius); y <= static_cast<int>(radius); y += blockSize) {
             for (int x = -static_cast<int>(radius); x <= static_cast<int>(radius); x += blockSize) {
                 float dist = std::sqrt(float(x*x + y*y));
@@ -231,8 +311,6 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
             SDL_RenderCopyExF(renderer, texture, NULL, &dstRect, angleDeg, &pivot, SDL_FLIP_NONE);
         }
         else {
-            // If no texture, create a procedural texture with blocks for planet surface and layers
-
             int diameter = static_cast<int>(currentGalaxy.planets.radii[i].value * 2.0f * scale);
             SDL_Texture* texture = SDL_CreateTexture(renderer,
                                                     SDL_PIXELFORMAT_RGBA8888,
@@ -252,7 +330,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
             int centerY = diameter / 2;
             float radius = currentGalaxy.planets.radii[i].value * scale;
 
-            // Determine base color based on material type
+            // Base color for planet surface
             Uint8 baseR = 60, baseG = 40, baseB = 40;
             if (!currentGalaxy.planets.layers[i].empty()) {
                 switch (currentGalaxy.planets.layers[i][0].material) {
@@ -265,11 +343,10 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
                 }
             }
 
-            // Generate base palette and draw planet blocks
-            auto basePalette = generatePalette(baseR, baseG, baseB, 4, 3);
+            auto basePalette = generatePalette(baseR, baseG, baseB, 4, 1);  // simpler palette, no variance
             drawPlanetWithBlocks(centerX, centerY, radius, basePalette);
 
-            // Draw layers as rings of blocks with slightly different color palette
+            // Draw layers simply with solid color blocks (no patterns)
             for (const auto& section : currentGalaxy.planets.layers[i]) {
                 float outerRadius = section.shape.outerRadius.value * scale;
                 float innerRadius = section.shape.innerRadius.value * scale;
@@ -286,33 +363,17 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
                     default: r = 255; g = 255; b = 255; break;
                 }
 
-                // Create palette for layer with colors slightly brighter
+                // Create palette for layer with colors slightly brighter than base
                 auto layerPalette = generatePalette(std::min(r + 30, 255), std::min(g + 30, 255), std::min(b + 30, 255), 4, 3);
 
-                const int segments = 100;
-                float step = (endAngle - startAngle) / segments;
-
-                // Draw blocks along the ring shape between inner and outer radius
-                for (int s = 0; s < segments; ++s) {
-                    float a1 = startAngle + s * step;
-                    float a2 = startAngle + (s + 1) * step;
-
-                    for (float radPos = innerRadius; radPos < outerRadius; radPos += 4.0f) {
-                        float midAngle = (a1 + a2) / 2;
-                        float xBlock = centerX + radPos * std::cos(midAngle);
-                        float yBlock = centerY + radPos * std::sin(midAngle);
-
-                        int colorIndex = (static_cast<int>(xBlock / 4) + static_cast<int>(yBlock / 4)) % static_cast<int>(layerPalette.size());
-                        if (colorIndex < 0) colorIndex += layerPalette.size();
-
-                        SDL_Color c = layerPalette[colorIndex];
-                        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
-
-                        SDL_FRect blockRect = { xBlock, yBlock, 4.0f, 4.0f };
-                        SDL_RenderFillRectF(renderer, &blockRect);
-                    }
-                }
+                // Draw the annular section ring with palette colors
+                drawAnnularSectionWithPalette(centerX, centerY,
+                                            static_cast<int>(innerRadius),
+                                            static_cast<int>(outerRadius),
+                                            startAngle, endAngle,
+                                            layerPalette);
             }
+
             SDL_SetRenderTarget(renderer, nullptr);
             currentGalaxy.planets.textures[i] = texture;
         }
