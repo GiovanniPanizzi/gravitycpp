@@ -10,6 +10,7 @@ class Galaxy {
     Humans humans;
     Platforms platforms;
     Worms worms;
+    int starsDistribution;
 
     Galaxy();
 

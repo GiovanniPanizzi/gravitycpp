@@ -1,5 +1,6 @@
 #include "../../../include/classes/generalPurpose/Draw.hpp"
 #include <iostream>
+#include <functional>
 #include <vector>
 
 Draw::Draw(Window& window) : window(window) {}
@@ -116,7 +117,7 @@ void Draw::drawAnnularSectionWithPalette(
     // Calculate number of segments (blocks) along the arc
     int segments = std::max(4, int((endAngleRad - startAngleRad) / (2 * M_PI) * 300));
     float totalAngle = endAngleRad - startAngleRad;
-    int numArcSegments = static_cast<int>(std::ceil(totalAngle / (2 * M_PI) * segments));
+    int numArcSegments = static_cast<int>(std::ceil(totalAngle / (2 * M_PI) * segments * (outerRadius - innerRadius)));
     if (numArcSegments < 2) numArcSegments = 2;
 
     std::vector<SDL_Vertex> vertices;
@@ -208,10 +209,10 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
     }
 
     if(currentGalaxy.humans.planetIndexes[0] == -1) {
-        cameraAngle += angleDiff * t * dist / 120.0f;
+        cameraAngle += angleDiff * t * dist / 150.0f;
     }
     else{
-        cameraAngle += angleDiff * t * dist / 90.0f;
+        cameraAngle += angleDiff * t * dist / 120.0f;
     }
     if (cameraAngle < 0) {
         cameraAngle += 2 * M_PI;
@@ -223,8 +224,80 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
 void Draw::drawGalaxy(Galaxy& currentGalaxy){
     SDL_Renderer* renderer = window.getSDLRenderer();
 
+    int cellSize = 32;
+    int starDensity = 80;
+    float parallax = 0.2f;
+
+    Vec2 starCamPos = {
+        cameraPosition.x * parallax,
+        cameraPosition.y * parallax
+    };
+
+    Vec2 screenCenter = {
+        static_cast<float>(screenWidth) / 2.0f,
+        static_cast<float>(screenHeight) / 2.0f
+    };
+
+    // Calcolo del mondo visibile
+    float rangeX = screenWidth * 1.5f;
+    float rangeY = screenHeight * 1.5f;
+
+    int minX = static_cast<int>(floor((starCamPos.x - rangeX) / cellSize));
+    int maxX = static_cast<int>(ceil((starCamPos.x + rangeX) / cellSize));
+    int minY = static_cast<int>(floor((starCamPos.y - rangeY) / cellSize));
+    int maxY = static_cast<int>(ceil((starCamPos.y + rangeY) / cellSize));
+
+    for (int gx = minX; gx <= maxX; gx++) {
+        for (int gy = minY; gy <= maxY; gy++) {
+            // Posizione della stella nello spazio "stellare"
+            float worldX = gx * cellSize;
+            float worldY = gy * cellSize;
+
+            // Hash deterministico
+            int seed = (gx * 73856093) ^ (gy * 19349663) ^ (currentGalaxy.starsDistribution * 83492791);
+            seed = seed & 0x7fffffff;
+
+            if (seed % starDensity == 0) {
+                // Posizione relativa alla camera
+                Vec2 local = {
+                    worldX - starCamPos.x,
+                    worldY - starCamPos.y
+                };
+
+                // Ruota in base all'angolo della camera
+                Vec2 rotated = rotatePoint(local, {0, 0}, -cameraAngle);
+
+                // Proietta sullo schermo
+                Vec2 screenPos = {
+                    rotated.x + screenCenter.x,
+                    rotated.y + screenCenter.y
+                };
+
+                if (screenPos.x >= -10 && screenPos.x < screenWidth + 10 &&
+                    screenPos.y >= -10 && screenPos.y < screenHeight + 10) {
+
+                    // Valori aggiuntivi derivati dal seed
+                    int sizeSeed = (seed / 100) % 5; // da 0 a 4
+                    int radius = 1;
+                    Uint8 r = 255, g = 255, b = 255;
+
+                    switch(sizeSeed) {
+                        case 0: radius = 1; break;
+                        case 1: radius = 1; r = 200; g = 200; b = 255; break;
+                        case 2: radius = 2; r = 255; g = 240; b = 200; break;
+                        case 3: radius = 2; r = 180; g = 255; b = 255; break;
+                        case 4: radius = 3; r = 255; g = 255; b = 255; break;
+                    }
+
+                    drawFilledCircle(screenPos.x, screenPos.y, radius, r, g, b, 255);
+                }
+            }
+        }
+    }
+
+
     // Generate a color palette based on a base RGB color with small random variations
-    auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 2, int variation = 5) {
+    auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 10, int variation = 2) {
         std::vector<SDL_Color> palette;
         auto clampColor = [](int val) -> Uint8 {
             return static_cast<Uint8>(std::clamp(val, 0, 255));
@@ -289,7 +362,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
             // Screen coordinates with scale and screen center offset
             int x = static_cast<int>(rotatedX * scale + screenWidth / 2);
-            int y = static_cast<int>(rotatedY * scale + screenHeight / 2);
+            int y = static_cast<int>(rotatedY * scale + screenHeight / 1.5f);
 
             int pivotX = static_cast<int>(radius.value * scale);
             int pivotY = static_cast<int>(radius.value * scale);
@@ -343,7 +416,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
                 }
             }
 
-            auto basePalette = generatePalette(baseR, baseG, baseB, 4, 1);  // simpler palette, no variance
+            auto basePalette = generatePalette(baseR, baseG, baseB, 2, 16);  // simpler palette, no variance
             drawPlanetWithBlocks(centerX, centerY, radius, basePalette);
 
             // Draw layers simply with solid color blocks (no patterns)
@@ -394,7 +467,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
         float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
 
         int x = static_cast<int>(rotatedX * scale - size.width * scale / 2 + screenWidth / 2);
-        int y = static_cast<int>(rotatedY * scale - size.height * scale + screenHeight / 2);
+        int y = static_cast<int>(rotatedY * scale - size.height * scale + screenHeight / 1.5f);
 
         float objAngleDeg = (angle.rad - cameraAngle) * 180.0f / M_PI;
 

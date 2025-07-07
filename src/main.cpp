@@ -53,7 +53,7 @@ int main(){
         } else {
             layerSection.shape.startAngle.rad = 0.0f;
             layerSection.shape.innerRadius.value = layerRadius - 150.0f;
-            layerSection.shape.endAngle.rad = 0.0f;
+            layerSection.shape.endAngle.rad = M_PI / 8;
             layerRadius -= 150.0f;
         }
         planetLayers.push_back(layerSection);

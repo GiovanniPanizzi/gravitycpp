@@ -1,4 +1,5 @@
 #include "../../include/objects/Galaxy.hpp"
+#include<random>
 #include <iostream>
 
 Galaxy::Galaxy(){
@@ -19,6 +20,9 @@ Galaxy::Galaxy(){
     humans.directions.push_back({1});
     humans.hitBoxes.push_back({{0.0f, 0.0f}, 40.0f});
     humans.lifePoints.push_back({10, 10});
+
+    //generate star distribution
+    starsDistribution = std::rand() % 100 + 10;
 }
 
 void Galaxy::addPlanet(Vec2 position, Vec2 velocity, Vec2 acceleration, Radius radius, Mass mass, Friction friction, Elasticity elasticity, std::vector<LayerSection> planetLayers) {
