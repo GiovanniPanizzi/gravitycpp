@@ -194,31 +194,32 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
 
     cameraPosition.x += (targetX - cameraPosition.x) * t * dist / 30.0f;
     cameraPosition.y += (targetY - cameraPosition.y) * t * dist / 30.0f;
-
-    //adjust camera angle
+    
     float targetAngle = currentGalaxy.humans.angles[0].rad;
     float angleDiff = targetAngle - cameraAngle;
+
+    // Porta angleDiff in [-π, π]
     if (angleDiff > M_PI) {
         angleDiff -= 2 * M_PI;
     } else if (angleDiff < -M_PI) {
         angleDiff += 2 * M_PI;
     }
-    //if angle diff is too large, slow down the camera rotation
-    if (fabs(angleDiff) > M_PI / 2) {
-        angleDiff = (angleDiff > 0 ? 1 : -1) * M_PI / 2;
-    }
 
-    if(currentGalaxy.humans.planetIndexes[0] == -1) {
-        cameraAngle += angleDiff * t * dist / 150.0f;
-    }
-    else{
-        cameraAngle += angleDiff * t * dist / 120.0f;
-    }
-    if (cameraAngle < 0) {
-        cameraAngle += 2 * M_PI;
-    } else if (cameraAngle >= 2 * M_PI) {
-        cameraAngle -= 2 * M_PI;
-    }
+    // Ignora piccole variazioni (anti-scattino)
+    if (fabs(angleDiff) < 0.01f) angleDiff = 0.0f;
+
+    // Applica un easing leggero (più fluido)
+    float easingFactor = 30.0f * (fabs(angleDiff) / M_PI); // più basso = più smorzato
+    float baseDivisor = (currentGalaxy.humans.planetIndexes[0] == -1) ? 500.0f : 120.0f;
+    float interp = t * dist / baseDivisor;
+
+    // Limita interpolazione e smorza con easingFactor
+    interp = std::min(interp, 0.001f); // previene salti
+    cameraAngle += angleDiff * interp * easingFactor;
+
+    // Normalizza cameraAngle in [0, 2π]
+    cameraAngle = fmod(cameraAngle, 2 * M_PI);
+    if (cameraAngle < 0) cameraAngle += 2 * M_PI;
 }
 
 void Draw::drawGalaxy(Galaxy& currentGalaxy){
@@ -235,7 +236,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
     Vec2 screenCenter = {
         static_cast<float>(screenWidth) / 2.0f,
-        static_cast<float>(screenHeight) / 2.0f
+        static_cast<float>(screenHeight) / 1.5f
     };
 
     // Calcolo del mondo visibile

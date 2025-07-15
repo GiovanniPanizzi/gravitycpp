@@ -22,11 +22,13 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
     float dy = currentGalaxy.planets.positions[planetIndex].y - currentGalaxy.humans.positions[humanIndex].y;
     float distance = sqrt(dx * dx + dy * dy);
 
-    if(!isRectInCircle({humanRectFuturePosition, humanSize}, humanAngle, {humanSize.width / 2, humanSize.height}, Circle{planetPosition, planetRadius.value + 5.0f})) {
+    if(!isRectInCircle({humanRectFuturePosition, humanSize}, humanAngle, {humanSize.width / 2, humanSize.height}, Circle{planetPosition, planetRadius.value + 2.0f})) {
         return false;
     }
 
     humanAngle = std::atan2(dy, dx) - M_PI / 2;
+
+    humanAngle = normalizeAngle(humanAngle);
 
     //if planet does't have any layers
     if(currentGalaxy.planets.layers[planetIndex].empty()){
@@ -65,7 +67,14 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
             float startAngle = layer.shape.startAngle.rad;
             float endAngle = layer.shape.endAngle.rad;
 
-            if(isPointInAnnularSection(humanPosition, planetPosition, layer.shape)){
+            AnnularSection annularSection = {
+                Radius {layer.shape.innerRadius.value},
+                Radius {layer.shape.outerRadius.value + 2.0f},
+                Angle {layer.shape.startAngle},
+                Angle {layer.shape.endAngle}
+            };
+
+            if(isPointInAnnularSection(humanPosition, planetPosition, annularSection)){
                 //if human is already in the planet, block velocity towards planet, apply friction and normalize
                 Vec2 perpendicularVelocity = velocityTowardsPoint(planetPosition, humanPosition, humanVelocity);
                 Vec2 parallelVelocity = subtract(humanVelocity, perpendicularVelocity);
@@ -85,9 +94,9 @@ bool Collider::humanInPlanet(Galaxy& currentGalaxy, size_t humanIndex, size_t pl
 
             bool foundIntersection = false;
 
-            if(!isRectInCircle({humanRectFuturePosition, humanSize}, humanAngle, {humanSize.width / 2, humanSize.height}, Circle{planetPosition, outerRadius})){
+            /*if(!isRectInCircle({humanRectFuturePosition, humanSize}, humanAngle, {humanSize.width / 2, humanSize.height}, Circle{planetPosition, outerRadius})){
                 continue;
-            }
+            }*/
 
             for (auto& point : humanPoints) {
                 Vec2 rotatedPoint = rotatePoint(point, humanPosition, humanAngle);

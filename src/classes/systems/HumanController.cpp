@@ -1,7 +1,7 @@
 #include "../../../include/classes/systems/HumanController.hpp"
 #include <iostream>
 
-float velocity = 0.5f;
+float velocity = 0.6f;
 float jumpJump = 2.0f;
 
 void HumanController::moveLeft(Galaxy& currentGalaxy, size_t entityIndex) {
@@ -75,16 +75,16 @@ void HumanController::updateControls(Galaxy& currentGalaxy, size_t entityIndex, 
     }
 
     if (jumpPressed) {
-        if (jumpingState < 12.0f) {
-            jumpingState += (12.0f - jumpingState) / 25.0f;
+        if (jumpingState < 10.0f) {
+            jumpingState += (10.0f - jumpingState) / 25.0f;
         }
     } else {
         if (jumpingState > 0.0f) {
             if(jumpingState < 5.0f){
                 jumpingState = 5.0f;
             }
-            if (jumpingState > 12.0f) {
-                jumpingState = 12.0f;
+            if (jumpingState > 10.0f) {
+                jumpingState = 10.0f;
             }
             jump(currentGalaxy, entityIndex);
         }
@@ -96,5 +96,5 @@ void HumanController::drawState(Galaxy& currentGalaxy, Draw& draw, size_t entity
     draw.drawRect(100, 60, currentGalaxy.humans.jumpStaminas[entityIndex].value, 5, 0, 255, 0, 255);
     draw.drawRect(100 + currentGalaxy.humans.jumpStaminas[entityIndex].value, 60, currentGalaxy.humans.jumpStaminas[entityIndex].maxValue - currentGalaxy.humans.jumpStaminas[entityIndex].value, 5, 255, 0, 0, 255);
     draw.drawRect(100, 80, 20 * jumpingState, 5, 255, 255, 255, 255);
-    draw.drawRect(100 + 20 * jumpingState, 80, 240 - 20 * jumpingState, 5, 100, 100, 100, 255);
+    draw.drawRect(100 + 20 * jumpingState, 80, 200 - 20 * jumpingState, 5, 100, 100, 100, 255);
 }

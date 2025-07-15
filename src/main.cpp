@@ -63,15 +63,23 @@ int main(){
 
     currentGalaxy.addPlanet({-2000.0f, 4000.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {0.85f}, {0.6f}, planetLayers);
     
-    currentGalaxy.addPlanet({-100.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.85f}, {0.85f}, {});
+    currentGalaxy.addPlanet({-100.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
 
-    currentGalaxy.addPlanet({800.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {200.0f}, {300.0f}, {0.85f}, {0.85f}, {});
+    currentGalaxy.addPlanet({300.0f, 300.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
+
+    currentGalaxy.addPlanet({700.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
+
+    currentGalaxy.addPlanet({300.0f, -1300.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {1000.0f}, {8000.0f}, {0.85f}, {0.85f}, {});
+
+    currentGalaxy.addPlanet({0.0f, 800.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
+
+    currentGalaxy.addPlanet({-400.0f, 1300.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
 
     //timing variables
     float time = 0.0f;
     int frameCount = 0;
     int currentFPS = 0;
-    const int desiredFPS = 90;
+    const int desiredFPS = 60;
     const int frameDelay = 1000 / desiredFPS;
     Uint32 lastTick = SDL_GetTicks();
     float deltaTime;

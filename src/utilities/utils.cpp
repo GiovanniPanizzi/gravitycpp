@@ -107,9 +107,13 @@ Vec2 rotatePoint(const Vec2& point, const Vec2& pivot, float angleRad) {
 }
 
 float normalizeAngle(float angle) {
+    const float PI = M_PI;
     const float TWO_PI = 2.0f * M_PI;
-    angle = fmodf(angle, TWO_PI);
-    return angle < 0 ? angle + TWO_PI : angle;
+
+    while (angle > PI) angle -= TWO_PI;
+    while (angle < -PI) angle += TWO_PI;
+
+    return angle;
 }
 
 bool angleInRange(float angle, float start, float end) {

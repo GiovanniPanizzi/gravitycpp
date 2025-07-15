@@ -51,13 +51,28 @@ void Phisics::updateEntityGravitalForce(Galaxy& currentGalaxy, size_t entityId) 
 }
 
 void Phisics::updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
+    float& angleCurrent = currentGalaxy.humans.angles[entityId].rad;
+    angleCurrent = normalizeAngle(angleCurrent);
+
     int planetId = currentGalaxy.humans.planetIndexes[entityId];
     if (planetId == -1) {
-        currentGalaxy.humans.angles[entityId].rad = atan2(
+        float angleTarget = std::atan2(
             currentGalaxy.humans.accelerations[entityId].y,
             currentGalaxy.humans.accelerations[entityId].x
         ) - M_PI / 2;
-    } 
+
+        angleTarget = normalizeAngle(angleTarget);
+        float angleDiff = normalizeAngle(angleTarget - angleCurrent);
+
+        float maxStep = 0.2f;  // Limite massimo di rotazione per frame (in radianti)
+
+        if (std::abs(angleDiff) <= maxStep) {
+            angleCurrent = angleTarget;
+        } else {
+            angleCurrent += (angleDiff > 0 ? 1 : -1) * maxStep;
+            angleCurrent = normalizeAngle(angleCurrent);
+        }
+    }
 }
 
 void Phisics::updateEntityMotion(Galaxy& currentGalaxy, size_t entityId) {
@@ -100,9 +115,13 @@ void Phisics::updateEntityAcceleration(Galaxy& currentGalaxy, size_t entityId) {
 }
 
 void Phisics::entitiesUpdate(Galaxy& currentGalaxy) { 
-    collider.updateHumansCollisions(currentGalaxy);
+
+    //collider.updateHumansCollisions(currentGalaxy);
+
     // Update rotation, overlap, and stamina for each entity
     for (size_t i = 0; i < currentGalaxy.humans.entities.size(); i++) {
+
+        collider.updateHumanCollisions(currentGalaxy, i);
 
         size_t entityId = i;
 
@@ -121,6 +140,7 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
             currentGalaxy.humans.velocities[entityId].x = 0.0f;
             currentGalaxy.humans.velocities[entityId].y = 0.0f;
         }
+
         float totalVx = currentGalaxy.humans.velocities[entityId].x + currentGalaxy.humans.relativeVelocities[entityId].x;
         float totalVy = currentGalaxy.humans.velocities[entityId].y + currentGalaxy.humans.relativeVelocities[entityId].y;
 
@@ -130,6 +150,7 @@ void Phisics::entitiesUpdate(Galaxy& currentGalaxy) {
 
         // Update motion and acceleration
         updateEntityMotion(currentGalaxy, entityId);
+
         updateEntityAcceleration(currentGalaxy, entityId);
 
         // Update entity rotation
