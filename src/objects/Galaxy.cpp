@@ -6,7 +6,7 @@ Galaxy::Galaxy(){
     Object player;
     player.index = humans.entities.size(); 
     humans.entities.push_back(player);
-    humans.positions.push_back(Vec2{0.0f, 0.0f});
+    humans.positions.push_back(Vec2{-2000.0f, 2000.0f});
     humans.velocities.push_back(Vec2{0.0f, 0.0f});
     humans.relativeVelocities.push_back(Vec2{0, 0});
     humans.accelerations.push_back(Vec2{0.0f, 0.0f});
@@ -20,6 +20,7 @@ Galaxy::Galaxy(){
     humans.directions.push_back({1});
     humans.hitBoxes.push_back({{0.0f, 0.0f}, 40.0f});
     humans.lifePoints.push_back({10, 10});
+    humans.inPlanet.push_back(false);
 
     //generate star distribution
     starsDistribution = std::rand() % 100 + 10;
@@ -57,6 +58,8 @@ void Galaxy::addEntity(Vec2 position, Vec2 velocity, Vec2 acceleration, RectSize
     humans.attackStaminas.push_back({20, 20});
     humans.hitBoxes.push_back({{0.0f, 0.0f}, 40.0f}); 
     humans.lifePoints.push_back({10, 10}); 
+    humans.directions.push_back({1});
+    humans.inPlanet.push_back(false);
 }
 
 void Galaxy::addPlanetPlatform(AnnularSection shape, size_t planetIndex, float angularSpeed) {

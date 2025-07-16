@@ -22,8 +22,10 @@ class Draw {
     Uint8 a);
     void drawAnnularSection(int centerX, int centerY, int innerRadius, int outerRadius, float startAngleRad, float endAngleRad, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
     void drawTexture(SDL_Texture* texture, int x, int y, double angleRad, int pivotX, int pivotY, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-
     void adjustCameraPosition(Galaxy& currentGalaxy);
+    void drawPlanet(Galaxy& currentGalaxy, size_t planetIndex);
+    void drawPlanetPlatform(Galaxy& currentGalaxy, size_t platformIndex);
+    void drawHuman(Galaxy& currentGalaxy, size_t humanIndex);
     void drawGalaxy(Galaxy& galaxy);
 
     void present();

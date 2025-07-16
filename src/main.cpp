@@ -33,7 +33,7 @@ int main(){
 
     //create planet
     std::vector<LayerSection> planetLayers;
-    float layerRadius = 2000.0f;
+    float layerRadius = 3000.0f;
     int i = 0;
 
     while(true){
@@ -43,25 +43,25 @@ int main(){
         layerSection.shape.outerRadius.value = layerRadius;
         if(i % 2 == 0){
             layerSection.shape.startAngle.rad = 0.0f + M_PI * i / 8;
-            layerSection.shape.innerRadius.value = layerRadius - 50.0f;
+            layerSection.shape.innerRadius.value = layerRadius - 200.0f;
             layerSection.shape.endAngle.rad = 2 * M_PI - M_PI / 8 + M_PI * i / 8;
-            layerRadius -= 50.0f;
+            layerRadius -= 200.0f;
             while(layerSection.shape.startAngle.rad > 2 * M_PI) {
                 layerSection.shape.endAngle.rad -= 2 * M_PI;
                 layerSection.shape.startAngle.rad -= 2 * M_PI;
             }
         } else {
-            layerSection.shape.startAngle.rad = 0.0f;
-            layerSection.shape.innerRadius.value = layerRadius - 150.0f;
-            layerSection.shape.endAngle.rad = M_PI / 8;
-            layerRadius -= 150.0f;
+            layerSection.shape.startAngle.rad = M_PI / 8 + i * M_PI / 2;
+            layerSection.shape.innerRadius.value = layerRadius - 300.0f;
+            layerSection.shape.endAngle.rad = 2 * M_PI / 8 + i * M_PI / 2;
+            layerRadius -= 300.0f;
         }
         planetLayers.push_back(layerSection);
         i++;
     }
     planetLayers.push_back({{Radius{0.0f}, Radius{200.0f}, Angle{0.0f}, Angle{2 * M_PI}}, Material::GRAVITANIUM});
 
-    currentGalaxy.addPlanet({-2000.0f, 4000.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {2000.0f}, {10000.0f}, {0.85f}, {0.6f}, planetLayers);
+    currentGalaxy.addPlanet({-2000.0f, 5000.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {3000.0f}, {18000.0f}, {0.9f}, {1.0f}, planetLayers);
     
     currentGalaxy.addPlanet({-100.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
 
@@ -74,6 +74,18 @@ int main(){
     currentGalaxy.addPlanet({0.0f, 800.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
 
     currentGalaxy.addPlanet({-400.0f, 1300.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {100.0f}, {150.0f}, {0.85f}, {0.85f}, {});
+
+    //platforms
+    AnnularSection platformShape;
+    size_t planetIndex = 4;
+    float angularSpeed = 0.01f;
+
+    platformShape.outerRadius = {1005.0f};
+    platformShape.innerRadius = {1000.0f};
+    platformShape.startAngle = {0.0f};
+    platformShape.endAngle = {0.3f};
+
+    currentGalaxy.addPlanetPlatform(platformShape, planetIndex, angularSpeed);
 
     //timing variables
     float time = 0.0f;

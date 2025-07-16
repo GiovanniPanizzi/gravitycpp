@@ -55,7 +55,7 @@ void Draw::drawAnnularSection(int centerX, int centerY, int innerRadius, int out
     int segments = std::max(4, int((endAngleRad - startAngleRad) / (2 * M_PI) * 300));
     float totalAngle = endAngleRad - startAngleRad;
     int numArcSegments = static_cast<int>(std::ceil(totalAngle / (2 * M_PI) * segments));
-    if (numArcSegments < 2) numArcSegments = 2; // Minimo 2 segmenti per un inizio e fine
+    if (numArcSegments < 5) numArcSegments = 5; // Minimo 2 segmenti per un inizio e fine
 
     std::vector<SDL_Vertex> vertices;
     std::vector<int> indices;
@@ -222,80 +222,9 @@ void Draw::adjustCameraPosition(Galaxy& currentGalaxy) {
     if (cameraAngle < 0) cameraAngle += 2 * M_PI;
 }
 
-void Draw::drawGalaxy(Galaxy& currentGalaxy){
+void Draw::drawPlanet(Galaxy& currentGalaxy, size_t i) {
+
     SDL_Renderer* renderer = window.getSDLRenderer();
-
-    int cellSize = 32;
-    int starDensity = 80;
-    float parallax = 0.2f;
-
-    Vec2 starCamPos = {
-        cameraPosition.x * parallax,
-        cameraPosition.y * parallax
-    };
-
-    Vec2 screenCenter = {
-        static_cast<float>(screenWidth) / 2.0f,
-        static_cast<float>(screenHeight) / 1.5f
-    };
-
-    // Calcolo del mondo visibile
-    float rangeX = screenWidth * 1.5f;
-    float rangeY = screenHeight * 1.5f;
-
-    int minX = static_cast<int>(floor((starCamPos.x - rangeX) / cellSize));
-    int maxX = static_cast<int>(ceil((starCamPos.x + rangeX) / cellSize));
-    int minY = static_cast<int>(floor((starCamPos.y - rangeY) / cellSize));
-    int maxY = static_cast<int>(ceil((starCamPos.y + rangeY) / cellSize));
-
-    for (int gx = minX; gx <= maxX; gx++) {
-        for (int gy = minY; gy <= maxY; gy++) {
-            // Posizione della stella nello spazio "stellare"
-            float worldX = gx * cellSize;
-            float worldY = gy * cellSize;
-
-            // Hash deterministico
-            int seed = (gx * 73856093) ^ (gy * 19349663) ^ (currentGalaxy.starsDistribution * 83492791);
-            seed = seed & 0x7fffffff;
-
-            if (seed % starDensity == 0) {
-                // Posizione relativa alla camera
-                Vec2 local = {
-                    worldX - starCamPos.x,
-                    worldY - starCamPos.y
-                };
-
-                // Ruota in base all'angolo della camera
-                Vec2 rotated = rotatePoint(local, {0, 0}, -cameraAngle);
-
-                // Proietta sullo schermo
-                Vec2 screenPos = {
-                    rotated.x + screenCenter.x,
-                    rotated.y + screenCenter.y
-                };
-
-                if (screenPos.x >= -10 && screenPos.x < screenWidth + 10 &&
-                    screenPos.y >= -10 && screenPos.y < screenHeight + 10) {
-
-                    // Valori aggiuntivi derivati dal seed
-                    int sizeSeed = (seed / 100) % 5; // da 0 a 4
-                    int radius = 1;
-                    Uint8 r = 255, g = 255, b = 255;
-
-                    switch(sizeSeed) {
-                        case 0: radius = 1; break;
-                        case 1: radius = 1; r = 200; g = 200; b = 255; break;
-                        case 2: radius = 2; r = 255; g = 240; b = 200; break;
-                        case 3: radius = 2; r = 180; g = 255; b = 255; break;
-                        case 4: radius = 3; r = 255; g = 255; b = 255; break;
-                    }
-
-                    drawFilledCircle(screenPos.x, screenPos.y, radius, r, g, b, 255);
-                }
-            }
-        }
-    }
-
 
     // Generate a color palette based on a base RGB color with small random variations
     auto generatePalette = [](Uint8 baseR, Uint8 baseG, Uint8 baseB, int numColors = 10, int variation = 2) {
@@ -304,7 +233,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
             return static_cast<Uint8>(std::clamp(val, 0, 255));
         };
         // Add base color as first palette color
-        palette.push_back({ baseR, baseG, baseB, 255 });
+        palette.push_back({ baseR, baseG, baseB, 255});
         // Generate additional colors with slight random variation
         for (int i = 1; i < numColors; ++i) {
             int vr = (rand() % (variation * 2 + 1)) - variation;
@@ -322,7 +251,7 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
 
     // Draw a planet as a circle composed of small colored blocks (pixels)
     auto drawPlanetWithBlocks = [&](int centerX, int centerY, float radius, const std::vector<SDL_Color>& palette) {
-        int blockSize = 2; // Size of each block
+        int blockSize = 5; // Size of each block
         for (int y = -static_cast<int>(radius); y <= static_cast<int>(radius); y += blockSize) {
             for (int x = -static_cast<int>(radius); x <= static_cast<int>(radius); x += blockSize) {
                 float dist = std::sqrt(float(x*x + y*y));
@@ -339,117 +268,225 @@ void Draw::drawGalaxy(Galaxy& currentGalaxy){
         }
     };
 
+    if (currentGalaxy.planets.textures[i] != nullptr) {
+        SDL_Texture* texture = currentGalaxy.planets.textures[i];
+        Vec2 position = currentGalaxy.planets.positions[i];
+        Radius radius = currentGalaxy.planets.radii[i];
+        Angle angle = currentGalaxy.planets.angles[i];
+
+        // Compute position relative to camera
+        Vec2 relativePos = subtract(position, cameraPosition);
+
+        // Rotate around camera by -cameraAngle
+        float cosA = cos(-cameraAngle);
+        float sinA = sin(-cameraAngle);
+
+        float rotatedX = relativePos.x * cosA - relativePos.y * sinA;
+        float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
+
+        // Screen coordinates with scale and screen center offset
+        int x = static_cast<int>(rotatedX * scale + screenWidth / 2);
+        int y = static_cast<int>(rotatedY * scale + screenHeight / 1.5f);
+
+        int pivotX = static_cast<int>(radius.value * scale);
+        int pivotY = static_cast<int>(radius.value * scale);
+
+        int w = static_cast<int>(radius.value * scale * 2);
+        int h = static_cast<int>(radius.value * scale * 2);
+
+        SDL_FRect dstRect;
+        dstRect.x = x - pivotX;
+        dstRect.y = y - pivotY;
+        dstRect.w = static_cast<float>(w);
+        dstRect.h = static_cast<float>(h);
+
+        SDL_FPoint pivot = { static_cast<float>(pivotX), static_cast<float>(pivotY) };
+
+        // Rotate planet by its angle minus camera angle (in degrees)
+        float angleDeg = static_cast<float>((angle.rad - cameraAngle) * 180.0 / M_PI);
+
+        SDL_RenderCopyExF(renderer, texture, NULL, &dstRect, angleDeg, &pivot, SDL_FLIP_NONE);
+    }
+    else {
+        int diameter = static_cast<int>(currentGalaxy.planets.radii[i].value * 2.0f * scale);
+        SDL_Texture* texture = SDL_CreateTexture(renderer,
+                                                SDL_PIXELFORMAT_RGBA8888,
+                                                SDL_TEXTUREACCESS_TARGET,
+                                                diameter, diameter);
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        if (!texture) {
+            SDL_Log("Error creating texture: %s", SDL_GetError());
+            return;
+        }
+        SDL_SetRenderTarget(renderer, texture);
+        SDL_RenderSetViewport(renderer, nullptr);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+
+        int centerX = diameter / 2;
+        int centerY = diameter / 2;
+        float radius = currentGalaxy.planets.radii[i].value * scale;
+
+        // Base color for planet surface
+        Uint8 baseR = 60, baseG = 40, baseB = 40;
+        if (!currentGalaxy.planets.layers[i].empty()) {
+            switch (currentGalaxy.planets.layers[i][0].material) {
+                case Material::ROCK: baseR = 60; baseG = 40; baseB = 40; break;
+                case Material::ICE: baseR = 100; baseG = 100; baseB = 255; break;
+                case Material::METAL: baseR = 200; baseG = 200; baseB = 200; break;
+                case Material::GRAVITANIUM: baseR = 50; baseG = 0; baseB = 100; break;
+                case Material::VOID: baseR = 50; baseG = 20; baseB = 20; break;
+                default: baseR = 255; baseG = 255; baseB = 255; break;
+            }
+        }
+
+        auto basePalette = generatePalette(baseR, baseG, baseB, 2, 16);  // simpler palette, no variance
+        drawPlanetWithBlocks(centerX, centerY, radius, basePalette);
+
+        // Draw layers simply with solid color blocks (no patterns)
+        for (const auto& section : currentGalaxy.planets.layers[i]) {
+            float outerRadius = section.shape.outerRadius.value * scale;
+            float innerRadius = section.shape.innerRadius.value * scale;
+            float startAngle = section.shape.startAngle.rad;
+            float endAngle = section.shape.endAngle.rad;
+
+            Uint8 r = 255, g = 255, b = 255;
+            switch (section.material) {
+                case Material::ROCK: r = 60; g = 40; b = 40; break;
+                case Material::ICE: r = 100; g = 100; b = 255; break;
+                case Material::METAL: r = 200; g = 200; b = 200; break;
+                case Material::GRAVITANIUM: r = 50; g = 0; b = 100; break;
+                case Material::VOID: r = 50; g = 20; b = 20; break;
+                default: r = 255; g = 255; b = 255; break;
+            }
+
+            // Create palette for layer with colors slightly brighter than base
+            auto layerPalette = generatePalette(std::min(r + 30, 255), std::min(g + 30, 255), std::min(b + 30, 255), 4, 3);
+
+            // Draw the annular section ring with palette colors
+            drawAnnularSectionWithPalette(centerX, centerY,
+                                        static_cast<int>(innerRadius),
+                                        static_cast<int>(outerRadius),
+                                        startAngle, endAngle,
+                                        layerPalette);
+        }
+
+        SDL_SetRenderTarget(renderer, nullptr);
+        currentGalaxy.planets.textures[i] = texture;
+    }
+}
+
+void Draw::drawPlanetPlatform(Galaxy& currentGalaxy, size_t i){
+    SDL_Renderer* renderer = window.getSDLRenderer();
+     size_t planet = currentGalaxy.platforms.planetIndexes[i];
+        Vec2 position = currentGalaxy.planets.positions[planet];
+        Vec2 relativePos = subtract(position, cameraPosition);
+        AnnularSection platformShape = currentGalaxy.platforms.shapes[i];
+
+        // Rotate around camera by -cameraAngle
+        float cosA = cos(-cameraAngle);
+        float sinA = sin(-cameraAngle);
+
+        float rotatedX = relativePos.x * cosA - relativePos.y * sinA;
+        float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
+
+        // Screen coordinates with scale and screen center offset
+        int x = static_cast<int>(rotatedX * scale + screenWidth / 2);
+        int y = static_cast<int>(rotatedY * scale + screenHeight / 1.5f);
+
+        drawAnnularSection(
+            x, y,
+            static_cast<int>(platformShape.innerRadius.value * scale),
+            static_cast<int>(platformShape.outerRadius.value * scale),
+            platformShape.startAngle.rad - cameraAngle,
+            platformShape.endAngle.rad - cameraAngle,
+            255, 255, 255, 255
+        );
+}
+
+void Draw::drawGalaxy(Galaxy& currentGalaxy){
+    SDL_Renderer* renderer = window.getSDLRenderer();
+
+    int cellSize = 32;
+    int starDensity = 80;
+    float parallax = 0.2f;
+
+    Vec2 starCamPos = {
+        cameraPosition.x * parallax,
+        cameraPosition.y * parallax
+    };
+
+    Vec2 screenCenter = {
+        static_cast<float>(screenWidth) / 2.0f,
+        static_cast<float>(screenHeight) / 1.5f
+    };
+    float rangeX = screenWidth * 1.5f / scale;
+    float rangeY = screenHeight * 1.5f / scale;
+
+    int minX = static_cast<int>(floor((starCamPos.x - rangeX) / cellSize));
+    int maxX = static_cast<int>(ceil((starCamPos.x + rangeX) / cellSize));
+    int minY = static_cast<int>(floor((starCamPos.y - rangeY) / cellSize));
+    int maxY = static_cast<int>(ceil((starCamPos.y + rangeY) / cellSize));
+
+    for (int gx = minX; gx <= maxX; gx++) {
+        for (int gy = minY; gy <= maxY; gy++) {
+            float worldX = gx * cellSize * scale;
+            float worldY = gy * cellSize * scale;
+
+            // Hash deterministico
+            int seed = (gx * 73856093) ^ (gy * 19349663) ^ (currentGalaxy.starsDistribution * 83492791);
+            seed = seed & 0x7fffffff;
+
+            if (seed % starDensity == 0) {
+                Vec2 local = {
+                    worldX - starCamPos.x,
+                    worldY - starCamPos.y
+                };
+
+                Vec2 rotated = rotatePoint(local, {0, 0}, -cameraAngle);
+
+                Vec2 screenPos = {
+                    rotated.x + screenCenter.x,
+                    rotated.y + screenCenter.y
+                };
+
+                if (screenPos.x >= -10 && screenPos.x < screenWidth + 10 &&
+                    screenPos.y >= -10 && screenPos.y < screenHeight + 10) {
+
+                    int sizeSeed = (seed / 100) % 5; 
+                    int radius = 1;
+                    Uint8 r = 255, g = 255, b = 255;
+
+                    switch(sizeSeed) {
+                        case 0: radius = 1; break;
+                        case 1: radius = 1; r = 200; g = 200; b = 255; break;
+                        case 2: radius = 2; r = 255; g = 240; b = 200; break;
+                        case 3: radius = 2; r = 180; g = 255; b = 255; break;
+                        case 4: radius = 3; r = 255; g = 255; b = 255; break;
+                    }
+
+                    radius = static_cast<int>(radius * scale);
+                    if(radius < 1) radius = 1; 
+
+                    drawFilledCircle(screenPos.x, screenPos.y, radius, r, g, b, 255);
+                }
+            }
+        }
+    }
+
     // Center of the screen (camera)
     float cx = screenWidth / 2.0f;
     float cy = screenHeight / 2.0f;
 
     // Loop over all planets
     for (int i = 0; i < currentGalaxy.planets.entities.size(); i++) {
-        if (currentGalaxy.planets.textures[i] != nullptr) {
-            SDL_Texture* texture = currentGalaxy.planets.textures[i];
-            Vec2 position = currentGalaxy.planets.positions[i];
-            Radius radius = currentGalaxy.planets.radii[i];
-            Angle angle = currentGalaxy.planets.angles[i];
+        drawPlanet(currentGalaxy, i);
+    }
 
-            // Compute position relative to camera
-            Vec2 relativePos = subtract(position, cameraPosition);
-
-            // Rotate around camera by -cameraAngle
-            float cosA = cos(-cameraAngle);
-            float sinA = sin(-cameraAngle);
-
-            float rotatedX = relativePos.x * cosA - relativePos.y * sinA;
-            float rotatedY = relativePos.x * sinA + relativePos.y * cosA;
-
-            // Screen coordinates with scale and screen center offset
-            int x = static_cast<int>(rotatedX * scale + screenWidth / 2);
-            int y = static_cast<int>(rotatedY * scale + screenHeight / 1.5f);
-
-            int pivotX = static_cast<int>(radius.value * scale);
-            int pivotY = static_cast<int>(radius.value * scale);
-
-            int w = static_cast<int>(radius.value * scale * 2);
-            int h = static_cast<int>(radius.value * scale * 2);
-
-            SDL_FRect dstRect;
-            dstRect.x = x - pivotX;
-            dstRect.y = y - pivotY;
-            dstRect.w = static_cast<float>(w);
-            dstRect.h = static_cast<float>(h);
-
-            SDL_FPoint pivot = { static_cast<float>(pivotX), static_cast<float>(pivotY) };
-
-            // Rotate planet by its angle minus camera angle (in degrees)
-            float angleDeg = static_cast<float>((angle.rad - cameraAngle) * 180.0 / M_PI);
-
-            SDL_RenderCopyExF(renderer, texture, NULL, &dstRect, angleDeg, &pivot, SDL_FLIP_NONE);
-        }
-        else {
-            int diameter = static_cast<int>(currentGalaxy.planets.radii[i].value * 2.0f * scale);
-            SDL_Texture* texture = SDL_CreateTexture(renderer,
-                                                    SDL_PIXELFORMAT_RGBA8888,
-                                                    SDL_TEXTUREACCESS_TARGET,
-                                                    diameter, diameter);
-            SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-            if (!texture) {
-                SDL_Log("Error creating texture: %s", SDL_GetError());
-                continue;
-            }
-            SDL_SetRenderTarget(renderer, texture);
-            SDL_RenderSetViewport(renderer, nullptr);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-            SDL_RenderClear(renderer);
-
-            int centerX = diameter / 2;
-            int centerY = diameter / 2;
-            float radius = currentGalaxy.planets.radii[i].value * scale;
-
-            // Base color for planet surface
-            Uint8 baseR = 60, baseG = 40, baseB = 40;
-            if (!currentGalaxy.planets.layers[i].empty()) {
-                switch (currentGalaxy.planets.layers[i][0].material) {
-                    case Material::ROCK: baseR = 60; baseG = 40; baseB = 40; break;
-                    case Material::ICE: baseR = 100; baseG = 100; baseB = 255; break;
-                    case Material::METAL: baseR = 200; baseG = 200; baseB = 200; break;
-                    case Material::GRAVITANIUM: baseR = 50; baseG = 0; baseB = 100; break;
-                    case Material::VOID: baseR = 50; baseG = 20; baseB = 20; break;
-                    default: baseR = 255; baseG = 255; baseB = 255; break;
-                }
-            }
-
-            auto basePalette = generatePalette(baseR, baseG, baseB, 2, 16);  // simpler palette, no variance
-            drawPlanetWithBlocks(centerX, centerY, radius, basePalette);
-
-            // Draw layers simply with solid color blocks (no patterns)
-            for (const auto& section : currentGalaxy.planets.layers[i]) {
-                float outerRadius = section.shape.outerRadius.value * scale;
-                float innerRadius = section.shape.innerRadius.value * scale;
-                float startAngle = section.shape.startAngle.rad;
-                float endAngle = section.shape.endAngle.rad;
-
-                Uint8 r = 255, g = 255, b = 255;
-                switch (section.material) {
-                    case Material::ROCK: r = 60; g = 40; b = 40; break;
-                    case Material::ICE: r = 100; g = 100; b = 255; break;
-                    case Material::METAL: r = 200; g = 200; b = 200; break;
-                    case Material::GRAVITANIUM: r = 50; g = 0; b = 100; break;
-                    case Material::VOID: r = 50; g = 20; b = 20; break;
-                    default: r = 255; g = 255; b = 255; break;
-                }
-
-                // Create palette for layer with colors slightly brighter than base
-                auto layerPalette = generatePalette(std::min(r + 30, 255), std::min(g + 30, 255), std::min(b + 30, 255), 4, 3);
-
-                // Draw the annular section ring with palette colors
-                drawAnnularSectionWithPalette(centerX, centerY,
-                                            static_cast<int>(innerRadius),
-                                            static_cast<int>(outerRadius),
-                                            startAngle, endAngle,
-                                            layerPalette);
-            }
-
-            SDL_SetRenderTarget(renderer, nullptr);
-            currentGalaxy.planets.textures[i] = texture;
+    // draw platforms
+    for (int i = 0; i < currentGalaxy.platforms.entities.size(); i++) {
+        if (currentGalaxy.platforms.planetIndexes[i] != -1) {
+            drawPlanetPlatform(currentGalaxy, i);
         }
     }
 

@@ -23,6 +23,7 @@ struct Humans {
     std::vector<Direction> directions;
     std::vector<int> planetIndexes;
     std::vector<int> platformIndexes;
+    std::vector<bool> inPlanet;
     std::vector<Stamina> lifePoints;
 };
 

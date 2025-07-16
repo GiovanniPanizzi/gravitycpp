@@ -209,7 +209,7 @@ Vec2 velocityTowardsAnnularSection(
 }
 
 std::optional<float> segmentAnnularSectionIntersection(
-    Vec2 A, Vec2 B, Vec2 C,
+    Vec2 A, Vec2 B, Vec2 C, // segmento AB, centro C
     float innerR, float outerR,
     float startAngle, float endAngle
 ) {
@@ -234,7 +234,7 @@ std::optional<float> segmentAnnularSectionIntersection(
     };
 
     auto angleInRange = [&](float angle) {
-        if (angle < 0) angle += 2 * M_PI;
+        angle = fmod(angle + 2 * M_PI, 2 * M_PI);
         float sa = fmod(startAngle + 2 * M_PI, 2 * M_PI);
         float ea = fmod(endAngle + 2 * M_PI, 2 * M_PI);
         if (sa < ea)
@@ -243,41 +243,61 @@ std::optional<float> segmentAnnularSectionIntersection(
             return angle >= sa || angle <= ea;
     };
 
-    std::vector<float> tsOuter = solveQuadratic(outerR);
-    std::vector<float> tsInner = solveQuadratic(innerR);
-
     std::vector<std::pair<float, Vec2>> candidates;
 
-    // Controlla le intersezioni con outerR
-    for (float t : tsOuter) {
-        Vec2 point = { A.x + t * d.x, A.y + t * d.y };
-        float dist = length(subtract(point, C));
-        float angle = atan2(point.y - C.y, point.x - C.x);
-        if (angle < 0) angle += 2 * M_PI;
+    // Intersezioni con cerchi
+    for (float R : {innerR, outerR}) {
+        for (float t : solveQuadratic(R)) {
+            Vec2 point = { A.x + t * d.x, A.y + t * d.y };
+            float dist = length(subtract(point, C));
+            float angle = atan2(point.y - C.y, point.x - C.x);
+            if (angle < 0) angle += 2 * M_PI;
 
-        if (dist >= innerR && dist <= outerR && angleInRange(angle)) {
-            candidates.emplace_back(t, point);
+            if (dist >= innerR && dist <= outerR && angleInRange(angle)) {
+                candidates.emplace_back(t, point);
+            }
         }
     }
 
-    // Controlla le intersezioni con innerR
-    for (float t : tsInner) {
-        Vec2 point = { A.x + t * d.x, A.y + t * d.y };
-        float dist = length(subtract(point, C));
-        float angle = atan2(point.y - C.y, point.x - C.x);
-        if (angle < 0) angle += 2 * M_PI;
+    // Intersezione con le due linee angolari (startAngle, endAngle)
+    auto intersectRay = [&](float angle) -> std::optional<std::pair<float, Vec2>> {
+        Vec2 dir = {cos(angle), sin(angle)};
+        Vec2 P1 = add(C, multiply(dir, innerR));
+        Vec2 P2 = add(C, multiply(dir, outerR));
 
-        if (dist >= innerR && dist <= outerR && angleInRange(angle)) {
-            candidates.emplace_back(t, point);
+        Vec2 r = subtract(P2, P1);
+        Vec2 s = subtract(B, A);
+        float denom = r.x * s.y - r.y * s.x;
+
+        if (std::abs(denom) < 1e-6) return std::nullopt;
+
+        Vec2 diff = subtract(A, P1);
+        float t = (diff.x * s.y - diff.y * s.x) / denom;
+        float u = (diff.x * r.y - diff.y * r.x) / denom;
+
+        if (t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f) {
+            Vec2 intersection = { A.x + u * s.x, A.y + u * s.y };
+            std::cout << "ciaoo 1" << std::endl;
+            return std::make_pair(u, intersection);
+        }
+        return std::nullopt;
+    };
+
+    for (float angle : {startAngle, endAngle}) {
+        auto res = intersectRay(angle);
+        if (res.has_value()) {
+            float u = res->first;
+            Vec2 pt = res->second;
+            float dist = length(subtract(pt, A));
+            candidates.emplace_back(u, pt);
         }
     }
 
     if (candidates.empty()) return std::nullopt;
 
-    // Prendi la intersezione con il valore t più piccolo (prima intersezione lungo il segmento)
-    auto comp = [](auto& a, auto& b) { return a.first < b.first; };
-    auto best = std::min_element(candidates.begin(), candidates.end(), comp);
-
-    return best->first * length(d);
+    auto best = std::min_element(candidates.begin(), candidates.end(),
+        [](const auto& a, const auto& b) {
+            return a.first < b.first;
+        });
+    return length(subtract(best->second, A));
 }
-

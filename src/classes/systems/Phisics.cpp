@@ -3,7 +3,7 @@
 
 Collider collider;
 
-const int G = 35;
+const int G = 60;
 
 /*methods*/
 //kinetics for platforms
@@ -55,7 +55,7 @@ void Phisics::updateEntityRotation(Galaxy& currentGalaxy, size_t entityId) {
     angleCurrent = normalizeAngle(angleCurrent);
 
     int planetId = currentGalaxy.humans.planetIndexes[entityId];
-    if (planetId == -1) {
+    if (!currentGalaxy.humans.inPlanet[entityId] && currentGalaxy.humans.platformIndexes[entityId] == -1) {
         float angleTarget = std::atan2(
             currentGalaxy.humans.accelerations[entityId].y,
             currentGalaxy.humans.accelerations[entityId].x
