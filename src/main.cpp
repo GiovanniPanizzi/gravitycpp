@@ -13,17 +13,20 @@ EventListener eventListener(window);
 Draw draw(window);
 Phisics phisics;
 HumanController humanController;
+int i = 0;
 
 void mainPlayingFunction(Galaxy& currentGalaxy){
     //collider
     phisics.update(currentGalaxy);
     humanController.updateControls(currentGalaxy, 0, eventListener.isLeftPressed(), eventListener.isRightPressed(), eventListener.isUpPressed());
     //draw
-    draw.clearScreen(0, 0, 0, 255);
+    draw.clearScreen(5, 5, 1, 255);
     draw.adjustCameraPosition(currentGalaxy);
-    draw.drawGalaxy(currentGalaxy);
-    humanController.drawState(currentGalaxy, draw, 0);
+    //draw.drawGalaxy(currentGalaxy);
+    //humanController.drawState(currentGalaxy, draw, 0);
 
+    draw.drawFilledRotatedRect(300.0f, 300.0f, 400.0f, 400.0f, i * 0.01, 200.0f, 200.0f, 150, 100, 50, 255);
+    i++;
     draw.present();
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <glad/gl.h>
 #include <stdexcept>
 #include <string>
 

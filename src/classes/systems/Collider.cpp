@@ -321,6 +321,7 @@ void Collider::updateHumanCollisions(Galaxy& currentGalaxy, size_t humanIndex){
     for(size_t i = 0; i < currentGalaxy.planets.entities.size(); i++) {
         if(humanInPlanet(currentGalaxy, humanIndex, i)) {
             currentGalaxy.humans.planetIndexes[humanIndex] = i;
+            currentGalaxy.humans.relativeVelocities[humanIndex] = {0.0f, 0.0f};
             return;
         }
     }

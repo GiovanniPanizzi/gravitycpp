@@ -16,6 +16,5 @@ class HumanController {
     void moveRight(Galaxy& currentGalaxy, size_t entityIndex);
     void jump(Galaxy& currentGalaxy, size_t entityIndex);
     void updateControls(Galaxy& currentGalaxy, size_t entityIndex, bool leftPressed, bool rightPressed, bool jumpPressed);
-    void drawState(Galaxy& currentGalaxy, Draw& draw, size_t entityIndex);
 };
 
